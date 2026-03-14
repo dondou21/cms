@@ -1,41 +1,31 @@
-const mysql = require('mysql2/promise');
+const sqlite3 = require('sqlite3').verbose();
+const { open } = require('sqlite');
 const fs = require('fs');
 const path = require('path');
 const bcrypt = require('bcryptjs');
-require('dotenv').config({ path: './.env' });
 
 async function initDB() {
-    console.log('--- Initializing Database ---');
+    console.log('--- Initializing SQLite Database ---');
     try {
-        // Connect to MySQL server (without specifying a database)
-        const connection = await mysql.createConnection({
-            host: process.env.DB_HOST || 'localhost',
-            user: process.env.DB_USER || 'root',
-            password: process.env.DB_PASSWORD || ''
+        const dbPath = path.join(__dirname, 'cms.db');
+        const db = await open({
+            filename: dbPath,
+            driver: sqlite3.Database
         });
 
-        console.log('Connected to MySQL server.');
+        await db.exec('PRAGMA foreign_keys = ON');
 
-        // 1. Create the database if it doesn't exist
-        const dbName = process.env.DB_NAME || 'cms_db';
-        await connection.execute(`CREATE DATABASE IF NOT EXISTS \`${dbName}\``);
-        console.log(`Database '${dbName}' ensured.`);
+        console.log('Connected to SQLite.');
 
-        // 2. Use the database
-        await connection.query(`USE \`${dbName}\``);
-
-        // 3. Run schema.sql
         const schemaPath = path.join(__dirname, 'config', 'schema.sql');
         const schemaString = fs.readFileSync(schemaPath, 'utf8');
 
-        // Execute schema statements one by one
         const statements = schemaString.split(';').filter(stmt => stmt.trim());
         for (let stmt of statements) {
-            await connection.execute(stmt);
+            await db.exec(stmt);
         }
         console.log('Schema tables created/verified successfully.');
 
-        // 4. Seed Users
         const passwordHash = await bcrypt.hash('password123', 10);
         const users = [
             { name: 'System Admin', email: 'admin@church.com', password: passwordHash, role: 'Admin' },
@@ -47,9 +37,9 @@ async function initDB() {
 
         console.log('Seeding users...');
         for (const user of users) {
-            const [existing] = await connection.execute('SELECT id FROM users WHERE email = ?', [user.email]);
+            const existing = await db.all('SELECT id FROM users WHERE email = ?', [user.email]);
             if (existing.length === 0) {
-                await connection.execute(
+                await db.run(
                     'INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)',
                     [user.name, user.email, user.password, user.role]
                 );
@@ -60,12 +50,10 @@ async function initDB() {
         }
 
         console.log('--- Initialization Complete! ---');
-        await connection.end();
+        await db.close();
         process.exit(0);
     } catch (error) {
-        console.error('Database Initialization Failed:');
-        console.error(error.message);
-        console.error('Make sure your MySQL server (like XAMPP/WAMP) is running and your root password is correct in .env');
+        console.error('Database Initialization Failed:', error);
         process.exit(1);
     }
 }

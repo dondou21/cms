@@ -1,14 +1,39 @@
-const mysql = require('mysql2');
-require('dotenv').config();
+const sqlite3 = require('sqlite3').verbose();
+const { open } = require('sqlite');
+const path = require('path');
 
-const pool = mysql.createPool({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    waitForConnections: true,
-    connectionLimit: 10,
-    queueLimit: 0
-});
+let dbInstance = null;
 
-module.exports = pool.promise();
+async function getDb() {
+    if (!dbInstance) {
+        dbInstance = await open({
+            filename: path.join(__dirname, '..', 'cms.db'),
+            driver: sqlite3.Database
+        });
+
+        await dbInstance.exec('PRAGMA foreign_keys = ON');
+    }
+    return dbInstance;
+}
+
+const poolWrapper = {
+    execute: async (sql, params = []) => {
+        const db = await getDb();
+        const upperSql = sql.trim().toUpperCase();
+        if (upperSql.startsWith('SELECT')) {
+            const rows = await db.all(sql, params);
+            return [rows, []];
+        } else {
+            const result = await db.run(sql, params);
+            return [{
+                insertId: result.lastID,
+                affectedRows: result.changes
+            }, []];
+        }
+    },
+    query: async (sql, params = []) => {
+        return poolWrapper.execute(sql, params);
+    }
+};
+
+module.exports = poolWrapper;
