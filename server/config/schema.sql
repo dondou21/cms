@@ -51,7 +51,8 @@ CREATE TABLE IF NOT EXISTS events (
     description TEXT,
     date DATE NOT NULL,
     time TIME,
-    location VARCHAR(255),
+    location VARCHAR(200),
+    attendance_count INT DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

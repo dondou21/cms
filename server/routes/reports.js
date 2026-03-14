@@ -4,7 +4,7 @@ const reportController = require('../controllers/reportController');
 const { protect, authorize } = require('../middleware/auth');
 
 router.use(protect);
-router.use(authorize('Admin', 'Pastor/Leader'));
+router.use(authorize('Admin', 'Pastor/Leader', 'Secretary/Clerk'));
 
 router.get('/dashboard', reportController.getDashboardSummary);
 router.get('/attendance-trends', reportController.getAttendanceTrends);

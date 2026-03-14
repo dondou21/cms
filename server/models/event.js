@@ -28,6 +28,10 @@ const Event = {
         );
     },
 
+    updateAttendance: async (id, count) => {
+        await db.execute('UPDATE events SET attendance_count = ? WHERE id = ?', [count, id]);
+    },
+
     delete: async (id) => {
         await db.execute('DELETE FROM events WHERE id = ?', [id]);
     }

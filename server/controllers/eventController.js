@@ -45,3 +45,13 @@ exports.deleteEvent = async (req, res) => {
         res.status(500).json({ message: 'Error deleting event', error: error.message });
     }
 };
+
+exports.updateAttendance = async (req, res) => {
+    try {
+        const { count } = req.body;
+        await Event.updateAttendance(req.params.id, count);
+        res.json({ message: 'Attendance updated successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error updating attendance', error: error.message });
+    }
+};
