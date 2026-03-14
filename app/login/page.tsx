@@ -30,6 +30,23 @@ export default function LoginPage() {
         }
     };
 
+    const handleQuickLogin = async (testEmail: string) => {
+        setLoading(true);
+        setError('');
+        setEmail(testEmail);
+        setPassword('password123');
+        try {
+            const response = await api.post('/auth/login', { email: testEmail, password: 'password123' });
+            localStorage.setItem('token', response.data.token);
+            localStorage.setItem('user', JSON.stringify(response.data.user));
+            router.push('/dashboard');
+        } catch (err: any) {
+            setError(err.response?.data?.message || 'Failed to login');
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
         <div className="min-h-screen flex items-center justify-center bg-background relative overflow-hidden">
             {/* Decorative blobs */}
@@ -103,11 +120,31 @@ export default function LoginPage() {
                     </button>
                 </form>
 
-                <p className="text-center text-sm text-muted-foreground mt-8">
+                {/* Quick Test Logins */}
+                <div className="mt-8 pt-6 border-t border-gray-100">
+                    <p className="text-xs font-bold text-gray-500 uppercase tracking-widest text-center mb-4">Quick Test Logins</p>
+                    <div className="grid grid-cols-2 gap-2">
+                        <button type="button" onClick={() => handleQuickLogin('admin@church.com')} className="text-xs py-2 bg-blue-50 text-blue-600 font-bold rounded-lg hover:bg-blue-100 transition-colors border border-blue-100 disabled:opacity-50" disabled={loading}>
+                            Admin
+                        </button>
+                        <button type="button" onClick={() => handleQuickLogin('pastor@church.com')} className="text-xs py-2 bg-emerald-50 text-emerald-600 font-bold rounded-lg hover:bg-emerald-100 transition-colors border border-emerald-100 disabled:opacity-50" disabled={loading}>
+                            Pastor
+                        </button>
+                        <button type="button" onClick={() => handleQuickLogin('secretary@church.com')} className="text-xs py-2 bg-purple-50 text-purple-600 font-bold rounded-lg hover:bg-purple-100 transition-colors border border-purple-100 disabled:opacity-50" disabled={loading}>
+                            Secretary
+                        </button>
+                        <button type="button" onClick={() => handleQuickLogin('finance@church.com')} className="text-xs py-2 bg-amber-50 text-amber-600 font-bold rounded-lg hover:bg-amber-100 transition-colors border border-amber-100 disabled:opacity-50" disabled={loading}>
+                            Finance
+                        </button>
+
+                    </div>
+                </div>
+
+                <p className="text-center text-sm text-gray-500 font-medium mt-8">
                     Don't have an account?{' '}
                     <button
                         onClick={() => router.push('/register')}
-                        className="text-primary hover:underline font-medium"
+                        className="text-primary hover:underline font-bold"
                     >
                         Register here
                     </button>
