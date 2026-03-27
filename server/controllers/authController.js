@@ -2,6 +2,16 @@ const User = require('../models/user');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
+/* 
+ * LOCAL TESTING USERS (SQLite Fallback `cms.db`):
+ * - admin@church.com (Admin)
+ * - pastor@church.com (Pastor/Leader)
+ * - secretary@church.com (Secretary/Clerk)
+ * - finance@church.com (Finance Officer)
+ * - viewer@church.com (Viewer)
+ * Default Password: password123 
+ */
+
 exports.register = async (req, res) => {
     try {
         const { name, email, password, role } = req.body;
