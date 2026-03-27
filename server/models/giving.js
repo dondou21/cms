@@ -3,11 +3,11 @@ const db = require('../config/db');
 const Giving = {
     create: async (givingData) => {
         const { member_id, amount, date, type } = givingData;
-        const [result] = await db.execute(
-            'INSERT INTO givings (member_id, amount, date, type) VALUES (?, ?, ?, ?)',
+        const [rows] = await db.execute(
+            'INSERT INTO givings (member_id, amount, date, type) VALUES ($1, $2, $3, $4) RETURNING id',
             [member_id, amount, date, type || 'Offering']
         );
-        return result.insertId;
+        return rows[0].id;
     },
 
     findAll: async (filters = {}) => {
@@ -19,10 +19,10 @@ const Giving = {
         const params = [];
 
         if (filters.startDate && filters.endDate) {
-            query += ' WHERE g.date BETWEEN ? AND ?';
+            query += ` WHERE g.date BETWEEN $${params.length + 1} AND $${params.length + 2}`;
             params.push(filters.startDate, filters.endDate);
         } else if (filters.memberId) {
-            query += ' WHERE g.member_id = ?';
+            query += ` WHERE g.member_id = $${params.length + 1}`;
             params.push(filters.memberId);
         }
 
@@ -34,7 +34,7 @@ const Giving = {
     getMonthlyReport: async () => {
         const [rows] = await db.execute(`
       SELECT 
-        DATE_FORMAT(date, '%Y-%m') as month, 
+        to_char(date, 'YYYY-MM') as month, 
         type, 
         SUM(amount) as total 
       FROM givings 
