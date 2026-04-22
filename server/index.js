@@ -8,7 +8,7 @@ const app = express();
 
 // Middleware
 app.use(express.json());
-app.use(cors());
+app.use(cors({ origin: '*' })); // Allow all origins since it's a local desktop web wrapper
 app.use(helmet());
 app.use(morgan('dev'));
 
