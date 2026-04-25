@@ -62,6 +62,7 @@ function startNextServer() {
         nextProcess = spawn(process.platform === 'win32' ? 'npx.cmd' : 'npx', ['next', 'dev', '--port', NEXT_PORT], {
             cwd: path.join(__dirname, '..'),
             stdio: 'inherit',
+            shell: true
         });
     } else {
         const serverJs = path.join(process.resourcesPath, 'next-standalone', 'server.js');

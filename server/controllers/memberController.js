@@ -5,6 +5,7 @@ exports.createMember = async (req, res) => {
         const memberId = await Member.create(req.body);
         res.status(201).json({ id: memberId, message: 'Member created successfully' });
     } catch (error) {
+        console.error('Create Member Error:', error);
         res.status(500).json({ message: 'Error creating member', error: error.message });
     }
 };
@@ -14,6 +15,7 @@ exports.getMembers = async (req, res) => {
         const members = await Member.findAll();
         res.json(members);
     } catch (error) {
+        console.error('Fetch Members Error:', error);
         res.status(500).json({ message: 'Error fetching members', error: error.message });
     }
 };

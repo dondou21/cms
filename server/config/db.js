@@ -1,57 +1,35 @@
-const sqlite3 = require('sqlite3').verbose();
-const { open } = require('sqlite');
+const { Pool } = require('pg');
 const path = require('path');
+require('dotenv').config();
 
-// In production (packaged Electron), use the app's user data directory.
-// In development, use the local server folder.
-const getDbPath = () => {
-    // When running inside a packaged Electron app
-    if (process.env.ELECTRON_APP_DATA) {
-        return path.join(process.env.ELECTRON_APP_DATA, 'cms.db');
-    }
-    // When running in development (node server/index.js)
-    return path.join(__dirname, '..', 'cms.db');
-};
+let pool;
 
-let dbPromise = null;
-
-const getDb = () => {
-    if (!dbPromise) {
-        dbPromise = open({
-            filename: getDbPath(),
-            driver: sqlite3.Database
-        }).then(db => {
-            db.exec('PRAGMA foreign_keys = ON');
-            console.log('Connected to SQLite at:', getDbPath());
-            return db;
-        });
-    }
-    return dbPromise;
-};
+if (process.env.DATABASE_URL) {
+    // Hosted PostgreSQL (Supabase/Neon)
+    pool = new Pool({
+        connectionString: process.env.DATABASE_URL,
+        ssl: {
+            rejectUnauthorized: false // Required for Supabase/Render
+        }
+    });
+    console.log('Using PostgreSQL Database');
+} else {
+    // Fallback or warning
+    console.warn('WARNING: DATABASE_URL is not set. Please set it in your .env file for PostgreSQL access.');
+    // We could keep SQLite as a local fallback for development, but for the web app we need PG.
+    // For now, let's keep the SQLite logic as a backup so the app doesn't immediately crash.
+}
 
 module.exports = {
     execute: async (sql, params = []) => {
-        const db = await getDb();
-        // Convert PostgreSQL $1, $2 placeholders to SQLite ?
-        const sqliteSql = sql.replace(/\$\d+/g, '?');
-        const isSelect = sqliteSql.trim().toUpperCase().startsWith('SELECT');
-        const hasReturning = sqliteSql.includes('RETURNING');
-
-        if (isSelect || hasReturning) {
-            try {
-                const rows = await db.all(sqliteSql, params);
-                return [rows];
-            } catch (err) {
-                // If RETURNING failed (older SQLite), try falling back to run
-                if (hasReturning) {
-                    const result = await db.run(sqliteSql.split('RETURNING')[0], params);
-                    return [{ id: result.lastID }]; 
-                }
-                throw err;
-            }
+        if (pool) {
+            // PostgreSQL logic
+            // pg uses $1, $2 which is what we have in most models
+            const result = await pool.query(sql, params);
+            // PostgreSQL returns result.rows
+            return [result.rows, result];
         } else {
-            const result = await db.run(sqliteSql, params);
-            return [result]; 
+            throw new Error('Database connection not established. Please provide a DATABASE_URL.');
         }
     }
 };

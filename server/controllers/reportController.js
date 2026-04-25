@@ -3,11 +3,11 @@ const db = require('../config/db');
 exports.getDashboardSummary = async (req, res) => {
     try {
         const [[{ total_members }]] = await db.execute('SELECT COUNT(*) as total_members FROM members');
-        const [[{ active_members }]] = await db.execute('SELECT COUNT(*) as active_members FROM members WHERE status = "active"');
-        const [[{ monthly_giving }]] = await db.execute("SELECT SUM(amount) as monthly_giving FROM givings WHERE strftime('%m', date) = strftime('%m', 'now') AND strftime('%Y', date) = strftime('%Y', 'now')");
-        const [attendance_summary] = await db.execute('SELECT status, COUNT(*) as count FROM attendance JOIN events ON attendance.event_id = events.id WHERE events.date = (SELECT MAX(date) FROM events) GROUP BY status');
+        const [[{ active_members }]] = await db.execute("SELECT COUNT(*) as active_members FROM members WHERE status = 'active'");
+        const [[{ monthly_giving }]] = await db.execute("SELECT SUM(amount) as monthly_giving FROM givings WHERE EXTRACT(MONTH FROM date) = EXTRACT(MONTH FROM CURRENT_DATE) AND EXTRACT(YEAR FROM date) = EXTRACT(YEAR FROM CURRENT_DATE)");
+        const [attendance_summary] = await db.execute("SELECT status, COUNT(*) as count FROM attendance JOIN events ON attendance.event_id = events.id WHERE events.date = (SELECT MAX(date) FROM events) GROUP BY status");
         
-        const [upcoming_events] = await db.execute("SELECT * FROM events WHERE date >= date('now') ORDER BY date ASC LIMIT 2");
+        const [upcoming_events] = await db.execute("SELECT * FROM events WHERE date >= CURRENT_DATE ORDER BY date ASC LIMIT 2");
         const [recent_members] = await db.execute("SELECT first_name, last_name, created_at as time, 'joined' as type FROM members ORDER BY created_at DESC LIMIT 3");
         const [recent_givings] = await db.execute("SELECT m.first_name, m.last_name, g.amount, g.date as time, 'donated' as type FROM givings g JOIN members m ON g.member_id = m.id ORDER BY g.date DESC LIMIT 3");
 

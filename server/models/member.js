@@ -3,11 +3,11 @@ const db = require('../config/db');
 const Member = {
     create: async (memberData) => {
         const { first_name, last_name, email, phone, address, status, department_id } = memberData;
-        const [result] = await db.execute(
-            'INSERT INTO members (first_name, last_name, email, phone, address, status, department_id) VALUES ($1, $2, $3, $4, $5, $6, $7)',
-            [first_name, last_name, email, phone, address, status || 'active', department_id]
+        const [rows] = await db.execute(
+            'INSERT INTO members (first_name, last_name, email, phone, address, status, department_id) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id',
+            [first_name, last_name, email, phone, address, status || 'active', department_id || null]
         );
-        return result.lastID;
+        return rows[0].id;
     },
 
     findAll: async () => {

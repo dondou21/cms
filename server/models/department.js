@@ -3,11 +3,11 @@ const db = require('../config/db');
 const Department = {
     create: async (deptData) => {
         const { name, description } = deptData;
-        const [result] = await db.execute(
-            'INSERT INTO departments (name, description) VALUES ($1, $2)',
+        const [rows] = await db.execute(
+            'INSERT INTO departments (name, description) VALUES ($1, $2) RETURNING id',
             [name, description]
         );
-        return result.lastID;
+        return rows[0].id;
     },
 
     findAll: async () => {

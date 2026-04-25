@@ -3,16 +3,16 @@ const db = require('../config/db');
 const Giving = {
     create: async (givingData) => {
         const { member_id, amount, date, type } = givingData;
-        const [result] = await db.execute(
-            'INSERT INTO givings (member_id, amount, date, type) VALUES ($1, $2, $3, $4)',
+        const [rows] = await db.execute(
+            'INSERT INTO givings (member_id, amount, date, type) VALUES ($1, $2, $3, $4) RETURNING id',
             [member_id, amount, date, type || 'Offering']
         );
-        return result.lastID;
+        return rows[0].id;
     },
 
     findAll: async (filters = {}) => {
         let query = `
-      SELECT g.*, (m.first_name || ' ' || m.last_name) as member_name 
+      SELECT g.*, CONCAT(m.first_name, ' ', m.last_name) as member_name 
       FROM givings g 
       LEFT JOIN members m ON g.member_id = m.id
     `;
@@ -34,7 +34,7 @@ const Giving = {
     getMonthlyReport: async () => {
         const [rows] = await db.execute(`
       SELECT 
-        strftime('%Y-%m', date) as month, 
+        to_char(date, 'YYYY-MM') as month, 
         type, 
         SUM(amount) as total 
       FROM givings 

@@ -5,6 +5,7 @@ exports.recordGiving = async (req, res) => {
         const givingId = await Giving.create(req.body);
         res.status(201).json({ id: givingId, message: 'Contribution recorded successfully' });
     } catch (error) {
+        console.error('Record Giving Error:', error);
         res.status(500).json({ message: 'Error recording contribution', error: error.message });
     }
 };
