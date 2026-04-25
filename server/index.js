@@ -12,7 +12,7 @@ app.use(cors({ origin: '*' })); // Allow all origins since it's a local desktop 
 app.use(helmet());
 app.use(morgan('dev'));
 
-// Routes
+// API Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/members', require('./routes/members'));
 app.use('/api/departments', require('./routes/departments'));
