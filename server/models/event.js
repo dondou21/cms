@@ -3,11 +3,11 @@ const db = require('../config/db');
 const Event = {
     create: async (eventData) => {
         const { title, description, date, time, location } = eventData;
-        const [rows] = await db.execute(
-            'INSERT INTO events (title, description, date, time, location) VALUES ($1, $2, $3, $4, $5) RETURNING id',
+        const [result] = await db.execute(
+            'INSERT INTO events (title, description, date, time, location) VALUES ($1, $2, $3, $4, $5)',
             [title, description, date, time, location]
         );
-        return rows[0].id;
+        return result.lastID;
     },
 
     findAll: async () => {

@@ -20,6 +20,7 @@ exports.getDashboardSummary = async (req, res) => {
             recent_activity: [...recent_members, ...recent_givings].sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime())
         });
     } catch (error) {
+        console.error('Dashboard Summary Error:', error);
         res.status(500).json({ message: 'Error fetching dashboard summary', error: error.message });
     }
 };

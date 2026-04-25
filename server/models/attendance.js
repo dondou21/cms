@@ -3,16 +3,16 @@ const db = require('../config/db');
 const Attendance = {
     record: async (attendanceData) => {
         const { event_id, member_id, status } = attendanceData;
-        const [rows] = await db.execute(
-            'INSERT INTO attendance (event_id, member_id, status) VALUES ($1, $2, $3) ON CONFLICT (event_id, member_id) DO UPDATE SET status = EXCLUDED.status RETURNING id',
+        const [result] = await db.execute(
+            'INSERT INTO attendance (event_id, member_id, status) VALUES ($1, $2, $3) ON CONFLICT (event_id, member_id) DO UPDATE SET status = EXCLUDED.status',
             [event_id, member_id, status || 'Present']
         );
-        return rows[0].id;
+        return result.lastID;
     },
 
     findByEvent: async (eventId) => {
         const [rows] = await db.execute(`
-      SELECT a.*, CONCAT(m.first_name, ' ', m.last_name) as member_name 
+      SELECT a.*, (m.first_name || ' ' || m.last_name) as member_name 
       FROM attendance a 
       JOIN members m ON a.member_id = m.id 
       WHERE a.event_id = $1
