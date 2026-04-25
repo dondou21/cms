@@ -30,21 +30,6 @@ export default function LoginPage() {
         }
     };
 
-    const handleQuickLogin = async (testEmail: string) => {
-        setLoading(true);
-        setError('');
-        setEmail(testEmail);
-        setPassword('password123');
-        try {
-            const response = await api.post('/auth/login', { email: testEmail, password: 'password123' });
-            localStorage.setItem('token', response.data.token);
-            localStorage.setItem('user', JSON.stringify(response.data.user));
-            router.push('/dashboard');
-        } catch (err: any) {
-            setError(err.response?.data?.message || 'Failed to login');
-        } finally {
-            setLoading(false);
-        }
     };
 
     return (
@@ -72,20 +57,72 @@ export default function LoginPage() {
                     </div>
                 )}
 
-                <div className="space-y-3">
-                    <p className="text-center text-sm font-semibold text-muted-foreground mb-4">Select your role to continue</p>
-                    <button type="button" onClick={() => handleQuickLogin('admin@church.com')} className="w-full text-sm py-4 bg-blue-50 text-blue-600 font-bold rounded-xl hover:bg-blue-100 transition-all border border-blue-200 disabled:opacity-50 shadow-sm flex items-center justify-center gap-2" disabled={loading}>
-                        <LogIn className="w-4 h-4" /> System Admin
+                <form onSubmit={handleLogin} className="space-y-5">
+                    <div className="space-y-2">
+                        <label className="text-sm font-medium text-muted-foreground ml-1">Email Address</label>
+                        <div className="relative">
+                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                            <input
+                                type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                className="w-full bg-background/50 border border-border rounded-xl py-3 pl-11 pr-4 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+                                placeholder="admin@church.com"
+                                required
+                            />
+                        </div>
+                    </div>
+
+                    <div className="space-y-2">
+                        <label className="text-sm font-medium text-muted-foreground ml-1">Password</label>
+                        <div className="relative">
+                            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                            <input
+                                type="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                className="w-full bg-background/50 border border-border rounded-xl py-3 pl-11 pr-4 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+                                placeholder="••••••••"
+                                required
+                            />
+                        </div>
+                    </div>
+
+                    <button
+                        type="submit"
+                        disabled={loading}
+                        className={cn(
+                            "w-full bg-primary text-primary-foreground font-semibold py-3 rounded-xl flex items-center justify-center gap-2 hover:opacity-90 transition-opacity mt-8 shadow-lg shadow-primary/20",
+                            loading && "opacity-50 cursor-not-allowed"
+                        )}
+                    >
+                        {loading ? "Signing in..." : (
+                            <>
+                                <LogIn className="w-5 h-5" />
+                                Sign In
+                            </>
+                        )}
                     </button>
-                    <button type="button" onClick={() => handleQuickLogin('pastor@church.com')} className="w-full text-sm py-4 bg-emerald-50 text-emerald-600 font-bold rounded-xl hover:bg-emerald-100 transition-all border border-emerald-200 disabled:opacity-50 shadow-sm flex items-center justify-center gap-2" disabled={loading}>
-                        <LogIn className="w-4 h-4" /> Pastor / Leader
-                    </button>
-                    <button type="button" onClick={() => handleQuickLogin('secretary@church.com')} className="w-full text-sm py-4 bg-purple-50 text-purple-600 font-bold rounded-xl hover:bg-purple-100 transition-all border border-purple-200 disabled:opacity-50 shadow-sm flex items-center justify-center gap-2" disabled={loading}>
-                        <LogIn className="w-4 h-4" /> Secretary / Clerk
-                    </button>
-                    <button type="button" onClick={() => handleQuickLogin('finance@church.com')} className="w-full text-sm py-4 bg-amber-50 text-amber-600 font-bold rounded-xl hover:bg-amber-100 transition-all border border-amber-200 disabled:opacity-50 shadow-sm flex items-center justify-center gap-2" disabled={loading}>
-                        <LogIn className="w-4 h-4" /> Finance Officer
-                    </button>
+                </form>
+
+                {/* Predefined Local Testing Credentials */}
+                <div className="mt-8 pt-6 border-t border-gray-100">
+                    <p className="text-xs font-bold text-gray-500 uppercase tracking-widest text-center mb-4">Local Test Credentials</p>
+                    <div className="bg-gray-50 rounded-xl p-4 border border-gray-100 text-xs text-gray-600 font-mono space-y-2">
+                        <p className="text-center text-gray-400 mb-2 font-sans font-semibold border-b border-gray-200 pb-2">Password for all users: <span className="font-bold text-gray-800">password123</span></p>
+                        <div className="flex justify-between">
+                            <span>Admin:</span> <span className="font-bold text-blue-600">admin@church.com</span>
+                        </div>
+                        <div className="flex justify-between">
+                            <span>Pastor:</span> <span className="font-bold text-emerald-600">pastor@church.com</span>
+                        </div>
+                        <div className="flex justify-between">
+                            <span>Secretary:</span> <span className="font-bold text-purple-600">secretary@church.com</span>
+                        </div>
+                        <div className="flex justify-between">
+                            <span>Finance:</span> <span className="font-bold text-amber-600">finance@church.com</span>
+                        </div>
+                    </div>
                 </div>
 
                 <p className="text-center text-sm text-gray-500 font-medium mt-8">
