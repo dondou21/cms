@@ -1,29 +1,30 @@
-const sqlite3 = require('sqlite3').verbose();
-const { open } = require('sqlite');
 const fs = require('fs');
 const path = require('path');
 const bcrypt = require('bcryptjs');
+const db = require('./config/db');
 
-// Accept a custom DB path (used by Electron) or fall back to local
-const DB_PATH = process.env.ELECTRON_APP_DATA
-    ? path.join(process.env.ELECTRON_APP_DATA, 'cms.db')
-    : path.join(__dirname, 'cms.db');
-
-const SCHEMA_PATH = path.join(__dirname, 'config', 'schema.sql');
+// Paths
+const SCHEMA_SQLITE = path.join(__dirname, 'config', 'schema.sql');
+const SCHEMA_PG = path.join(__dirname, 'config', 'schema_pg.sql');
 
 async function initDB() {
-    console.log('--- Initializing SQLite Database ---');
-    console.log('DB location:', DB_PATH);
+    const isPG = !!process.env.DATABASE_URL;
+    console.log(`--- Initializing ${isPG ? 'PostgreSQL (Supabase)' : 'SQLite'} Database ---`);
 
     try {
-        const db = await open({ filename: DB_PATH, driver: sqlite3.Database });
-        await db.exec('PRAGMA foreign_keys = ON');
-
-        const schemaString = fs.readFileSync(SCHEMA_PATH, 'utf8');
+        const schemaPath = isPG ? SCHEMA_PG : SCHEMA_SQLITE;
+        const schemaString = fs.readFileSync(schemaPath, 'utf8');
+        
+        // Split schema into individual statements
+        // PostgreSQL handles multiple statements better in one go, but let's be safe
         const statements = schemaString.split(';').filter(s => s.trim());
-        for (const stmt of statements) await db.exec(stmt);
-        console.log('Schema OK.');
+        
+        for (const stmt of statements) {
+            await db.execute(stmt);
+        }
+        console.log('Schema created successfully.');
 
+        // Seed initial admin users
         const passwordHash = await bcrypt.hash('password123', 10);
         const users = [
             { name: 'System Admin',    email: 'admin@church.com',     role: 'Admin' },
@@ -34,26 +35,32 @@ async function initDB() {
         ];
 
         for (const user of users) {
-            const existing = await db.all('SELECT id FROM users WHERE email = ?', [user.email]);
+            // Check if user exists (PostgreSQL and SQLite both support this syntax)
+            const [existing] = await db.execute('SELECT id FROM users WHERE email = $1', [user.email]);
             if (existing.length === 0) {
-                await db.run(
-                    'INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)',
+                await db.execute(
+                    'INSERT INTO users (name, email, password, role) VALUES ($1, $2, $3, $4)',
                     [user.name, user.email, passwordHash, user.role]
                 );
+                console.log(`Created user: ${user.email}`);
             }
         }
 
-        console.log('--- Database Ready ---');
-        await db.close();
+        console.log('--- Database Initialization Complete ---');
     } catch (error) {
-        console.error('Database init failed:', error);
-        throw error; // Let the caller handle it
+        console.error('Database initialization failed:', error);
+        throw error;
     }
 }
 
-// Allow running directly: node server/init_db.js
 if (require.main === module) {
-    initDB().then(() => process.exit(0)).catch(() => process.exit(1));
+    initDB().then(() => {
+        console.log('Done.');
+        process.exit(0);
+    }).catch((err) => {
+        console.error(err);
+        process.exit(1);
+    });
 }
 
 module.exports = { initDB };
