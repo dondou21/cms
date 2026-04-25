@@ -103,26 +103,6 @@ export default function LoginPage() {
                     </button>
                 </form>
 
-                {/* Predefined Local Testing Credentials */}
-                <div className="mt-8 pt-6 border-t border-gray-100">
-                    <p className="text-xs font-bold text-gray-500 uppercase tracking-widest text-center mb-4">Local Test Credentials</p>
-                    <div className="bg-gray-50 rounded-xl p-4 border border-gray-100 text-xs text-gray-600 font-mono space-y-2">
-                        <p className="text-center text-gray-400 mb-2 font-sans font-semibold border-b border-gray-200 pb-2">Password for all users: <span className="font-bold text-gray-800">password123</span></p>
-                        <div className="flex justify-between">
-                            <span>Admin:</span> <span className="font-bold text-blue-600">admin@church.com</span>
-                        </div>
-                        <div className="flex justify-between">
-                            <span>Pastor:</span> <span className="font-bold text-emerald-600">pastor@church.com</span>
-                        </div>
-                        <div className="flex justify-between">
-                            <span>Secretary:</span> <span className="font-bold text-purple-600">secretary@church.com</span>
-                        </div>
-                        <div className="flex justify-between">
-                            <span>Finance:</span> <span className="font-bold text-amber-600">finance@church.com</span>
-                        </div>
-                    </div>
-                </div>
-
                 <p className="text-center text-sm text-gray-500 font-medium mt-8">
                     Don't have an account?{' '}
                     <button
