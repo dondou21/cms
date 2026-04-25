@@ -38,11 +38,20 @@ module.exports = {
         const hasReturning = sqliteSql.includes('RETURNING');
 
         if (isSelect || hasReturning) {
-            const rows = await db.all(sqliteSql, params);
-            return [rows];
+            try {
+                const rows = await db.all(sqliteSql, params);
+                return [rows];
+            } catch (err) {
+                // If RETURNING failed (older SQLite), try falling back to run
+                if (hasReturning) {
+                    const result = await db.run(sqliteSql.split('RETURNING')[0], params);
+                    return [{ id: result.lastID }]; 
+                }
+                throw err;
+            }
         } else {
-            await db.run(sqliteSql, params);
-            return [[]]; // Emulate empty rows for updates/deletes like pg does without returning
+            const result = await db.run(sqliteSql, params);
+            return [result]; 
         }
     }
 };

@@ -32,20 +32,24 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
     try {
         const { email, password } = req.body;
-
+        console.log('Login attempt for:', email);
         const user = await User.findByEmail(email);
         if (!user) {
+            console.log('User not found:', email);
             return res.status(400).json({ message: 'Invalid credentials' });
         }
 
+        console.log('User found, comparing password...');
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
+            console.log('Password mismatch for:', email);
             return res.status(400).json({ message: 'Invalid credentials' });
         }
 
+        console.log('Password match, signing token...');
         const token = jwt.sign(
             { id: user.id, role: user.role },
-            process.env.JWT_SECRET,
+            process.env.JWT_SECRET || 'fallback_secret',
             { expiresIn: '1d' }
         );
 
@@ -59,6 +63,7 @@ exports.login = async (req, res) => {
             }
         });
     } catch (error) {
+        console.error('Login Error:', error);
         res.status(500).json({ message: 'Error logging in', error: error.message });
     }
 };
