@@ -33,9 +33,7 @@ function waitForPort(port, retries = 30, delay = 500) {
 
 // ─── Start Express API Server ───────────────────────────────────────────────
 function startExpressServer() {
-    const serverPath = isDev
-        ? path.join(__dirname, '..', 'server', 'index.js')
-        : path.join(process.resourcesPath, 'server', 'index.js');
+    const serverPath = path.join(__dirname, '..', 'server', 'index.js');
 
     // Tell the server where to store the database file
     const appDataPath = app.getPath('userData');
@@ -93,6 +91,7 @@ function createWindow() {
         webPreferences: {
             nodeIntegration: false,
             contextIsolation: true,
+            preload: path.join(__dirname, 'preload.js'),
         },
         // Show a loading screen while servers start up
         show: false,
@@ -112,7 +111,7 @@ function createWindow() {
 // ─── App Lifecycle ──────────────────────────────────────────────────────────
 app.whenReady().then(async () => {
     // Initialize DB on first run
-    const { initDB } = require(isDev ? '../server/init_db.js' : path.join(process.resourcesPath, 'server', 'init_db.js'));
+    const { initDB } = require('../server/init_db.js');
     const dbFile = path.join(app.getPath('userData'), 'cms.db');
 
     if (!fs.existsSync(dbFile)) {

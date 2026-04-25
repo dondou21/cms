@@ -14,13 +14,21 @@
   },
   "dependencies": {
     "axios": "^1.13.6",
+    "bcryptjs": "^3.0.3",
     "clsx": "^2.1.1",
+    "cors": "^2.8.6",
     "dotenv": "^17.3.1",
+    "express": "^5.2.1",
     "framer-motion": "^12.36.0",
+    "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.3",
     "lucide-react": "^0.577.0",
-    "next": "16.1.6",
+    "morgan": "^1.10.1",
+    "next": "^16.2.4",
     "react": "19.2.3",
     "react-dom": "19.2.3",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^6.0.1",
     "tailwind-merge": "^3.5.0"
   },
   "devDependencies": {
@@ -29,8 +37,8 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "concurrently": "^9.1.2",
-    "electron": "^33.0.0",
-    "electron-builder": "^25.1.8",
+    "electron": "^41.2.2",
+    "electron-builder": "^26.8.1",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
     "tailwindcss": "^4",
@@ -44,6 +52,7 @@
     },
     "files": [
       "electron/**/*",
+      "server/**/*",
       "package.json"
     ],
     "extraResources": [
@@ -66,14 +75,6 @@
         "to": "next-standalone/public",
         "filter": [
           "**/*"
-        ]
-      },
-      {
-        "from": "server",
-        "to": "server",
-        "filter": [
-          "**/*",
-          "!node_modules/**"
         ]
       }
     ],

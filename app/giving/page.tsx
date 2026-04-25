@@ -12,7 +12,8 @@ import {
     Filter,
     ArrowUpRight,
     TrendingUp,
-    X
+    X,
+    Download
 } from 'lucide-react';
 import api from '../services/api';
 import { cn } from '../lib/utils';
@@ -71,6 +72,29 @@ export default function GivingPage() {
         }
     };
 
+    const handleExportCSV = () => {
+        if (givings.length === 0) return;
+        
+        const headers = ['Member Name', 'Amount', 'Type', 'Date'];
+        const csvRows = givings.map(g => [
+            `"${(g.member_name || 'Anonymous').replace(/"/g, '""')}"`,
+            `"${parseFloat(g.amount).toFixed(2)}"`,
+            `"${(g.type || '').replace(/"/g, '""')}"`,
+            `"${new Date(g.date).toLocaleDateString()}"`
+        ].join(','));
+        
+        const csvContent = [headers.join(','), ...csvRows].join('\n');
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.setAttribute('href', url);
+        link.setAttribute('download', 'church_giving_export.csv');
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
     const totalGiving = givings.reduce((acc, curr) => acc + parseFloat(curr.amount), 0);
     const types = ['Tithe', 'Offering', 'Thanksgiving', 'Donation', 'Other'];
 
@@ -81,13 +105,22 @@ export default function GivingPage() {
                     <h1 className="text-3xl font-bold gradient-text">Giving & Contributions</h1>
                     <p className="text-muted-foreground mt-1">Track and manage financial contributions securely.</p>
                 </div>
-                <button
-                    onClick={() => setShowModal(true)}
-                    className="bg-primary text-primary-foreground px-6 py-2.5 rounded-xl font-semibold flex items-center gap-2 hover:opacity-90 transition-opacity whitespace-nowrap shadow-lg shadow-primary/20"
-                >
-                    <Plus className="w-5 h-5" />
-                    Record Contribution
-                </button>
+                <div className="flex gap-3">
+                    <button
+                        onClick={handleExportCSV}
+                        className="bg-white/5 border border-white/10 text-foreground px-4 py-2.5 rounded-xl font-semibold flex items-center gap-2 hover:bg-white/10 transition-colors whitespace-nowrap"
+                    >
+                        <Download className="w-5 h-5" />
+                        Export CSV
+                    </button>
+                    <button
+                        onClick={() => setShowModal(true)}
+                        className="bg-primary text-primary-foreground px-6 py-2.5 rounded-xl font-semibold flex items-center gap-2 hover:opacity-90 transition-opacity whitespace-nowrap shadow-lg shadow-primary/20"
+                    >
+                        <Plus className="w-5 h-5" />
+                        Record Contribution
+                    </button>
+                </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

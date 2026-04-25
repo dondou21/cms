@@ -12,7 +12,8 @@ import {
     MoreVertical,
     Edit2,
     Trash2,
-    X
+    X,
+    Download
 } from 'lucide-react';
 import api from '../services/api';
 import { cn } from '../lib/utils';
@@ -59,6 +60,33 @@ export default function MembersPage() {
         }
     };
 
+    const handleExportCSV = () => {
+        if (members.length === 0) return;
+        
+        const headers = ['First Name', 'Last Name', 'Email', 'Phone', 'Address', 'Department', 'Status', 'Joined Date'];
+        const csvRows = members.map(m => [
+            `"${(m.first_name || '').replace(/"/g, '""')}"`,
+            `"${(m.last_name || '').replace(/"/g, '""')}"`,
+            `"${(m.email || '').replace(/"/g, '""')}"`,
+            `"${(m.phone || '').replace(/"/g, '""')}"`,
+            `"${(m.address || '').replace(/"/g, '""')}"`,
+            `"${(m.department_name || 'Unassigned').replace(/"/g, '""')}"`,
+            `"${(m.status || '').replace(/"/g, '""')}"`,
+            `"${new Date(m.created_at).toLocaleDateString()}"`
+        ].join(','));
+        
+        const csvContent = [headers.join(','), ...csvRows].join('\n');
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.setAttribute('href', url);
+        link.setAttribute('download', 'church_members_export.csv');
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
     const filteredMembers = members.filter(m =>
         `${m.first_name} ${m.last_name}`.toLowerCase().includes(search.toLowerCase()) ||
         m.email?.toLowerCase().includes(search.toLowerCase())
@@ -71,13 +99,22 @@ export default function MembersPage() {
                     <h1 className="text-3xl font-bold gradient-text">Members Directory</h1>
                     <p className="text-muted-foreground mt-1">Manage and organize your church members.</p>
                 </div>
-                <button
-                    onClick={() => setShowModal(true)}
-                    className="bg-primary text-primary-foreground px-6 py-2.5 rounded-xl font-semibold flex items-center gap-2 hover:opacity-90 transition-opacity whitespace-nowrap shadow-lg shadow-primary/20"
-                >
-                    <Plus className="w-5 h-5" />
-                    Add New Member
-                </button>
+                <div className="flex gap-3">
+                    <button
+                        onClick={handleExportCSV}
+                        className="bg-white/5 border border-white/10 text-foreground px-4 py-2.5 rounded-xl font-semibold flex items-center gap-2 hover:bg-white/10 transition-colors whitespace-nowrap"
+                    >
+                        <Download className="w-5 h-5" />
+                        Export CSV
+                    </button>
+                    <button
+                        onClick={() => setShowModal(true)}
+                        className="bg-primary text-primary-foreground px-6 py-2.5 rounded-xl font-semibold flex items-center gap-2 hover:opacity-90 transition-opacity whitespace-nowrap shadow-lg shadow-primary/20"
+                    >
+                        <Plus className="w-5 h-5" />
+                        Add New Member
+                    </button>
+                </div>
             </div>
 
             <div className="flex items-center gap-4 bg-white/5 border border-white/5 p-2 rounded-2xl w-full max-w-md">

@@ -72,72 +72,20 @@ export default function LoginPage() {
                     </div>
                 )}
 
-                <form onSubmit={handleLogin} className="space-y-5">
-                    <div className="space-y-2">
-                        <label className="text-sm font-medium text-muted-foreground ml-1">Email Address</label>
-                        <div className="relative">
-                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                            <input
-                                type="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                className="w-full bg-background/50 border border-border rounded-xl py-3 pl-11 pr-4 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
-                                placeholder="pastor@church.com"
-                                required
-                            />
-                        </div>
-                    </div>
-
-                    <div className="space-y-2">
-                        <label className="text-sm font-medium text-muted-foreground ml-1">Password</label>
-                        <div className="relative">
-                            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                            <input
-                                type="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                className="w-full bg-background/50 border border-border rounded-xl py-3 pl-11 pr-4 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
-                                placeholder="••••••••"
-                                required
-                            />
-                        </div>
-                    </div>
-
-                    <button
-                        type="submit"
-                        disabled={loading}
-                        className={cn(
-                            "w-full bg-primary text-primary-foreground font-semibold py-3 rounded-xl flex items-center justify-center gap-2 hover:opacity-90 transition-opacity mt-8 shadow-lg shadow-primary/20",
-                            loading && "opacity-50 cursor-not-allowed"
-                        )}
-                    >
-                        {loading ? "Signing in..." : (
-                            <>
-                                <LogIn className="w-5 h-5" />
-                                Sign In
-                            </>
-                        )}
+                <div className="space-y-3">
+                    <p className="text-center text-sm font-semibold text-muted-foreground mb-4">Select your role to continue</p>
+                    <button type="button" onClick={() => handleQuickLogin('admin@church.com')} className="w-full text-sm py-4 bg-blue-50 text-blue-600 font-bold rounded-xl hover:bg-blue-100 transition-all border border-blue-200 disabled:opacity-50 shadow-sm flex items-center justify-center gap-2" disabled={loading}>
+                        <LogIn className="w-4 h-4" /> System Admin
                     </button>
-                </form>
-
-                {/* Quick Test Logins */}
-                <div className="mt-8 pt-6 border-t border-gray-100">
-                    <p className="text-xs font-bold text-gray-500 uppercase tracking-widest text-center mb-4">Quick Test Logins</p>
-                    <div className="grid grid-cols-2 gap-2">
-                        <button type="button" onClick={() => handleQuickLogin('admin@church.com')} className="text-xs py-2 bg-blue-50 text-blue-600 font-bold rounded-lg hover:bg-blue-100 transition-colors border border-blue-100 disabled:opacity-50" disabled={loading}>
-                            Admin
-                        </button>
-                        <button type="button" onClick={() => handleQuickLogin('pastor@church.com')} className="text-xs py-2 bg-emerald-50 text-emerald-600 font-bold rounded-lg hover:bg-emerald-100 transition-colors border border-emerald-100 disabled:opacity-50" disabled={loading}>
-                            Pastor
-                        </button>
-                        <button type="button" onClick={() => handleQuickLogin('secretary@church.com')} className="text-xs py-2 bg-purple-50 text-purple-600 font-bold rounded-lg hover:bg-purple-100 transition-colors border border-purple-100 disabled:opacity-50" disabled={loading}>
-                            Secretary
-                        </button>
-                        <button type="button" onClick={() => handleQuickLogin('finance@church.com')} className="text-xs py-2 bg-amber-50 text-amber-600 font-bold rounded-lg hover:bg-amber-100 transition-colors border border-amber-100 disabled:opacity-50" disabled={loading}>
-                            Finance
-                        </button>
-
-                    </div>
+                    <button type="button" onClick={() => handleQuickLogin('pastor@church.com')} className="w-full text-sm py-4 bg-emerald-50 text-emerald-600 font-bold rounded-xl hover:bg-emerald-100 transition-all border border-emerald-200 disabled:opacity-50 shadow-sm flex items-center justify-center gap-2" disabled={loading}>
+                        <LogIn className="w-4 h-4" /> Pastor / Leader
+                    </button>
+                    <button type="button" onClick={() => handleQuickLogin('secretary@church.com')} className="w-full text-sm py-4 bg-purple-50 text-purple-600 font-bold rounded-xl hover:bg-purple-100 transition-all border border-purple-200 disabled:opacity-50 shadow-sm flex items-center justify-center gap-2" disabled={loading}>
+                        <LogIn className="w-4 h-4" /> Secretary / Clerk
+                    </button>
+                    <button type="button" onClick={() => handleQuickLogin('finance@church.com')} className="w-full text-sm py-4 bg-amber-50 text-amber-600 font-bold rounded-xl hover:bg-amber-100 transition-all border border-amber-200 disabled:opacity-50 shadow-sm flex items-center justify-center gap-2" disabled={loading}>
+                        <LogIn className="w-4 h-4" /> Finance Officer
+                    </button>
                 </div>
 
                 <p className="text-center text-sm text-gray-500 font-medium mt-8">
