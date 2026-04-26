@@ -82,3 +82,26 @@ CREATE TABLE IF NOT EXISTS attendance (
     CONSTRAINT fk_member_att FOREIGN KEY (member_id) REFERENCES members(id) ON DELETE CASCADE,
     UNIQUE (event_id, member_id)
 );
+
+-- Service Reports (Fiche de Rapport)
+CREATE TABLE IF NOT EXISTS service_reports (
+    id                 SERIAL PRIMARY KEY,
+    date               DATE NOT NULL,
+    programme          VARCHAR(255),
+    organisateur       VARCHAR(255),
+    departement        VARCHAR(255) DEFAULT 'SECRETARIAT',
+    -- Attendance Stats
+    adults_men         INTEGER DEFAULT 0,
+    adults_women       INTEGER DEFAULT 0,
+    juniors_boys       INTEGER DEFAULT 0,
+    juniors_girls      INTEGER DEFAULT 0,
+    -- Integration Stats
+    visitors_total     INTEGER DEFAULT 0,
+    visitors_joining   INTEGER DEFAULT 0,
+    salvation_total    INTEGER DEFAULT 0,
+    salvation_joining  INTEGER DEFAULT 0,
+    -- Remarks
+    problems           TEXT,
+    general_remarks    TEXT,
+    created_at         TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

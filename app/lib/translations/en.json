@@ -36,5 +36,31 @@
     "active_members": "Active Members",
     "monthly_giving": "Monthly Giving",
     "upcoming_events": "Upcoming Events"
+  },
+  "reports": {
+    "service_report": "Service Report",
+    "attendance_stats": "Attendance Statistics",
+    "integration": "Integration",
+    "description": "Description",
+    "nbr": "Nbr",
+    "progression_prev": "Progression / Prev. Service",
+    "progression_avg": "Progression / Month Avg",
+    "adults": "Adults",
+    "juniors": "Juniors",
+    "men": "Men",
+    "women": "Women",
+    "boys": "Boys",
+    "girls": "Girls",
+    "total_adults": "Total Adults",
+    "total_juniors": "Total Juniors",
+    "total_souls": "Total Souls",
+    "visitors": "Visitors",
+    "visitors_total": "Total Visitors",
+    "visitors_joining": "Visitors wanting to join the ICC family",
+    "salvation_call": "Salvation Call",
+    "salvation_total": "Total Salvation Calls",
+    "salvation_joining": "Salvation calls wanting to join the ICC family",
+    "problems": "Problems encountered (If Applicable)",
+    "general_remarks": "General Remarks"
   }
 }

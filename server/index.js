@@ -20,6 +20,7 @@ app.use('/api/givings', require('./routes/givings'));
 app.use('/api/attendance', require('./routes/attendance'));
 app.use('/api/events', require('./routes/events'));
 app.use('/api/reports', require('./routes/reports'));
+app.use('/api/service-reports', require('./routes/serviceReports'));
 
 app.get('/', (req, res) => {
     res.json({ message: 'Welcome to Church Management System API' });

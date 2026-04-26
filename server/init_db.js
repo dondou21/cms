@@ -16,14 +16,14 @@ async function initDB() {
         const schemaString = fs.readFileSync(schemaPath, 'utf8');
 
         // For this adjustment, we drop existing tables to ensure new schema is applied
-        if (isPG) {
+        /* if (isPG) {
             await db.execute('DROP TABLE IF EXISTS attendance CASCADE');
             await db.execute('DROP TABLE IF EXISTS givings CASCADE');
             await db.execute('DROP TABLE IF EXISTS members CASCADE');
             await db.execute('DROP TABLE IF EXISTS events CASCADE');
             await db.execute('DROP TABLE IF EXISTS departments CASCADE');
             await db.execute('DROP TABLE IF EXISTS users CASCADE');
-        }
+        } */
 
         const statements = schemaString.split(';').filter(s => s.trim());
         
