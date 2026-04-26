@@ -15,9 +15,11 @@ import {
     Calendar as CalendarIcon
 } from 'lucide-react';
 import api from '../services/api';
+import { useLanguage } from '../lib/i18n';
 import { cn } from '../lib/utils';
 
 export default function EventsPage() {
+    const { t } = useLanguage();
     const [events, setEvents] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);

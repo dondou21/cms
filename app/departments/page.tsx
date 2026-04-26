@@ -13,9 +13,11 @@ import {
     Info
 } from 'lucide-react';
 import api from '../services/api';
+import { useLanguage } from '../lib/i18n';
 import { cn } from '../lib/utils';
 
 export default function DepartmentsPage() {
+    const { t } = useLanguage();
     const [departments, setDepartments] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);

@@ -35,5 +35,19 @@ If you want to use an external tool like **DBeaver** or **TablePlus**:
 *   **User**: `postgres.your_project_id`
 *   **Password**: [Your Database Password]
 
+## 5. Updating Schema (New Integration Fields)
+If you see errors when saving new visitors, you may need to add the missing columns to the `members` table. Run this in the **SQL Editor**:
+
+```sql
+ALTER TABLE members 
+ADD COLUMN IF NOT EXISTS referral_source TEXT,
+ADD COLUMN IF NOT EXISTS desires_contact_leader BOOLEAN DEFAULT FALSE,
+ADD COLUMN IF NOT EXISTS desires_impact_group BOOLEAN DEFAULT FALSE,
+ADD COLUMN IF NOT EXISTS desires_house_church BOOLEAN DEFAULT FALSE,
+ADD COLUMN IF NOT EXISTS desires_formation_001 BOOLEAN DEFAULT FALSE,
+ADD COLUMN IF NOT EXISTS info_request_mui BOOLEAN DEFAULT FALSE,
+ADD COLUMN IF NOT EXISTS info_request_events BOOLEAN DEFAULT FALSE;
+```
+
 > [!CAUTION]
 > Be careful when editing data directly in the database, as it may bypass application logic or validation rules. Always create a backup before making bulk changes.

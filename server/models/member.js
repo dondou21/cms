@@ -4,22 +4,28 @@ const Member = {
     create: async (memberData) => {
         const { 
             civilite, first_name, last_name, email, phone, address, 
-            invited_by, age_range, marital_status, accepted_christ, 
+            invited_by, referral_source, age_range, marital_status, accepted_christ, 
             want_accompaniment, usual_church, want_to_join_icc, 
-            interests, info_on, join_gs, comments, department_id 
+            desires_contact_leader, desires_impact_group, desires_house_church, 
+            desires_formation_001, info_request_mui, info_request_events,
+            join_gs, comments, department_id, status 
         } = memberData;
         const [rows] = await db.execute(
             `INSERT INTO members (
                 civilite, first_name, last_name, email, phone, address, 
-                invited_by, age_range, marital_status, accepted_christ, 
+                invited_by, referral_source, age_range, marital_status, accepted_christ, 
                 want_accompaniment, usual_church, want_to_join_icc, 
-                interests, info_on, join_gs, comments, department_id
-            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18) RETURNING id`,
+                desires_contact_leader, desires_impact_group, desires_house_church, 
+                desires_formation_001, info_request_mui, info_request_events,
+                join_gs, comments, department_id, status
+            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24) RETURNING id`,
             [
                 civilite, first_name, last_name, email, phone, address, 
-                invited_by, age_range, marital_status, accepted_christ || false, 
+                invited_by, referral_source, age_range, marital_status, accepted_christ || false, 
                 want_accompaniment || false, usual_church || false, want_to_join_icc || false, 
-                interests, info_on, join_gs || false, comments, department_id || null
+                desires_contact_leader || false, desires_impact_group || false, desires_house_church || false,
+                desires_formation_001 || false, info_request_mui || false, info_request_events || false,
+                join_gs || false, comments, department_id || null, status || 'Active'
             ]
         );
         return rows[0].id;
@@ -47,23 +53,28 @@ const Member = {
     update: async (id, memberData) => {
         const { 
             civilite, first_name, last_name, email, phone, address, 
-            invited_by, age_range, marital_status, accepted_christ, 
+            invited_by, referral_source, age_range, marital_status, accepted_christ, 
             want_accompaniment, usual_church, want_to_join_icc, 
-            interests, info_on, join_gs, comments, status, department_id 
+            desires_contact_leader, desires_impact_group, desires_house_church, 
+            desires_formation_001, info_request_mui, info_request_events,
+            join_gs, comments, status, department_id 
         } = memberData;
         await db.execute(
             `UPDATE members SET 
                 civilite = $1, first_name = $2, last_name = $3, email = $4, phone = $5, 
-                address = $6, invited_by = $7, age_range = $8, marital_status = $9, 
-                accepted_christ = $10, want_accompaniment = $11, usual_church = $12, 
-                want_to_join_icc = $13, interests = $14, info_on = $15, join_gs = $16, 
-                comments = $17, status = $18, department_id = $19 
-            WHERE id = $20`,
+                address = $6, invited_by = $7, referral_source = $8, age_range = $9, marital_status = $10, 
+                accepted_christ = $11, want_accompaniment = $12, usual_church = $13, 
+                want_to_join_icc = $14, desires_contact_leader = $15, desires_impact_group = $16, 
+                desires_house_church = $17, desires_formation_001 = $18, info_request_mui = $19, 
+                info_request_events = $20, join_gs = $21, comments = $22, status = $23, department_id = $24 
+            WHERE id = $25`,
             [
                 civilite, first_name, last_name, email, phone, address, 
-                invited_by, age_range, marital_status, accepted_christ, 
+                invited_by, referral_source, age_range, marital_status, accepted_christ, 
                 want_accompaniment, usual_church, want_to_join_icc, 
-                interests, info_on, join_gs, comments, status, department_id, id
+                desires_contact_leader, desires_impact_group, desires_house_church, 
+                desires_formation_001, info_request_mui, info_request_events,
+                join_gs, comments, status, department_id, id
             ]
         );
     },

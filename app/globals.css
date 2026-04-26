@@ -81,3 +81,13 @@ body {
 .premium-shadow {
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
 }
+
+@media print {
+  .no-print { display: none !important; }
+  .print-only { display: block !important; }
+  body { background: white !important; color: black !important; }
+  @page { margin: 1cm; }
+  .print-break-after { page-break-after: always; }
+}
+
+.print-only { display: none; }

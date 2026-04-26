@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import DashboardLayout from '../../components/DashboardLayout';
 import { useLanguage } from '../../lib/i18n';
 import { cn } from '../../lib/utils';
-import { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, WidthType, AlignmentType } from 'docx';
+import { Document as DocxDocument, Packer, Paragraph, TextRun, Table, TableRow, TableCell, WidthType, AlignmentType } from 'docx';
 import { saveAs } from 'file-saver';
 
 interface ServiceItem {
@@ -65,7 +65,7 @@ export default function ServiceOrderPage() {
             ],
         }));
 
-        const doc = new Document({
+        const doc = new DocxDocument({
             sections: [{
                 properties: {},
                 children: [
@@ -284,15 +284,7 @@ export default function ServiceOrderPage() {
                 </div>
             </div>
 
-            <style jsx global>{`
-                @media print {
-                    .no-print { display: none !important; }
-                    .print-only { display: block !important; }
-                    body { background: white !important; }
-                    @page { margin: 1cm; }
-                }
-                .print-only { display: none; }
-            `}</style>
+
         </DashboardLayout>
     );
 }
