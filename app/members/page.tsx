@@ -94,7 +94,7 @@ export default function MembersPage() {
     const handleExportCSV = () => {
         if (members.length === 0) return;
         
-        const headers = ['Title', 'First Name', 'Last Name', 'Email', 'Phone', 'Address', 'Age Range', 'Status', 'Joined Date'];
+        const headers = ['Title', 'First Name', 'Last Name', 'Email', 'Phone', 'Address', 'Age Range', 'Marital Status', 'Invited By', 'Accepted Christ', 'Wants to Join', 'Status', 'Joined Date'];
         const csvRows = members.map(m => [
             `"${m.civilite || ''}"`,
             `"${(m.first_name || '').replace(/"/g, '""')}"`,
@@ -103,6 +103,10 @@ export default function MembersPage() {
             `"${(m.phone || '').replace(/"/g, '""')}"`,
             `"${(m.address || '').replace(/"/g, '""')}"`,
             `"${m.age_range || ''}"`,
+            `"${m.marital_status || ''}"`,
+            `"${m.invited_by || ''}"`,
+            `"${m.accepted_christ ? 'Yes' : 'No'}"`,
+            `"${m.want_to_join_icc ? 'Yes' : 'No'}"`,
             `"${(m.status || '').replace(/"/g, '""')}"`,
             `"${new Date(m.created_at).toLocaleDateString()}"`
         ].join(','));
