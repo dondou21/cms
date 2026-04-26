@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Users, UserPlus, Heart, MessageSquare, ArrowRight, CheckCircle2, Clock, X, ChevronRight, Share2, Info } from 'lucide-react';
 import api from '../services/api';
 import DashboardLayout from '../components/DashboardLayout';
