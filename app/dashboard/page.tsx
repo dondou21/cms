@@ -20,7 +20,10 @@ const item = {
     show: { y: 0, opacity: 1 }
 };
 
+import { useLanguage } from '../lib/i18n';
+
 export default function DashboardPage() {
+    const { t } = useLanguage();
     const [summary, setSummary] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [userName, setUserName] = useState('Admin');
@@ -56,16 +59,16 @@ export default function DashboardPage() {
     }
 
     const stats = [
-        { label: 'Total Members', value: summary?.total_members?.toLocaleString() || '0', icon: Users, color: 'text-blue-500', bg: 'bg-blue-50', change: '', changeColor: 'text-emerald-500', changeBg: 'bg-emerald-50' },
-        { label: 'Active Members', value: summary?.active_members?.toLocaleString() || '0', icon: UserCheck, color: 'text-emerald-500', bg: 'bg-emerald-50', change: '', changeColor: 'text-emerald-500', changeBg: 'bg-emerald-50' },
-        { label: 'Monthly Giving', value: `$${parseFloat(summary?.monthly_giving || 0).toLocaleString()}`, icon: CalendarDays, color: 'text-orange-500', bg: 'bg-orange-50', change: '', changeColor: 'text-rose-500', changeBg: 'bg-rose-50' },
+        { label: t('dashboard.total_members'), value: summary?.total_members?.toLocaleString() || '0', icon: Users, color: 'text-blue-500', bg: 'bg-blue-50', change: '', changeColor: 'text-emerald-500', changeBg: 'bg-emerald-50' },
+        { label: t('dashboard.active_members'), value: summary?.active_members?.toLocaleString() || '0', icon: UserCheck, color: 'text-emerald-500', bg: 'bg-emerald-50', change: '', changeColor: 'text-emerald-500', changeBg: 'bg-emerald-50' },
+        { label: t('dashboard.monthly_giving'), value: `$${parseFloat(summary?.monthly_giving || 0).toLocaleString()}`, icon: CalendarDays, color: 'text-orange-500', bg: 'bg-orange-50', change: '', changeColor: 'text-rose-500', changeBg: 'bg-rose-50' },
     ];
 
     return (
         <div className="space-y-8 pb-12">
             <div>
-                <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Dashboard Overview</h1>
-                <p className="text-gray-500 mt-1">Welcome back, {userName}. Here's what's happening in your community today.</p>
+                <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">{t('nav.dashboard')}</h1>
+                <p className="text-gray-500 mt-1">Welcome back, {userName}.</p>
             </div>
 
             <motion.div
