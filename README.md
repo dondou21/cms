@@ -1,4 +1,4 @@
-# Church Management System (CMS)
+# Church Management System (CMS) - Impact Center
 
 A premium, modern, and secure management platform for church administrations. Built with a decoupled architecture, this system supports both local desktop usage and remote web-based access.
 
@@ -8,6 +8,7 @@ A premium, modern, and secure management platform for church administrations. Bu
 - **Member Management**: Comprehensive tracking of members, ministries, and status.
 - **Financial Tracking**: Record tithes, offerings, and donations with CSV export capabilities.
 - **Event & Attendance**: Schedule church events and track attendee presence.
+- **Integration Dashboard**: Manage first-time visitors with a digital version of the physical "Fiche de Bienvenue."
 - **Secure Authentication**: Role-based access control (Admin, Pastor, Secretary, Finance) using JWT.
 - **Cloud Database**: Powered by Supabase (PostgreSQL) for remote access from any device.
 - **Desktop Ready**: Packaged with Electron for offline/local desktop usage.
@@ -59,23 +60,48 @@ To run the full development environment (Next.js + Express + Electron):
 npm run dev
 ```
 
+---
+
+## 🗄 Database Management
+
+Your data is hosted on **Supabase (PostgreSQL)**. To view, edit, or export your data directly:
+
+1.  **Login**: Go to [Supabase Dashboard](https://supabase.com/dashboard).
+2.  **Project**: Select your project (**Impact Center CMS**).
+3.  **Table Editor**: Click the "Table Editor" icon on the left sidebar to see all tables (`members`, `givings`, `events`, `service_reports`, etc.).
+4.  **SQL Editor**: You can run custom queries or migrations using the "SQL Editor".
+5.  **Export**: From the Table Editor, you can click "Export to CSV" to download any table.
+
+---
+
 ## 🌐 Web Deployment (Remote Access)
 
-### 1. Database (Supabase)
-- Create a free project on [Supabase](https://supabase.com).
-- Copy your PostgreSQL connection string into `DATABASE_URL`.
+Follow these steps to make your app accessible as a website.
 
-### 2. Backend (Render / Railway)
-- Connect your GitHub repo to [Render](https://render.com).
-- Create a **Web Service**.
-- Build Command: `npm install`
-- Start Command: `npm run server:start`
-- Add environment variables: `DATABASE_URL`, `JWT_SECRET`.
+### 1. Database Setup (Done)
+- Your database is already live on Supabase.
+- Ensure the `DATABASE_URL` in your production environment is set to the connection string provided in your `.env`.
 
-### 3. Frontend (Vercel)
-- Connect your GitHub repo to [Vercel](https://vercel.com).
-- Set `NEXT_PUBLIC_API_URL` to your **Render Backend URL**.
-- Deploy.
+### 2. Backend Deployment (API)
+- **Platform**: [Render.com](https://render.com) (Recommended).
+- **Steps**:
+    1.  Create a new **Web Service**.
+    2.  Connect your GitHub repository.
+    3.  **Root Directory**: `server`
+    4.  **Build Command**: `npm install`
+    5.  **Start Command**: `node index.js`
+    6.  **Environment Variables**: Add `DATABASE_URL`, `JWT_SECRET`, and `PORT`.
+
+### 3. Frontend Deployment (UI)
+- **Platform**: [Vercel](https://vercel.com).
+- **Steps**:
+    1.  Create a new project and import your repository.
+    2.  **Framework Preset**: Next.js.
+    3.  **Environment Variables**: 
+        - `NEXT_PUBLIC_API_URL`: Set this to your **Render Web Service URL** (e.g., `https://your-api.onrender.com/api`).
+    4.  Deploy.
+
+---
 
 ## 📦 Packaging for Desktop
 
@@ -85,5 +111,10 @@ npm run build
 ```
 The output will be in the `dist/` folder.
 
+## 🔒 Security
+- **JWT**: Secure token-based authentication.
+- **SSL**: All database connections are encrypted using SSL.
+- **Roles**: Admin, Pastor, Secretary, and Finance roles ensure users only see what they need.
+
 ## 📄 License
-MIT
+Private project for church administrative use.
