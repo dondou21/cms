@@ -2,28 +2,28 @@ const db = require('../config/db');
 
 const Giving = {
     create: async (givingData) => {
-        const { member_id, amount, date, type } = givingData;
+        const { event_id, donor_name, amount, date, type } = givingData;
         const [rows] = await db.execute(
-            'INSERT INTO givings (member_id, amount, date, type) VALUES ($1, $2, $3, $4) RETURNING id',
-            [member_id, amount, date, type || 'Offering']
+            'INSERT INTO givings (event_id, donor_name, amount, date, type) VALUES ($1, $2, $3, $4, $5) RETURNING id',
+            [event_id || null, donor_name || 'Anonymous', amount, date, type || 'Offering']
         );
         return rows[0].id;
     },
 
     findAll: async (filters = {}) => {
         let query = `
-      SELECT g.*, CONCAT(m.first_name, ' ', m.last_name) as member_name 
+      SELECT g.*, e.title as event_title 
       FROM givings g 
-      LEFT JOIN members m ON g.member_id = m.id
+      LEFT JOIN events e ON g.event_id = e.id
     `;
         const params = [];
 
         if (filters.startDate && filters.endDate) {
             query += ` WHERE g.date BETWEEN $${params.length + 1} AND $${params.length + 2}`;
             params.push(filters.startDate, filters.endDate);
-        } else if (filters.memberId) {
-            query += ` WHERE g.member_id = $${params.length + 1}`;
-            params.push(filters.memberId);
+        } else if (filters.eventId) {
+            query += ` WHERE g.event_id = $${params.length + 1}`;
+            params.push(filters.eventId);
         }
 
         query += ' ORDER BY g.date DESC';
