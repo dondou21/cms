@@ -5,11 +5,11 @@ const User = {
     create: async (userData) => {
         const { name, email, password, role } = userData;
         const hashedPassword = await bcrypt.hash(password, 10);
-        const [rows] = await db.execute(
-            'INSERT INTO users (name, email, password, role) VALUES ($1, $2, $3, $4) RETURNING id',
+        const [result] = await db.execute(
+            'INSERT INTO users (name, email, password, role) VALUES ($1, $2, $3, $4)',
             [name, email, hashedPassword, role || 'Viewer']
         );
-        return rows[0].id;
+        return result.lastID;
     },
 
     findByEmail: async (email) => {

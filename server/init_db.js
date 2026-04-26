@@ -1,61 +1,74 @@
-const sqlite3 = require('sqlite3').verbose();
-const { open } = require('sqlite');
 const fs = require('fs');
 const path = require('path');
 const bcrypt = require('bcryptjs');
+const db = require('./config/db');
+
+// Paths
+const SCHEMA_SQLITE = path.join(__dirname, 'config', 'schema.sql');
+const SCHEMA_PG = path.join(__dirname, 'config', 'schema_pg.sql');
 
 async function initDB() {
-    console.log('--- Initializing SQLite Database ---');
+    const isPG = !!process.env.DATABASE_URL;
+    console.log(`--- Initializing ${isPG ? 'PostgreSQL (Supabase)' : 'SQLite'} Database ---`);
+
     try {
-        const dbPath = path.join(__dirname, 'cms.db');
-        const db = await open({
-            filename: dbPath,
-            driver: sqlite3.Database
-        });
-
-        await db.exec('PRAGMA foreign_keys = ON');
-
-        console.log('Connected to SQLite.');
-
-        const schemaPath = path.join(__dirname, 'config', 'schema.sql');
+        const schemaPath = isPG ? SCHEMA_PG : SCHEMA_SQLITE;
         const schemaString = fs.readFileSync(schemaPath, 'utf8');
 
-        const statements = schemaString.split(';').filter(stmt => stmt.trim());
-        for (let stmt of statements) {
-            await db.exec(stmt);
-        }
-        console.log('Schema tables created/verified successfully.');
+        // For this adjustment, we drop existing tables to ensure new schema is applied
+        /* if (isPG) {
+            await db.execute('DROP TABLE IF EXISTS attendance CASCADE');
+            await db.execute('DROP TABLE IF EXISTS givings CASCADE');
+            await db.execute('DROP TABLE IF EXISTS members CASCADE');
+            await db.execute('DROP TABLE IF EXISTS events CASCADE');
+            await db.execute('DROP TABLE IF EXISTS departments CASCADE');
+            await db.execute('DROP TABLE IF EXISTS users CASCADE');
+        } */
 
+        const statements = schemaString.split(';').filter(s => s.trim());
+        
+        for (const stmt of statements) {
+            await db.execute(stmt);
+        }
+        console.log('Schema created successfully.');
+
+        // Seed initial admin users
         const passwordHash = await bcrypt.hash('password123', 10);
         const users = [
-            { name: 'System Admin', email: 'admin@church.com', password: passwordHash, role: 'Admin' },
-            { name: 'Pastor David', email: 'pastor@church.com', password: passwordHash, role: 'Pastor/Leader' },
-            { name: 'Secretary Sarah', email: 'secretary@church.com', password: passwordHash, role: 'Secretary/Clerk' },
-            { name: 'Finance Officer', email: 'finance@church.com', password: passwordHash, role: 'Finance Officer' },
-            { name: 'Church Member', email: 'viewer@church.com', password: passwordHash, role: 'Viewer' }
+            { name: 'System Admin',    email: 'admin@church.com',     role: 'Admin' },
+            { name: 'Pastor David',    email: 'pastor@church.com',    role: 'Pastor/Leader' },
+            { name: 'Secretary Sarah', email: 'secretary@church.com', role: 'Secretary/Clerk' },
+            { name: 'Finance Officer', email: 'finance@church.com',   role: 'Finance Officer' },
+            { name: 'Church Member',   email: 'viewer@church.com',    role: 'Viewer' }
         ];
 
-        console.log('Seeding users...');
         for (const user of users) {
-            const existing = await db.all('SELECT id FROM users WHERE email = ?', [user.email]);
+            // Check if user exists (PostgreSQL and SQLite both support this syntax)
+            const [existing] = await db.execute('SELECT id FROM users WHERE email = $1', [user.email]);
             if (existing.length === 0) {
-                await db.run(
-                    'INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)',
-                    [user.name, user.email, user.password, user.role]
+                await db.execute(
+                    'INSERT INTO users (name, email, password, role) VALUES ($1, $2, $3, $4)',
+                    [user.name, user.email, passwordHash, user.role]
                 );
-                console.log(` -> Created user: ${user.email}`);
-            } else {
-                console.log(` -> User ${user.email} already exists.`);
+                console.log(`Created user: ${user.email}`);
             }
         }
 
-        console.log('--- Initialization Complete! ---');
-        await db.close();
-        process.exit(0);
+        console.log('--- Database Initialization Complete ---');
     } catch (error) {
-        console.error('Database Initialization Failed:', error);
-        process.exit(1);
+        console.error('Database initialization failed:', error);
+        throw error;
     }
 }
 
-initDB();
+if (require.main === module) {
+    initDB().then(() => {
+        console.log('Done.');
+        process.exit(0);
+    }).catch((err) => {
+        console.error(err);
+        process.exit(1);
+    });
+}
+
+module.exports = { initDB };

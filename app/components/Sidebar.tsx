@@ -12,32 +12,38 @@ import {
     CalendarDays,
     BarChart3,
     LogOut,
-    Church
+    Church,
+    Heart
 } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { useEffect, useState } from 'react';
 
-const menuItems = [
-    { icon: LayoutDashboard, label: 'Dashboard', href: '/dashboard' },
-    { icon: Users, label: 'Members', href: '/members' },
-    { icon: Building2, label: 'Departments', href: '/departments' },
-    { icon: HandCoins, label: 'Giving', href: '/giving' },
-    { icon: CalendarCheck, label: 'Attendance', href: '/attendance' },
-    { icon: CalendarDays, label: 'Events', href: '/events' },
-    { icon: BarChart3, label: 'Settings', href: '/settings' },
-];
+
+
+import { useLanguage } from '../lib/i18n';
 
 export default function Sidebar() {
+    const { t } = useLanguage();
     const pathname = usePathname();
     const router = useRouter();
     const [userRole, setUserRole] = useState('');
+
+    const menuItems = [
+        { icon: LayoutDashboard, label: t('nav.dashboard'), href: '/dashboard' },
+        { icon: Users, label: t('nav.members'), href: '/members' },
+        { icon: Building2, label: t('nav.departments'), href: '/departments' },
+        { icon: HandCoins, label: t('nav.giving'), href: '/giving' },
+        { icon: CalendarCheck, label: t('nav.attendance'), href: '/attendance' },
+        { icon: CalendarDays, label: t('nav.events'), href: '/events' },
+        { icon: Heart, label: 'Integration', href: '/integration' },
+    ];
 
     useEffect(() => {
         const userStr = localStorage.getItem('user');
         if (userStr) {
             try {
                 const user = JSON.parse(userStr);
-                setUserRole(user.role || 'Admin PORTAL');
+                setUserRole(user.role || 'Admin');
             } catch (e) { }
         }
     }, []);
@@ -49,14 +55,14 @@ export default function Sidebar() {
     };
 
     return (
-        <div className="h-screen w-64 bg-white border-r border-gray-100 flex flex-col py-6 sticky top-0">
+        <div className="h-screen w-64 bg-white dark:bg-gray-900 border-r border-gray-100 dark:border-gray-800 flex flex-col py-6 sticky top-0 transition-colors">
             <div className="flex items-center gap-3 mb-10 px-6">
                 <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
                     <Church className="w-6 h-6 text-primary" />
                 </div>
                 <div className="flex flex-col">
-                    <span className="text-sm font-bold text-gray-900 leading-tight tracking-tight">Grace Church</span>
-                    <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-widest">{userRole}</span>
+                    <span className="text-sm font-bold text-gray-900 dark:text-gray-100 leading-tight tracking-tight">Impact Center</span>
+                    <span className="text-[10px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-widest">{userRole}</span>
                 </div>
             </div>
 
@@ -69,9 +75,9 @@ export default function Sidebar() {
                                 "flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium text-sm",
                                 isActive
                                     ? "bg-primary text-white shadow-md shadow-primary/20"
-                                    : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
+                                    : "text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100"
                             )}>
-                                <item.icon className={cn("w-5 h-5", isActive ? "text-white" : "text-gray-400")} />
+                                <item.icon className={cn("w-5 h-5", isActive ? "text-white" : "text-gray-400 dark:text-gray-500")} />
                                 <span>{item.label}</span>
                             </div>
                         </Link>
@@ -85,7 +91,7 @@ export default function Sidebar() {
                     className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-500 hover:bg-red-50 hover:text-red-600 transition-all font-medium text-sm"
                 >
                     <LogOut className="w-5 h-5" />
-                    <span>Logout</span>
+                    <span>{t('nav.logout')}</span>
                 </button>
             </div>
         </div>

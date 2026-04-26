@@ -12,18 +12,22 @@ import {
     Filter,
     ArrowUpRight,
     TrendingUp,
-    X
+    X,
+    Download
 } from 'lucide-react';
 import api from '../services/api';
+import { useLanguage } from '../lib/i18n';
 import { cn } from '../lib/utils';
 
 export default function GivingPage() {
+    const { t } = useLanguage();
     const [givings, setGivings] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
-    const [members, setMembers] = useState<any[]>([]);
+    const [events, setEvents] = useState<any[]>([]);
     const [formData, setFormData] = useState({
-        member_id: '',
+        event_id: '',
+        donor_name: '',
         amount: '',
         date: new Date().toISOString().split('T')[0],
         type: 'Offering'
@@ -40,18 +44,18 @@ export default function GivingPage() {
         }
     };
 
-    const fetchMembers = async () => {
+    const fetchEvents = async () => {
         try {
-            const response = await api.get('/members');
-            setMembers(response.data);
+            const response = await api.get('/events');
+            setEvents(response.data);
         } catch (err) {
-            console.error('Failed to fetch members', err);
+            console.error('Failed to fetch events', err);
         }
     };
 
     useEffect(() => {
         fetchGivings();
-        fetchMembers();
+        fetchEvents();
     }, []);
 
     const handleRecordGiving = async (e: React.FormEvent) => {
@@ -61,7 +65,8 @@ export default function GivingPage() {
             setShowModal(false);
             fetchGivings();
             setFormData({
-                member_id: '',
+                event_id: '',
+                donor_name: '',
                 amount: '',
                 date: new Date().toISOString().split('T')[0],
                 type: 'Offering'
@@ -71,6 +76,30 @@ export default function GivingPage() {
         }
     };
 
+    const handleExportCSV = () => {
+        if (givings.length === 0) return;
+        
+        const headers = ['Event', 'Donor', 'Amount', 'Type', 'Date'];
+        const csvRows = givings.map(g => [
+            `"${(g.event_title || 'General').replace(/"/g, '""')}"`,
+            `"${(g.donor_name || 'Anonymous').replace(/"/g, '""')}"`,
+            `"${parseFloat(g.amount).toFixed(2)}"`,
+            `"${(g.type || '').replace(/"/g, '""')}"`,
+            `"${new Date(g.date).toLocaleDateString()}"`
+        ].join(','));
+        
+        const csvContent = [headers.join(','), ...csvRows].join('\n');
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.setAttribute('href', url);
+        link.setAttribute('download', 'church_giving_export.csv');
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
     const totalGiving = givings.reduce((acc, curr) => acc + parseFloat(curr.amount), 0);
     const types = ['Tithe', 'Offering', 'Thanksgiving', 'Donation', 'Other'];
 
@@ -78,16 +107,25 @@ export default function GivingPage() {
         <div className="space-y-8">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold gradient-text">Giving & Contributions</h1>
+                    <h1 className="text-3xl font-bold gradient-text">{t('nav.giving')}</h1>
                     <p className="text-muted-foreground mt-1">Track and manage financial contributions securely.</p>
                 </div>
-                <button
-                    onClick={() => setShowModal(true)}
-                    className="bg-primary text-primary-foreground px-6 py-2.5 rounded-xl font-semibold flex items-center gap-2 hover:opacity-90 transition-opacity whitespace-nowrap shadow-lg shadow-primary/20"
-                >
-                    <Plus className="w-5 h-5" />
-                    Record Contribution
-                </button>
+                <div className="flex gap-3">
+                    <button
+                        onClick={handleExportCSV}
+                        className="bg-white/5 border border-white/10 text-foreground px-4 py-2.5 rounded-xl font-semibold flex items-center gap-2 hover:bg-white/10 transition-colors whitespace-nowrap"
+                    >
+                        <Download className="w-5 h-5" />
+                        Export CSV
+                    </button>
+                    <button
+                        onClick={() => setShowModal(true)}
+                        className="bg-primary text-primary-foreground px-6 py-2.5 rounded-xl font-semibold flex items-center gap-2 hover:opacity-90 transition-opacity whitespace-nowrap shadow-lg shadow-primary/20"
+                    >
+                        <Plus className="w-5 h-5" />
+                        Record Contribution
+                    </button>
+                </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -115,14 +153,14 @@ export default function GivingPage() {
                     </div>
                 </div>
                 <div className="overflow-x-auto">
-                    <table className="w-full text-left">
+                    <table className="w-full text-left text-sm">
                         <thead>
-                            <tr className="bg-white/5 text-muted-foreground text-xs uppercase tracking-wider font-bold">
-                                <th className="px-6 py-4">Member</th>
+                            <tr className="bg-white/5 text-muted-foreground text-[10px] uppercase tracking-wider font-bold">
+                                <th className="px-6 py-4">Event</th>
+                                <th className="px-6 py-4">Donor</th>
                                 <th className="px-6 py-4">Amount</th>
                                 <th className="px-6 py-4">Type</th>
                                 <th className="px-6 py-4">Date</th>
-                                <th className="px-6 py-4">Action</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-white/5">
@@ -144,26 +182,22 @@ export default function GivingPage() {
                                         key={g.id}
                                         className="hover:bg-white/[0.02] transition-colors"
                                     >
-                                        <td className="px-6 py-4">
-                                            <div className="font-medium">{g.member_name || 'Anonymous'}</div>
+                                        <td className="px-6 py-4 italic text-muted-foreground">
+                                            {g.event_title || 'General'}
                                         </td>
-                                        <td className="px-6 py-4">
-                                            <div className="font-bold text-amber-400 font-mono">${parseFloat(g.amount).toFixed(2)}</div>
+                                        <td className="px-6 py-4 font-medium">
+                                            {g.donor_name || 'Anonymous'}
+                                        </td>
+                                        <td className="px-6 py-4 font-bold text-amber-400 font-mono">
+                                            ${parseFloat(g.amount).toFixed(2)}
                                         </td>
                                         <td className="px-6 py-4">
                                             <span className="px-2.5 py-1 rounded-lg bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-wider">
                                                 {g.type}
                                             </span>
                                         </td>
-                                        <td className="px-6 py-4">
-                                            <div className="text-sm text-muted-foreground italic">
-                                                {new Date(g.date).toLocaleDateString(undefined, { dateStyle: 'medium' })}
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <button className="text-muted-foreground hover:text-foreground">
-                                                <ArrowUpRight className="w-5 h-5" />
-                                            </button>
+                                        <td className="px-6 py-4 text-xs text-muted-foreground">
+                                            {new Date(g.date).toLocaleDateString()}
                                         </td>
                                     </motion.tr>
                                 ))
@@ -207,26 +241,39 @@ export default function GivingPage() {
 
                             <form onSubmit={handleRecordGiving} className="space-y-6">
                                 <div className="space-y-1">
-                                    <label className="text-xs font-semibold text-muted-foreground ml-1">Member</label>
+                                    <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground ml-1">Associated Event</label>
                                     <div className="relative">
-                                        <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                                        <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                                         <select
-                                            required
-                                            value={formData.member_id}
-                                            onChange={(e) => setFormData({ ...formData, member_id: e.target.value })}
-                                            className="w-full bg-background/50 border border-white/10 rounded-xl pl-10 pr-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all appearance-none"
+                                            value={formData.event_id}
+                                            onChange={(e) => setFormData({ ...formData, event_id: e.target.value })}
+                                            className="w-full bg-background/50 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all appearance-none"
                                         >
-                                            <option value="" className="bg-background text-foreground">Select a member</option>
-                                            {members.map(m => (
-                                                <option key={m.id} value={m.id} className="bg-background text-foreground">{m.first_name} {m.last_name}</option>
+                                            <option value="" className="bg-background text-foreground text-sm">General / No Event</option>
+                                            {events.map(e => (
+                                                <option key={e.id} value={e.id} className="bg-background text-foreground text-sm">{e.title} ({new Date(e.date).toLocaleDateString()})</option>
                                             ))}
                                         </select>
                                     </div>
                                 </div>
 
+                                <div className="space-y-1">
+                                    <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground ml-1">Donor Name (Optional)</label>
+                                    <div className="relative">
+                                        <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                                        <input
+                                            type="text"
+                                            placeholder="Enter donor name if known"
+                                            value={formData.donor_name}
+                                            onChange={(e) => setFormData({ ...formData, donor_name: e.target.value })}
+                                            className="w-full bg-background/50 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+                                        />
+                                    </div>
+                                </div>
+
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-1">
-                                        <label className="text-xs font-semibold text-muted-foreground ml-1">Amount ($)</label>
+                                        <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground ml-1">Amount ($)</label>
                                         <div className="relative">
                                             <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                                             <input
@@ -235,12 +282,12 @@ export default function GivingPage() {
                                                 required
                                                 value={formData.amount}
                                                 onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
-                                                className="w-full bg-background/50 border border-white/10 rounded-xl pl-10 pr-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+                                                className="w-full bg-background/50 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
                                             />
                                         </div>
                                     </div>
                                     <div className="space-y-1">
-                                        <label className="text-xs font-semibold text-muted-foreground ml-1">Date</label>
+                                        <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground ml-1">Date</label>
                                         <div className="relative">
                                             <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                                             <input
@@ -248,14 +295,14 @@ export default function GivingPage() {
                                                 required
                                                 value={formData.date}
                                                 onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                                                className="w-full bg-background/50 border border-white/10 rounded-xl pl-10 pr-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+                                                className="w-full bg-background/50 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
                                             />
                                         </div>
                                     </div>
                                 </div>
 
                                 <div className="space-y-1">
-                                    <label className="text-xs font-semibold text-muted-foreground ml-1">Contribution Type</label>
+                                    <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground ml-1">Contribution Type</label>
                                     <div className="grid grid-cols-3 gap-2">
                                         {types.map(type => (
                                             <button
@@ -263,7 +310,7 @@ export default function GivingPage() {
                                                 type="button"
                                                 onClick={() => setFormData({ ...formData, type })}
                                                 className={cn(
-                                                    "py-2 rounded-lg text-xs font-bold transition-all border",
+                                                    "py-2 rounded-lg text-[10px] font-bold transition-all border uppercase tracking-wider",
                                                     formData.type === type
                                                         ? "bg-primary text-primary-foreground border-primary"
                                                         : "bg-white/5 text-muted-foreground border-white/5 hover:bg-white/10"
@@ -279,13 +326,13 @@ export default function GivingPage() {
                                     <button
                                         type="button"
                                         onClick={() => setShowModal(false)}
-                                        className="px-6 py-2.5 rounded-xl font-semibold border border-white/10 hover:bg-white/5 transition-colors"
+                                        className="px-6 py-2.5 rounded-xl font-semibold border border-white/10 hover:bg-white/5 transition-colors text-sm"
                                     >
                                         Cancel
                                     </button>
                                     <button
                                         type="submit"
-                                        className="bg-primary text-primary-foreground px-8 py-2.5 rounded-xl font-semibold hover:opacity-90 transition-opacity whitespace-nowrap"
+                                        className="bg-primary text-primary-foreground px-8 py-2.5 rounded-xl font-semibold hover:opacity-90 transition-opacity shadow-lg shadow-primary/20 text-sm"
                                     >
                                         Record Contribution
                                     </button>

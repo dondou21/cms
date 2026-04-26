@@ -8,11 +8,11 @@ const app = express();
 
 // Middleware
 app.use(express.json());
-app.use(cors());
+app.use(cors({ origin: '*' })); // Allow all origins since it's a local desktop web wrapper
 app.use(helmet());
 app.use(morgan('dev'));
 
-// Routes
+// API Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/members', require('./routes/members'));
 app.use('/api/departments', require('./routes/departments'));
@@ -20,6 +20,7 @@ app.use('/api/givings', require('./routes/givings'));
 app.use('/api/attendance', require('./routes/attendance'));
 app.use('/api/events', require('./routes/events'));
 app.use('/api/reports', require('./routes/reports'));
+app.use('/api/service-reports', require('./routes/serviceReports'));
 
 app.get('/', (req, res) => {
     res.json({ message: 'Welcome to Church Management System API' });
