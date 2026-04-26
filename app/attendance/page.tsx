@@ -382,7 +382,7 @@ export default function AttendancePage() {
                                 <span>{t('reports.integration')}</span>
                                 <History className="w-4 h-4" />
                             </div>
-                            <div className="overflow-x-auto">
+                            <div className="p-6 space-y-6">
                                 <table className="w-full text-left text-sm font-bold">
                                     <thead className="bg-gray-50/50 text-[10px] uppercase text-gray-500 border-b border-gray-100">
                                         <tr>
@@ -390,7 +390,6 @@ export default function AttendancePage() {
                                             <th className="px-6 py-4">{t('reports.description')}</th>
                                             <th className="px-6 py-4 text-center">{t('reports.nbr')}</th>
                                             <th className="px-6 py-4 text-center">{t('reports.progression_prev')}</th>
-                                            <th className="px-6 py-4 text-center">{t('reports.progression_avg')}</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-gray-100">
@@ -399,31 +398,62 @@ export default function AttendancePage() {
                                             <td className="px-6 py-4 uppercase text-xs">{t('reports.visitors_total')}</td>
                                             <td className="px-6 py-4"><input type="number" value={reportData.visitors_total} onChange={(e) => setReportData({...reportData, visitors_total: Number(e.target.value)})} className="w-20 mx-auto text-center bg-gray-50 border border-gray-200 rounded-lg py-1" /></td>
                                             <td className="px-6 py-4 text-center">{getProgression(reportData.visitors_total, prevReport?.visitors_total)?.val ?? '-'}</td>
-                                            <td className="px-6 py-4 text-center">-</td>
                                         </tr>
-                                        <tr>
-                                            <td className="px-6 py-4 text-gray-400">2</td>
-                                            <td className="px-6 py-4 uppercase text-xs">{t('reports.visitors_joining')}</td>
-                                            <td className="px-6 py-4"><input type="number" value={reportData.visitors_joining} onChange={(e) => setReportData({...reportData, visitors_joining: Number(e.target.value)})} className="w-20 mx-auto text-center bg-gray-50 border border-gray-200 rounded-lg py-1" /></td>
-                                            <td className="px-6 py-4 text-center">{getProgression(reportData.visitors_joining, prevReport?.visitors_joining)?.val ?? '-'}</td>
-                                            <td className="px-6 py-4 text-center">-</td>
-                                        </tr>
-                                        <tr>
-                                            <td className="px-6 py-4 text-gray-400">3</td>
-                                            <td className="px-6 py-4 uppercase text-xs">{t('reports.salvation_total')}</td>
-                                            <td className="px-6 py-4"><input type="number" value={reportData.salvation_total} onChange={(e) => setReportData({...reportData, salvation_total: Number(e.target.value)})} className="w-20 mx-auto text-center bg-gray-50 border border-gray-200 rounded-lg py-1" /></td>
-                                            <td className="px-6 py-4 text-center">{getProgression(reportData.salvation_total, prevReport?.salvation_total)?.val ?? '-'}</td>
-                                            <td className="px-6 py-4 text-center">-</td>
-                                        </tr>
-                                        <tr>
-                                            <td className="px-6 py-4 text-gray-400">4</td>
-                                            <td className="px-6 py-4 uppercase text-xs">{t('reports.salvation_joining')}</td>
-                                            <td className="px-6 py-4"><input type="number" value={reportData.salvation_joining} onChange={(e) => setReportData({...reportData, salvation_joining: Number(e.target.value)})} className="w-20 mx-auto text-center bg-gray-50 border border-gray-200 rounded-lg py-1" /></td>
-                                            <td className="px-6 py-4 text-center">{getProgression(reportData.salvation_joining, prevReport?.salvation_joining)?.val ?? '-'}</td>
-                                            <td className="px-6 py-4 text-center">-</td>
-                                        </tr>
+                                        {/* Add other integration rows if needed */}
                                     </tbody>
                                 </table>
+
+                                {/* Visitor Names Section */}
+                                <div className="space-y-4">
+                                    <h4 className="text-xs font-black uppercase tracking-widest text-primary">Visitor Details (Auto-Add to Members)</h4>
+                                    {(reportData as any).visitors?.map((v: any, index: number) => (
+                                        <div key={index} className="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-2xl relative">
+                                            <input 
+                                                placeholder="Full Name" 
+                                                className="bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl px-3 py-2 text-sm"
+                                                value={v.full_name}
+                                                onChange={(e) => {
+                                                    const newVisitors = [...(reportData as any).visitors];
+                                                    newVisitors[index].full_name = e.target.value;
+                                                    setReportData({...reportData, visitors: newVisitors} as any);
+                                                }}
+                                            />
+                                            <input 
+                                                placeholder="Phone" 
+                                                className="bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl px-3 py-2 text-sm"
+                                                value={v.phone}
+                                                onChange={(e) => {
+                                                    const newVisitors = [...(reportData as any).visitors];
+                                                    newVisitors[index].phone = e.target.value;
+                                                    setReportData({...reportData, visitors: newVisitors} as any);
+                                                }}
+                                            />
+                                            <label className="flex items-center gap-2 text-[10px] font-bold">
+                                                <input type="checkbox" checked={v.wants_to_join} onChange={(e) => {
+                                                    const newVisitors = [...(reportData as any).visitors];
+                                                    newVisitors[index].wants_to_join = e.target.checked;
+                                                    setReportData({...reportData, visitors: newVisitors} as any);
+                                                }} />
+                                                Wants to Join
+                                            </label>
+                                            <label className="flex items-center gap-2 text-[10px] font-bold">
+                                                <input type="checkbox" checked={v.is_convert} onChange={(e) => {
+                                                    const newVisitors = [...(reportData as any).visitors];
+                                                    newVisitors[index].is_convert = e.target.checked;
+                                                    setReportData({...reportData, visitors: newVisitors} as any);
+                                                }} />
+                                                New Convert
+                                            </label>
+                                        </div>
+                                    ))}
+                                    <button 
+                                        type="button"
+                                        onClick={() => setReportData({...reportData, visitors: [...((reportData as any).visitors || []), {full_name: '', phone: '', wants_to_join: false, is_convert: false}]} as any)}
+                                        className="text-xs font-bold text-primary hover:underline"
+                                    >
+                                        + Add Visitor Details
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -1,5 +1,22 @@
 const db = require('../config/db');
 
+exports.getIntegrationStats = async (req, res) => {
+    try {
+        const [visitors] = await db.execute('SELECT COUNT(*) as count FROM report_visitors WHERE created_at >= NOW() - INTERVAL \'30 days\'');
+        const [wantToJoin] = await db.execute('SELECT COUNT(*) as count FROM members WHERE status = \'Prospect\' AND want_to_join_icc = true');
+        const [converts] = await db.execute('SELECT COUNT(*) as count FROM report_visitors WHERE is_convert = true');
+        
+        res.json({
+            new_visitors: parseInt(visitors[0].count),
+            want_to_join: parseInt(wantToJoin[0].count),
+            new_converts: parseInt(converts[0].count),
+            pending_followup: parseInt(wantToJoin[0].count) // Simplified
+        });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
 exports.getDashboardSummary = async (req, res) => {
     try {
         const [[{ total_members }]] = await db.execute('SELECT COUNT(*) as total_members FROM members');

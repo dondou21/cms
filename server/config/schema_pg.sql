@@ -105,3 +105,13 @@ CREATE TABLE IF NOT EXISTS service_reports (
     general_remarks    TEXT,
     created_at         TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE IF NOT EXISTS report_visitors (
+    id                 SERIAL PRIMARY KEY,
+    report_id          INTEGER REFERENCES service_reports(id) ON DELETE CASCADE,
+    full_name          VARCHAR(255) NOT NULL,
+    phone              VARCHAR(50),
+    wants_to_join      BOOLEAN DEFAULT FALSE,
+    is_convert         BOOLEAN DEFAULT FALSE,
+    created_at         TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
