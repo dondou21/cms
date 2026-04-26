@@ -52,14 +52,14 @@ export default function DepartmentsPage() {
         <div className="space-y-8">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold gradient-text">Ministries & Departments</h1>
+                    <h1 className="text-3xl font-black text-foreground uppercase tracking-tight">{t('nav.departments')}</h1>
                     <p className="text-muted-foreground mt-1">Organize your church members into specialized groups.</p>
                 </div>
                 <button
                     onClick={() => setShowModal(true)}
-                    className="bg-primary text-primary-foreground px-6 py-2.5 rounded-xl font-semibold flex items-center gap-2 hover:opacity-90 transition-opacity whitespace-nowrap shadow-lg shadow-primary/20"
+                    className="bg-primary text-white px-6 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest flex items-center gap-2 hover:opacity-90 transition-opacity whitespace-nowrap shadow-xl shadow-primary/20"
                 >
-                    <Plus className="w-5 h-5" />
+                    <Plus className="w-4 h-4" />
                     Create Department
                 </button>
             </div>
@@ -67,7 +67,7 @@ export default function DepartmentsPage() {
             {loading ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {Array(6).fill(0).map((_, i) => (
-                        <div key={i} className="h-48 glass-card rounded-2xl animate-pulse" />
+                        <div key={i} className="h-48 bg-card rounded-2xl animate-pulse border border-border" />
                     ))}
                 </div>
             ) : (
@@ -77,29 +77,29 @@ export default function DepartmentsPage() {
                             key={dept.id}
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="glass-card p-6 rounded-2xl group hover:border-primary/50 transition-all cursor-pointer relative overflow-hidden"
+                            className="bg-card p-6 rounded-2xl group hover:border-primary transition-all cursor-pointer relative overflow-hidden border border-border shadow-sm"
                         >
                             <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-primary/5 rounded-full group-hover:scale-150 transition-transform duration-700" />
 
                             <div className="flex items-start justify-between mb-4">
-                                <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
+                                <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center border border-primary/20">
                                     <Building2 className="w-6 h-6 text-primary" />
                                 </div>
                                 <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <button className="p-1.5 hover:bg-white/10 rounded-lg text-muted-foreground">
+                                    <button className="p-1.5 hover:bg-muted rounded-lg text-muted-foreground">
                                         <Edit3 className="w-4 h-4" />
                                     </button>
                                 </div>
                             </div>
 
-                            <h3 className="text-xl font-bold mb-2">{dept.name}</h3>
-                            <p className="text-sm text-muted-foreground line-clamp-2 mb-6 h-10">
+                            <h3 className="text-xl font-black text-foreground uppercase tracking-tight mb-2">{dept.name}</h3>
+                            <p className="text-sm text-muted-foreground line-clamp-2 mb-6 h-10 font-medium">
                                 {dept.description || 'No description provided for this department.'}
                             </p>
 
-                            <div className="flex items-center justify-between pt-4 border-t border-white/5">
-                                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                                    <Users className="w-4 h-4" />
+                            <div className="flex items-center justify-between pt-4 border-t border-border">
+                                <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                                    <Users className="w-3.5 h-3.5" />
                                     <span>Members</span>
                                 </div>
                                 <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
@@ -110,7 +110,7 @@ export default function DepartmentsPage() {
             )}
 
             {/* Add Department Modal */}
-            <AnimatePresence>
+            <AnimatePresence mode="wait">
                 {showModal && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
                         <motion.div
@@ -118,19 +118,19 @@ export default function DepartmentsPage() {
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             onClick={() => setShowModal(false)}
-                            className="absolute inset-0 bg-background/80 backdrop-blur-sm"
+                            className="absolute inset-0 bg-background/80 backdrop-blur-md"
                         />
                         <motion.div
                             initial={{ opacity: 0, scale: 0.95, y: 20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                            className="w-full max-w-lg glass-card rounded-3xl p-8 relative z-10 shadow-2xl"
+                            className="w-full max-w-lg bg-card rounded-3xl p-8 relative z-10 shadow-2xl border border-border"
                         >
                             <div className="flex items-center justify-between mb-8">
-                                <h2 className="text-2xl font-bold gradient-text">New Department</h2>
+                                <h2 className="text-2xl font-black text-foreground uppercase tracking-tight">New Department</h2>
                                 <button
                                     onClick={() => setShowModal(false)}
-                                    className="p-2 hover:bg-white/5 rounded-full transition-colors"
+                                    className="p-2 hover:bg-muted rounded-full transition-colors text-foreground"
                                 >
                                     <X className="w-6 h-6" />
                                 </button>
@@ -138,24 +138,24 @@ export default function DepartmentsPage() {
 
                             <form onSubmit={handleAddDept} className="space-y-6">
                                 <div className="space-y-1">
-                                    <label className="text-xs font-semibold text-muted-foreground ml-1">Department Name</label>
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Department Name</label>
                                     <input
                                         type="text"
                                         required
                                         value={formData.name}
                                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                         placeholder="e.g. Worship Team, Ushering"
-                                        className="w-full bg-background/50 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+                                        className="w-full bg-muted border-transparent rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all font-bold text-foreground"
                                     />
                                 </div>
                                 <div className="space-y-1">
-                                    <label className="text-xs font-semibold text-muted-foreground ml-1">Description</label>
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Description</label>
                                     <textarea
                                         rows={4}
                                         value={formData.description}
                                         onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                                         placeholder="Describe the purpose of this ministry..."
-                                        className="w-full bg-background/50 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all resize-none"
+                                        className="w-full bg-muted border-transparent rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all resize-none font-bold text-foreground text-sm"
                                     />
                                 </div>
 
@@ -163,13 +163,13 @@ export default function DepartmentsPage() {
                                     <button
                                         type="button"
                                         onClick={() => setShowModal(false)}
-                                        className="px-6 py-2.5 rounded-xl font-semibold border border-white/10 hover:bg-white/5 transition-colors"
+                                        className="px-6 py-2.5 rounded-xl font-black uppercase tracking-widest text-[10px] border border-border hover:bg-muted transition-colors text-foreground"
                                     >
                                         Cancel
                                     </button>
                                     <button
                                         type="submit"
-                                        className="bg-primary text-primary-foreground px-8 py-2.5 rounded-xl font-semibold hover:opacity-90 transition-opacity"
+                                        className="bg-primary text-white px-8 py-2.5 rounded-xl font-black uppercase tracking-widest text-[10px] hover:opacity-90 transition-opacity shadow-xl shadow-primary/20"
                                     >
                                         Save Department
                                     </button>

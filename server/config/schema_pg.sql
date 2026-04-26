@@ -37,10 +37,14 @@ CREATE TABLE IF NOT EXISTS members (
     want_accompaniment BOOLEAN DEFAULT FALSE,
     usual_church       BOOLEAN DEFAULT FALSE,
     want_to_join_icc   BOOLEAN DEFAULT FALSE,
-    interests          TEXT,         -- Impact Group, House Church, etc.
-    info_on            TEXT,         -- MUI, Upcoming events
-    join_gs            BOOLEAN DEFAULT FALSE, -- Follow-up Group
-    comments           TEXT,
+    desires_contact_leader BOOLEAN DEFAULT FALSE,
+    desires_impact_group   BOOLEAN DEFAULT FALSE,
+    desires_house_church   BOOLEAN DEFAULT FALSE,
+    desires_formation_001  BOOLEAN DEFAULT FALSE,
+    info_request_mui       BOOLEAN DEFAULT FALSE,
+    info_request_events    BOOLEAN DEFAULT FALSE,
+    join_gs                BOOLEAN DEFAULT FALSE, -- Follow-up Group
+    comments               TEXT,
     status             VARCHAR(50) DEFAULT 'active',
     department_id      INTEGER,
     created_at         TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

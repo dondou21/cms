@@ -6,6 +6,7 @@
     "giving": "Giving",
     "events": "Events",
     "attendance": "Attendance",
+    "service_order": "Service Order",
     "logout": "Logout"
   },
   "members": {
@@ -62,5 +63,48 @@
     "salvation_joining": "Salvation calls wanting to join the ICC family",
     "problems": "Problems encountered (If Applicable)",
     "general_remarks": "General Remarks"
+  },
+  "integration": {
+    "title": "Integration Dashboard",
+    "description": "Manage the journey of new visitors.",
+    "new_visitor_btn": "New Visitor (Welcome Sheet)",
+    "stats": {
+      "new_visitors": "New Visitors (Month)",
+      "want_to_join": "Want to Join",
+      "new_converts": "New Converts",
+      "pending_followup": "Pending Follow-up"
+    },
+    "form": {
+      "spiritual_life": "Spiritual Life",
+      "accepted_christ": "Have you accepted Christ as Lord and Savior?",
+      "accompaniment": "Would you like to be accompanied?",
+      "usual_church": "Do you have a usual church?",
+      "want_to_join_icc": "Would you like to join ICC?",
+      "desires": "You wish to join ICC, do you desire:",
+      "contact_leader": "To be contacted by phone or appointment",
+      "impact_group": "Join an Impact Group",
+      "house_church": "Join a House Church",
+      "formation_001": "Be enrolled in Course 001",
+      "info_on": "Would you like to receive info on:",
+      "mui": "Impact Youth Ministry (MUI)",
+      "events": "Upcoming events",
+      "join_gs": "Would you like to join a Follow-up Group (GS)?",
+      "comments": "Comment / Special Need"
+    }
+  },
+  "service_order": {
+    "title": "Service Order",
+    "editor": "Service Order Editor",
+    "print_btn": "Print / PDF",
+    "date": "Service Date",
+    "location": "Location",
+    "first_cult": "1st Service",
+    "second_cult": "2nd Service",
+    "subject": "Subject",
+    "start": "Start",
+    "end": "End",
+    "duration": "Duration",
+    "intervenants": "Intervenants",
+    "add_line": "Add Line"
   }
 }

@@ -22,7 +22,17 @@ export const useLanguage = () => {
 };
 
 export const LanguageProvider = ({ children }: { children: React.ReactNode }) => {
-    const [language, setLanguage] = useState<Language>('fr'); // Default to French as per request
+    const [language, setLanguageState] = useState<Language>('fr');
+
+    useEffect(() => {
+        const savedLang = localStorage.getItem('language') as Language;
+        if (savedLang) setLanguageState(savedLang);
+    }, []);
+
+    const setLanguage = (lang: Language) => {
+        setLanguageState(lang);
+        localStorage.setItem('language', lang);
+    };
 
     const t = (key: string) => {
         const keys = key.split('.');

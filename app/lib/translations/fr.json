@@ -6,6 +6,7 @@
     "giving": "Dons",
     "events": "Événements",
     "attendance": "Présences",
+    "service_order": "Déroulé des Cultes",
     "logout": "Déconnexion"
   },
   "members": {
@@ -62,5 +63,48 @@
     "salvation_joining": "Appel au salut désireux de rejoindre la famille ICC",
     "problems": "Problème rencontré (Si Applicable)",
     "general_remarks": "Remarque Générale"
+  },
+  "integration": {
+    "title": "Tableau de Bord Intégration",
+    "description": "Gérer le parcours des nouveaux visiteurs.",
+    "new_visitor_btn": "Nouveau Visiteur (Fiche de Bienvenue)",
+    "stats": {
+      "new_visitors": "Nouveaux Visiteurs (Mois)",
+      "want_to_join": "Veulent Rejoindre",
+      "new_converts": "Nouveaux Convertis",
+      "pending_followup": "En attente de suivi"
+    },
+    "form": {
+      "spiritual_life": "Vie Spirituelle",
+      "accepted_christ": "Avez-vous accepté Christ comme Seigneur et Sauveur?",
+      "accompaniment": "Souhaitez-vous être accompagné(e)?",
+      "usual_church": "Avez-vous une église habituelle?",
+      "want_to_join_icc": "Souhaitez-vous intégrer ICC?",
+      "desires": "Vous souhaitez intégrer ICC, désirez-vous :",
+      "contact_leader": "Être contacté par téléphone ou rendez-vous",
+      "impact_group": "Intégrer un Groupe d'Impact",
+      "house_church": "Intégrer une Église de Maison",
+      "formation_001": "Être inscrit à la formation Cours 001",
+      "info_on": "Souhaitez-vous recevoir des informations sur :",
+      "mui": "Le ministère des Jeunes d'Impact (MUI)",
+      "events": "Les prochains évènements",
+      "join_gs": "Souhaitez-vous intégrer un Groupe de Suivi (GS) ?",
+      "comments": "Commentaire / Besoin particulier"
+    }
+  },
+  "service_order": {
+    "title": "Déroulé des Cultes",
+    "editor": "Éditeur de Déroulé",
+    "print_btn": "Imprimer / PDF",
+    "date": "Date du Culte",
+    "location": "Lieu",
+    "first_cult": "1er Culte",
+    "second_cult": "2ème Culte",
+    "subject": "Intitulé",
+    "start": "Début",
+    "end": "Fin",
+    "duration": "Durée",
+    "intervenants": "Intervenants",
+    "add_line": "Ajouter Ligne"
   }
 }

@@ -121,15 +121,15 @@ export default function AttendancePage() {
         <div className="space-y-8 pb-12">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">{t('nav.attendance')}</h1>
-                    <p className="text-gray-500 mt-1">Manage service attendance and detailed ministry reports.</p>
+                    <h1 className="text-3xl font-extrabold text-foreground tracking-tight">{t('nav.attendance')}</h1>
+                    <p className="text-muted-foreground mt-1">Manage service attendance and detailed ministry reports.</p>
                 </div>
-                <div className="flex bg-white/50 p-1 rounded-xl border border-gray-100 shadow-sm self-start">
+                <div className="flex bg-card p-1 rounded-xl border border-border shadow-sm self-start">
                     <button
                         onClick={() => setActiveTab('individual')}
                         className={cn(
                             "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all",
-                            activeTab === 'individual' ? "bg-primary text-white shadow-md shadow-primary/20" : "text-gray-500 hover:bg-gray-50"
+                            activeTab === 'individual' ? "bg-primary text-white shadow-md shadow-primary/20" : "text-muted-foreground hover:bg-muted"
                         )}
                     >
                         <Users className="w-4 h-4" />
@@ -139,7 +139,7 @@ export default function AttendancePage() {
                         onClick={() => setActiveTab('report')}
                         className={cn(
                             "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all",
-                            activeTab === 'report' ? "bg-primary text-white shadow-md shadow-primary/20" : "text-gray-500 hover:bg-gray-50"
+                            activeTab === 'report' ? "bg-primary text-white shadow-md shadow-primary/20" : "text-muted-foreground hover:bg-muted"
                         )}
                     >
                         <ClipboardList className="w-4 h-4" />
@@ -151,16 +151,16 @@ export default function AttendancePage() {
             {activeTab === 'individual' ? (
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <div className="lg:col-span-1 space-y-6">
-                        <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-                            <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                        <div className="bg-card p-6 rounded-2xl border border-border shadow-sm">
+                            <h3 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
                                 <CalendarDays className="w-5 h-5 text-primary" />
                                 Select Event
                             </h3>
                             <div className="space-y-4">
                                 <div>
-                                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Event</label>
+                                    <label className="block text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2">Event</label>
                                     <select
-                                        className="w-full bg-gray-50 border border-gray-200 rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 text-gray-900 font-medium"
+                                        className="w-full bg-muted border-transparent rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 text-foreground font-bold"
                                         value={selectedEventId}
                                         onChange={(e) => {
                                             const id = e.target.value;
@@ -170,17 +170,17 @@ export default function AttendancePage() {
                                         }}
                                     >
                                         {events.map(ev => (
-                                            <option key={ev.id} value={ev.id}>{new Date(ev.date).toLocaleDateString()} - {ev.title}</option>
+                                            <option key={ev.id} value={ev.id} className="bg-card">{new Date(ev.date).toLocaleDateString()} - {ev.title}</option>
                                         ))}
                                     </select>
                                 </div>
                                 <div>
-                                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Total Attendees</label>
+                                    <label className="block text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2">Total Attendees</label>
                                     <div className="relative">
-                                        <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                                        <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                                         <input
                                             type="number"
-                                            className="w-full bg-gray-50 border border-gray-200 rounded-lg p-3 pl-10 text-xl font-bold focus:outline-none focus:ring-2 focus:ring-primary/50 text-gray-900"
+                                            className="w-full bg-muted border-transparent rounded-lg p-3 pl-10 text-xl font-black focus:outline-none focus:ring-2 focus:ring-primary/50 text-foreground"
                                             value={attendanceCount}
                                             onChange={(e) => setAttendanceCount(e.target.value)}
                                         />
@@ -189,32 +189,32 @@ export default function AttendancePage() {
                                 <button
                                     onClick={handleSaveIndividual}
                                     disabled={saving || !selectedEventId}
-                                    className="w-full bg-primary text-white font-bold py-3 rounded-lg shadow-sm hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 mt-4 disabled:opacity-50"
+                                    className="w-full bg-primary text-white font-black uppercase tracking-widest text-xs py-4 rounded-xl shadow-xl shadow-primary/20 hover:opacity-90 transition-all flex items-center justify-center gap-2 mt-4 disabled:opacity-50"
                                 >
-                                    <Save className="w-5 h-5" />
+                                    <Save className="w-4 h-4" />
                                     {saving ? 'Saving...' : 'Save Attendance'}
                                 </button>
                             </div>
                         </div>
                     </div>
                     <div className="lg:col-span-2">
-                        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-                            <div className="p-6 border-b border-gray-100 flex items-center justify-between">
-                                <h3 className="text-lg font-bold text-gray-900">Attendance History</h3>
+                        <div className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden">
+                            <div className="p-6 border-b border-border flex items-center justify-between">
+                                <h3 className="text-lg font-bold text-foreground">Attendance History</h3>
                                 <div className="relative w-64">
-                                    <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                                    <Search className="w-4 h-4 text-muted-foreground absolute left-3 top-1/2 -translate-y-1/2" />
                                     <input
                                         type="text"
                                         placeholder="Search events..."
-                                        className="w-full bg-gray-50 border border-gray-200 rounded-lg pl-9 pr-3 py-1.5 text-xs"
+                                        className="w-full bg-muted border-transparent rounded-lg pl-9 pr-3 py-1.5 text-xs text-foreground"
                                         value={searchTerm}
                                         onChange={(e) => setSearchTerm(e.target.value)}
                                     />
                                 </div>
                             </div>
                             <div className="overflow-auto max-h-[500px]">
-                                <table className="w-full text-left text-sm text-gray-500">
-                                    <thead className="bg-gray-50/50 text-xs uppercase text-gray-500 font-bold sticky top-0">
+                                <table className="w-full text-left text-sm text-muted-foreground">
+                                    <thead className="bg-muted text-[10px] uppercase text-muted-foreground font-black tracking-widest sticky top-0">
                                         <tr>
                                             <th className="px-6 py-4">Date</th>
                                             <th className="px-6 py-4">Event Title</th>
@@ -222,18 +222,18 @@ export default function AttendancePage() {
                                             <th className="px-6 py-4 text-right">Action</th>
                                         </tr>
                                     </thead>
-                                    <tbody className="divide-y divide-gray-100 bg-white">
+                                    <tbody className="divide-y divide-border bg-card">
                                         {events.filter(e => e.title.toLowerCase().includes(searchTerm.toLowerCase())).map((evt) => (
-                                            <tr key={evt.id} className="hover:bg-gray-50/50">
-                                                <td className="px-6 py-4 font-medium text-gray-900">{new Date(evt.date).toLocaleDateString()}</td>
-                                                <td className="px-6 py-4 text-gray-900">{evt.title}</td>
+                                            <tr key={evt.id} className="hover:bg-muted/30">
+                                                <td className="px-6 py-4 font-bold text-foreground">{new Date(evt.date).toLocaleDateString()}</td>
+                                                <td className="px-6 py-4 text-foreground">{evt.title}</td>
                                                 <td className="px-6 py-4 text-center">
-                                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-50 text-blue-700">
+                                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-black bg-primary/10 text-primary uppercase tracking-widest">
                                                         {evt.attendance_count || 0}
                                                     </span>
                                                 </td>
                                                 <td className="px-6 py-4 text-right">
-                                                    <button onClick={() => setSelectedEventId(evt.id.toString())} className="text-primary font-bold">Update</button>
+                                                    <button onClick={() => setSelectedEventId(evt.id.toString())} className="text-primary font-black uppercase tracking-widest text-[10px]">Update</button>
                                                 </td>
                                             </tr>
                                         ))}
@@ -246,48 +246,48 @@ export default function AttendancePage() {
             ) : (
                 <form onSubmit={handleSaveReport} className="max-w-5xl mx-auto space-y-8">
                     {/* Header Details */}
-                    <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm space-y-6">
-                        <div className="flex items-center gap-3 border-b border-gray-100 pb-4">
+                    <div className="bg-card p-8 rounded-3xl border border-border shadow-sm space-y-6">
+                        <div className="flex items-center gap-3 border-b border-border pb-4">
                             <ClipboardList className="w-6 h-6 text-primary" />
-                            <h2 className="text-xl font-black uppercase tracking-tight text-gray-900">{t('reports.service_report')}</h2>
+                            <h2 className="text-xl font-black uppercase tracking-tight text-foreground">{t('reports.service_report')}</h2>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                             <div className="space-y-1">
-                                <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Département</label>
+                                <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Département</label>
                                 <input
                                     type="text"
                                     value={reportData.departement}
                                     readOnly
-                                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm font-bold text-gray-600 focus:outline-none"
+                                    className="w-full bg-muted border-transparent rounded-xl px-4 py-3 text-sm font-bold text-muted-foreground focus:outline-none"
                                 />
                             </div>
                             <div className="space-y-1">
-                                <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Date</label>
+                                <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Date</label>
                                 <input
                                     type="date"
                                     required
                                     value={reportData.date}
                                     onChange={(e) => setReportData({ ...reportData, date: e.target.value })}
-                                    className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm font-bold focus:ring-2 focus:ring-primary/20 transition-all"
+                                    className="w-full bg-muted border-transparent rounded-xl px-4 py-3 text-sm font-bold text-foreground focus:ring-2 focus:ring-primary/20 transition-all"
                                 />
                             </div>
                             <div className="space-y-1">
-                                <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Programme</label>
+                                <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Programme</label>
                                 <input
                                     type="text"
                                     placeholder="ex: Culte de célébration"
                                     value={reportData.programme}
                                     onChange={(e) => setReportData({ ...reportData, programme: e.target.value })}
-                                    className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm font-bold focus:ring-2 focus:ring-primary/20 transition-all"
+                                    className="w-full bg-muted border-transparent rounded-xl px-4 py-3 text-sm font-bold text-foreground focus:ring-2 focus:ring-primary/20 transition-all"
                                 />
                             </div>
                             <div className="space-y-1">
-                                <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Organisateur</label>
+                                <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Organisateur</label>
                                 <input
                                     type="text"
                                     value={reportData.organisateur}
                                     onChange={(e) => setReportData({ ...reportData, organisateur: e.target.value })}
-                                    className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm font-bold focus:ring-2 focus:ring-primary/20 transition-all"
+                                    className="w-full bg-muted border-transparent rounded-xl px-4 py-3 text-sm font-bold text-foreground focus:ring-2 focus:ring-primary/20 transition-all"
                                 />
                             </div>
                         </div>
@@ -296,14 +296,14 @@ export default function AttendancePage() {
                     {/* Stats Tables */}
                     <div className="grid grid-cols-1 gap-8">
                         {/* Frequentation */}
-                        <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
-                            <div className="bg-[#6B46C1] p-4 text-white font-black uppercase tracking-widest text-sm flex justify-between items-center">
+                        <div className="bg-card rounded-3xl border border-border shadow-sm overflow-hidden">
+                            <div className="bg-primary p-4 text-white font-black uppercase tracking-widest text-sm flex justify-between items-center">
                                 <span>{t('reports.attendance_stats')}</span>
                                 <TrendingUp className="w-4 h-4" />
                             </div>
                             <div className="overflow-x-auto">
-                                <table className="w-full text-left text-sm font-bold">
-                                    <thead className="bg-gray-50/50 text-[10px] uppercase text-gray-500 border-b border-gray-100">
+                                <table className="w-full text-left text-sm font-bold text-foreground">
+                                    <thead className="bg-muted/50 text-[10px] uppercase text-muted-foreground border-b border-border">
                                         <tr>
                                             <th className="px-6 py-4 w-12">#</th>
                                             <th className="px-6 py-4">{t('reports.description')}</th>
@@ -312,26 +312,26 @@ export default function AttendancePage() {
                                             <th className="px-6 py-4 text-center">{t('reports.progression_avg')}</th>
                                         </tr>
                                     </thead>
-                                    <tbody className="divide-y divide-gray-100">
+                                    <tbody className="divide-y divide-border">
                                         {/* Adults Header */}
-                                        <tr className="bg-cyan-50/30">
-                                            <td colSpan={5} className="px-6 py-2 text-cyan-600 uppercase text-[10px] font-black tracking-widest">{t('reports.adults')}</td>
+                                        <tr className="bg-primary/5">
+                                            <td colSpan={5} className="px-6 py-2 text-primary uppercase text-[10px] font-black tracking-widest">{t('reports.adults')}</td>
                                         </tr>
                                         <tr>
-                                            <td className="px-6 py-4 text-gray-400">1</td>
+                                            <td className="px-6 py-4 text-muted-foreground">1</td>
                                             <td className="px-6 py-4">{t('reports.men')}</td>
-                                            <td className="px-6 py-4"><input type="number" value={reportData.adults_men} onChange={(e) => setReportData({...reportData, adults_men: Number(e.target.value)})} className="w-20 mx-auto text-center bg-gray-50 border border-gray-200 rounded-lg py-1" /></td>
+                                            <td className="px-6 py-4 text-center"><input type="number" value={reportData.adults_men} onChange={(e) => setReportData({...reportData, adults_men: Number(e.target.value)})} className="w-20 mx-auto text-center bg-muted border-transparent rounded-lg py-1 font-bold" /></td>
                                             <td className="px-6 py-4 text-center">{getProgression(reportData.adults_men, prevReport?.adults_men)?.val ?? '-'}</td>
                                             <td className="px-6 py-4 text-center">-</td>
                                         </tr>
                                         <tr>
-                                            <td className="px-6 py-4 text-gray-400">2</td>
+                                            <td className="px-6 py-4 text-muted-foreground">2</td>
                                             <td className="px-6 py-4">{t('reports.women')}</td>
-                                            <td className="px-6 py-4"><input type="number" value={reportData.adults_women} onChange={(e) => setReportData({...reportData, adults_women: Number(e.target.value)})} className="w-20 mx-auto text-center bg-gray-50 border border-gray-200 rounded-lg py-1" /></td>
+                                            <td className="px-6 py-4 text-center"><input type="number" value={reportData.adults_women} onChange={(e) => setReportData({...reportData, adults_women: Number(e.target.value)})} className="w-20 mx-auto text-center bg-muted border-transparent rounded-lg py-1 font-bold" /></td>
                                             <td className="px-6 py-4 text-center">{getProgression(reportData.adults_women, prevReport?.adults_women)?.val ?? '-'}</td>
                                             <td className="px-6 py-4 text-center">-</td>
                                         </tr>
-                                        <tr className="bg-gray-50 font-black">
+                                        <tr className="bg-muted/50 font-black">
                                             <td className="px-6 py-4"></td>
                                             <td className="px-6 py-4 uppercase text-xs">{t('reports.total_adults')}</td>
                                             <td className="px-6 py-4 text-center text-primary text-lg">{totalAdults}</td>
@@ -339,24 +339,24 @@ export default function AttendancePage() {
                                             <td className="px-6 py-4 text-center">-</td>
                                         </tr>
                                         {/* Juniors Header */}
-                                        <tr className="bg-cyan-50/30">
-                                            <td colSpan={5} className="px-6 py-2 text-cyan-600 uppercase text-[10px] font-black tracking-widest">{t('reports.juniors')}</td>
+                                        <tr className="bg-primary/5">
+                                            <td colSpan={5} className="px-6 py-2 text-primary uppercase text-[10px] font-black tracking-widest">{t('reports.juniors')}</td>
                                         </tr>
                                         <tr>
-                                            <td className="px-6 py-4 text-gray-400">3</td>
+                                            <td className="px-6 py-4 text-muted-foreground">3</td>
                                             <td className="px-6 py-4">{t('reports.girls')}</td>
-                                            <td className="px-6 py-4"><input type="number" value={reportData.juniors_girls} onChange={(e) => setReportData({...reportData, juniors_girls: Number(e.target.value)})} className="w-20 mx-auto text-center bg-gray-50 border border-gray-200 rounded-lg py-1" /></td>
+                                            <td className="px-6 py-4 text-center"><input type="number" value={reportData.juniors_girls} onChange={(e) => setReportData({...reportData, juniors_girls: Number(e.target.value)})} className="w-20 mx-auto text-center bg-muted border-transparent rounded-lg py-1 font-bold" /></td>
                                             <td className="px-6 py-4 text-center">{getProgression(reportData.juniors_girls, prevReport?.juniors_girls)?.val ?? '-'}</td>
                                             <td className="px-6 py-4 text-center">-</td>
                                         </tr>
                                         <tr>
-                                            <td className="px-6 py-4 text-gray-400">4</td>
+                                            <td className="px-6 py-4 text-muted-foreground">4</td>
                                             <td className="px-6 py-4">{t('reports.boys')}</td>
-                                            <td className="px-6 py-4"><input type="number" value={reportData.juniors_boys} onChange={(e) => setReportData({...reportData, juniors_boys: Number(e.target.value)})} className="w-20 mx-auto text-center bg-gray-50 border border-gray-200 rounded-lg py-1" /></td>
+                                            <td className="px-6 py-4 text-center"><input type="number" value={reportData.juniors_boys} onChange={(e) => setReportData({...reportData, juniors_boys: Number(e.target.value)})} className="w-20 mx-auto text-center bg-muted border-transparent rounded-lg py-1 font-bold" /></td>
                                             <td className="px-6 py-4 text-center">{getProgression(reportData.juniors_boys, prevReport?.juniors_boys)?.val ?? '-'}</td>
                                             <td className="px-6 py-4 text-center">-</td>
                                         </tr>
-                                        <tr className="bg-gray-50 font-black">
+                                        <tr className="bg-muted/50 font-black">
                                             <td className="px-6 py-4"></td>
                                             <td className="px-6 py-4 uppercase text-xs">{t('reports.total_juniors')}</td>
                                             <td className="px-6 py-4 text-center text-primary text-lg">{totalJuniors}</td>
@@ -364,7 +364,7 @@ export default function AttendancePage() {
                                             <td className="px-6 py-4 text-center">-</td>
                                         </tr>
                                         {/* Grand Total */}
-                                        <tr className="bg-cyan-500 text-white font-black">
+                                        <tr className="bg-primary text-white font-black">
                                             <td className="px-6 py-5"></td>
                                             <td className="px-6 py-5 uppercase text-base">{t('reports.total_souls')}</td>
                                             <td className="px-6 py-5 text-center text-2xl">{totalSouls}</td>
@@ -377,14 +377,14 @@ export default function AttendancePage() {
                         </div>
 
                         {/* Integration */}
-                        <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
-                            <div className="bg-[#6B46C1] p-4 text-white font-black uppercase tracking-widest text-sm flex justify-between items-center">
+                        <div className="bg-card rounded-3xl border border-border shadow-sm overflow-hidden">
+                            <div className="bg-primary p-4 text-white font-black uppercase tracking-widest text-sm flex justify-between items-center">
                                 <span>{t('reports.integration')}</span>
                                 <History className="w-4 h-4" />
                             </div>
                             <div className="p-6 space-y-6">
-                                <table className="w-full text-left text-sm font-bold">
-                                    <thead className="bg-gray-50/50 text-[10px] uppercase text-gray-500 border-b border-gray-100">
+                                <table className="w-full text-left text-sm font-bold text-foreground">
+                                    <thead className="bg-muted/50 text-[10px] uppercase text-muted-foreground border-b border-border">
                                         <tr>
                                             <th className="px-6 py-4 w-12">#</th>
                                             <th className="px-6 py-4">{t('reports.description')}</th>
@@ -392,74 +392,21 @@ export default function AttendancePage() {
                                             <th className="px-6 py-4 text-center">{t('reports.progression_prev')}</th>
                                         </tr>
                                     </thead>
-                                    <tbody className="divide-y divide-gray-100">
+                                    <tbody className="divide-y divide-border">
                                         <tr>
-                                            <td className="px-6 py-4 text-gray-400">1</td>
+                                            <td className="px-6 py-4 text-muted-foreground">1</td>
                                             <td className="px-6 py-4 uppercase text-xs">{t('reports.visitors_total')}</td>
-                                            <td className="px-6 py-4"><input type="number" value={reportData.visitors_total} onChange={(e) => setReportData({...reportData, visitors_total: Number(e.target.value)})} className="w-20 mx-auto text-center bg-gray-50 border border-gray-200 rounded-lg py-1" /></td>
+                                            <td className="px-6 py-4 text-center"><input type="number" value={reportData.visitors_total} onChange={(e) => setReportData({...reportData, visitors_total: Number(e.target.value)})} className="w-20 mx-auto text-center bg-muted border-transparent rounded-lg py-1 font-bold" /></td>
                                             <td className="px-6 py-4 text-center">{getProgression(reportData.visitors_total, prevReport?.visitors_total)?.val ?? '-'}</td>
                                         </tr>
-                                        {/* Add other integration rows if needed */}
                                     </tbody>
                                 </table>
-
-                                {/* Visitor Names Section */}
-                                <div className="space-y-4">
-                                    <h4 className="text-xs font-black uppercase tracking-widest text-primary">Visitor Details (Auto-Add to Members)</h4>
-                                    {(reportData as any).visitors?.map((v: any, index: number) => (
-                                        <div key={index} className="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-2xl relative">
-                                            <input 
-                                                placeholder="Full Name" 
-                                                className="bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl px-3 py-2 text-sm"
-                                                value={v.full_name}
-                                                onChange={(e) => {
-                                                    const newVisitors = [...(reportData as any).visitors];
-                                                    newVisitors[index].full_name = e.target.value;
-                                                    setReportData({...reportData, visitors: newVisitors} as any);
-                                                }}
-                                            />
-                                            <input 
-                                                placeholder="Phone" 
-                                                className="bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl px-3 py-2 text-sm"
-                                                value={v.phone}
-                                                onChange={(e) => {
-                                                    const newVisitors = [...(reportData as any).visitors];
-                                                    newVisitors[index].phone = e.target.value;
-                                                    setReportData({...reportData, visitors: newVisitors} as any);
-                                                }}
-                                            />
-                                            <label className="flex items-center gap-2 text-[10px] font-bold">
-                                                <input type="checkbox" checked={v.wants_to_join} onChange={(e) => {
-                                                    const newVisitors = [...(reportData as any).visitors];
-                                                    newVisitors[index].wants_to_join = e.target.checked;
-                                                    setReportData({...reportData, visitors: newVisitors} as any);
-                                                }} />
-                                                Wants to Join
-                                            </label>
-                                            <label className="flex items-center gap-2 text-[10px] font-bold">
-                                                <input type="checkbox" checked={v.is_convert} onChange={(e) => {
-                                                    const newVisitors = [...(reportData as any).visitors];
-                                                    newVisitors[index].is_convert = e.target.checked;
-                                                    setReportData({...reportData, visitors: newVisitors} as any);
-                                                }} />
-                                                New Convert
-                                            </label>
-                                        </div>
-                                    ))}
-                                    <button 
-                                        type="button"
-                                        onClick={() => setReportData({...reportData, visitors: [...((reportData as any).visitors || []), {full_name: '', phone: '', wants_to_join: false, is_convert: false}]} as any)}
-                                        className="text-xs font-bold text-primary hover:underline"
-                                    >
-                                        + Add Visitor Details
-                                    </button>
-                                </div>
                             </div>
                         </div>
                     </div>
 
                     {/* Remarks Section */}
-                    <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm space-y-6">
+                    <div className="bg-card p-8 rounded-3xl border border-border shadow-sm space-y-6">
                         <div className="space-y-4">
                             <div>
                                 <label className="text-[10px] font-black uppercase tracking-widest text-primary mb-2 block">{t('reports.problems')}</label>
@@ -467,7 +414,7 @@ export default function AttendancePage() {
                                     rows={3}
                                     value={reportData.problems}
                                     onChange={(e) => setReportData({ ...reportData, problems: e.target.value })}
-                                    className="w-full bg-gray-50 border border-gray-200 rounded-2xl p-4 text-sm font-medium focus:ring-2 focus:ring-primary/20 transition-all outline-none"
+                                    className="w-full bg-muted border-transparent rounded-2xl p-4 text-sm font-bold focus:ring-2 focus:ring-primary/20 transition-all outline-none text-foreground"
                                     placeholder="Décrivez les problèmes techniques ou logistiques..."
                                 />
                             </div>
@@ -477,7 +424,7 @@ export default function AttendancePage() {
                                     rows={3}
                                     value={reportData.general_remarks}
                                     onChange={(e) => setReportData({ ...reportData, general_remarks: e.target.value })}
-                                    className="w-full bg-gray-50 border border-gray-200 rounded-2xl p-4 text-sm font-medium focus:ring-2 focus:ring-primary/20 transition-all outline-none"
+                                    className="w-full bg-muted border-transparent rounded-2xl p-4 text-sm font-bold focus:ring-2 focus:ring-primary/20 transition-all outline-none text-foreground"
                                     placeholder="Notes spirituelles, climat du culte, témoignages..."
                                 />
                             </div>
@@ -489,14 +436,14 @@ export default function AttendancePage() {
                         <button
                             type="button"
                             onClick={() => setActiveTab('individual')}
-                            className="px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-xs text-gray-500 hover:bg-gray-100 transition-colors"
+                            className="px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] text-muted-foreground hover:bg-muted transition-colors"
                         >
                             {t('members.cancel')}
                         </button>
                         <button
                             type="submit"
                             disabled={saving}
-                            className="bg-primary text-white px-10 py-4 rounded-2xl font-black uppercase tracking-widest text-xs shadow-xl shadow-primary/20 hover:opacity-90 transition-all disabled:opacity-50"
+                            className="bg-primary text-white px-10 py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] shadow-xl shadow-primary/20 hover:opacity-90 transition-all disabled:opacity-50"
                         >
                             {saving ? 'Saving...' : 'Enregistrer le Rapport'}
                         </button>
