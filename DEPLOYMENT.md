@@ -7,7 +7,7 @@ Follow these steps to make your Church Management System (CMS) accessible as a l
 ### 1. Database Setup (Supabase)
 Your database is already live on Supabase.
 - **Connection String**: Ensure the `DATABASE_URL` in your production environment matches the one in your `.env`.
-- **SSL**: Supabase requires SSL, which is handled automatically by the `pg` driver in the backend.
+- **SSL**: Supabase requires SSL, which is handled automatically by the `pg` driver in the backend. Ensure `?sslmode=require` is present in your connection string if needed.
 
 ---
 
