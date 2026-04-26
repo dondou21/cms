@@ -1,0 +1,40 @@
+{
+  "nav": {
+    "dashboard": "Tableau de Bord",
+    "members": "Membres",
+    "departments": "Départements",
+    "giving": "Dons",
+    "events": "Événements",
+    "attendance": "Présences",
+    "logout": "Déconnexion"
+  },
+  "members": {
+    "title": "Gestion des Membres",
+    "add_member": "Ajouter un Membre",
+    "search": "Rechercher...",
+    "first_name": "Prénom",
+    "last_name": "Nom",
+    "email": "Email",
+    "phone": "Téléphone",
+    "status": "Statut",
+    "civilite": "Civilité",
+    "address": "Adresse",
+    "age_range": "Tranche d'âge",
+    "marital_status": "État civil",
+    "invited_by": "Invité par",
+    "accepted_christ": "A accepté Christ",
+    "want_accompaniment": "Souhaite être accompagné",
+    "usual_church": "A une église habituelle",
+    "want_to_join": "Souhaite intégrer ICC",
+    "interests": "Centres d'intérêt",
+    "comments": "Commentaires",
+    "save": "Enregistrer",
+    "cancel": "Annuler"
+  },
+  "dashboard": {
+    "total_members": "Total Membres",
+    "active_members": "Membres Actifs",
+    "monthly_giving": "Dons du Mois",
+    "upcoming_events": "Événements à Venir"
+  }
+}
