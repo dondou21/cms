@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import api from '../services/api';
 import { useLanguage } from '../lib/i18n';
+import { cn } from '../lib/utils';
 
 export default function GivingPage() {
     const { t } = useLanguage();
