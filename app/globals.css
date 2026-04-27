@@ -24,25 +24,25 @@
 }
 
 .dark {
-  --background: 222.2 84% 4.9%;
-  --foreground: 210 40% 98%;
-  --card: 222.2 84% 4.9%;
-  --card-foreground: 210 40% 98%;
-  --popover: 222.2 84% 4.9%;
-  --popover-foreground: 210 40% 98%;
-  --primary: 263.4 70% 50.4%; /* #805ad5 */
-  --primary-foreground: 222.2 47.4% 11.2%;
-  --secondary: 217.2 32.6% 17.5%;
-  --secondary-foreground: 210 40% 98%;
-  --muted: 217.2 32.6% 17.5%;
-  --muted-foreground: 215 20.2% 65.1%;
-  --accent: 217.2 32.6% 17.5%;
-  --accent-foreground: 210 40% 98%;
-  --destructive: 0 62.8% 30.6%;
-  --destructive-foreground: 210 40% 98%;
-  --border: 217.2 32.6% 17.5%;
-  --input: 217.2 32.6% 17.5%;
-  --ring: 263.4 70% 50.4%;
+  --background: 0 0% 10% ; /* #1A1A1A */
+  --foreground: 0 0% 94% ; /* #F0F0F0 */
+  --card: 0 0% 10% ;
+  --card-foreground: 0 0% 94% ;
+  --popover: 0 0% 10% ;
+  --popover-foreground: 0 0% 94% ;
+  --primary: 192 100% 19% ; /* #004D61 - Dark Teal */
+  --primary-foreground: 0 0% 94% ;
+  --secondary: 128 16% 29% ; /* #3E5641 - Forest Green */
+  --secondary-foreground: 0 0% 94% ;
+  --muted: 0 0% 15% ;
+  --muted-foreground: 0 0% 63.9% ;
+  --accent: 327 55% 33% ; /* #822659 - Deep Ruby */
+  --accent-foreground: 0 0% 94% ;
+  --destructive: 0 62.8% 30.6% ;
+  --destructive-foreground: 0 0% 94% ;
+  --border: 0 0% 20% ;
+  --input: 0 0% 20% ;
+  --ring: 192 100% 19% ;
 }
 
 @theme {
