@@ -36,8 +36,8 @@ export default function ServiceOrderPage() {
     const [showConfirmModal, setShowConfirmModal] = useState(false);
     
     const [cult1, setCult1] = useState<ServiceItem[]>([
-        { id: '1', start: '07h45', end: '08h00', subject: 'Prière d\'intercession', duration: '15\'', intervenants: 'Intercesseur' },
-        { id: '2', start: '08h00', end: '08h30', subject: 'Louanges et Adorations', duration: '30\'', intervenants: 'M.U.A' },
+        { id: '1', start: '07:45', end: '08:00', subject: 'Prière d\'intercession', duration: '15\'', intervenants: 'Intercesseur' },
+        { id: '2', start: '08:00', end: '08:30', subject: 'Louanges et Adorations', duration: '30\'', intervenants: 'M.U.A' },
     ]);
 
     const [annonces, setAnnonces] = useState([
@@ -137,145 +137,230 @@ export default function ServiceOrderPage() {
         saveAs(blob, `Service_Order_${date.replace(/\s/g, '_')}.docx`);
     };
 
+    const [showManualModal, setShowManualModal] = useState(false);
+    const [manualForm, setManualForm] = useState({ date: '', title: '', description: '' });
+
+    const handleManualSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        setDate(manualForm.date);
+        setTitle(manualForm.title);
+        setDescription(manualForm.description);
+        setShowManualModal(false);
+    };
+
     return (
-        <DashboardLayout>
-            <div className="space-y-8 pb-20 no-print">
-                <div className="flex items-center justify-between">
-                    <button onClick={() => router.back()} className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors font-bold text-sm">
-                        <ChevronLeft className="w-4 h-4" />
-                        {t('nav.events')}
+        <div className="space-y-8 pb-20 no-print">
+            <div className="flex items-center justify-between">
+                <button onClick={() => router.back()} className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors font-bold text-sm">
+                    <ChevronLeft className="w-4 h-4" />
+                    {t('nav.events')}
+                </button>
+                <div className="flex gap-4">
+                    <button onClick={() => setShowConfirmModal(true)} className="bg-primary text-white px-8 py-3 rounded-2xl font-black uppercase tracking-widest text-xs flex items-center gap-2 shadow-xl shadow-primary/20">
+                        <Eye className="w-4 h-4" />
+                        Preview & Save
                     </button>
-                    <div className="flex gap-4">
-                        <button onClick={() => setShowConfirmModal(true)} className="bg-primary text-white px-8 py-3 rounded-2xl font-black uppercase tracking-widest text-xs flex items-center gap-2 shadow-xl shadow-primary/20">
-                            <Eye className="w-4 h-4" />
-                            Preview & Save
-                        </button>
+                </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div className="lg:col-span-2 space-y-8">
+                    <div className="bg-card rounded-3xl border border-border shadow-sm p-8 space-y-8">
+                        <div className="flex items-center justify-between border-b border-border pb-4">
+                            <h2 className="text-xl font-black uppercase tracking-tight flex items-center gap-3 text-foreground">
+                                <FileText className="w-5 h-5 text-primary" />
+                                Configuration du Déroulé
+                            </h2>
+                            <button 
+                                onClick={() => setShowManualModal(true)}
+                                className="text-[10px] font-black uppercase tracking-widest bg-primary/10 text-primary px-4 py-2 rounded-xl hover:bg-primary/20 transition-all"
+                            >
+                                Saisir Manuellement
+                            </button>
+                        </div>
+
+                        <div className="space-y-6">
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-black uppercase tracking-widest text-primary ml-1">Sélectionner un évènement planifié</label>
+                                <select 
+                                    value={selectedEventId} 
+                                    onChange={(e) => handleEventSelect(e.target.value)}
+                                    className="w-full bg-muted border-transparent rounded-xl px-4 py-4 text-sm font-bold text-foreground focus:ring-2 focus:ring-primary/20 transition-all appearance-none"
+                                >
+                                    <option value="">-- Choisir un évènement --</option>
+                                    {events.map(e => (
+                                        <option key={e.id} value={e.id}>{new Date(e.date).toLocaleDateString()} - {e.title}</option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-6">
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Date d'impression</label>
+                                    <input value={date} onChange={e => setDate(e.target.value)} placeholder="ex: 28 AVRIL 2024" className="w-full bg-muted border-transparent rounded-xl px-4 py-3 text-sm font-bold text-foreground" />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Titre du Déroulé</label>
+                                    <input value={title} onChange={e => setTitle(e.target.value)} placeholder="ex: CULTE DE CÉLÉBRATION" className="w-full bg-muted border-transparent rounded-xl px-4 py-3 text-sm font-bold text-foreground" />
+                                </div>
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Informations Complémentaires / Description</label>
+                                <textarea 
+                                    value={description} 
+                                    onChange={e => setDescription(e.target.value)} 
+                                    placeholder="ex: Vendredi soir de prière - Thème spécifique..."
+                                    className="w-full bg-muted border-transparent rounded-xl px-4 py-3 text-sm font-bold text-foreground h-24 outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="space-y-4 pt-6 border-t border-border">
+                            <h3 className="text-sm font-black text-primary uppercase tracking-widest">Chronogramme du Service</h3>
+                            <div className="overflow-x-auto rounded-2xl border border-border">
+                                <table className="w-full text-xs font-bold text-foreground">
+                                    <thead className="bg-muted text-[10px] text-muted-foreground uppercase">
+                                        <tr>
+                                            <th className="p-4 text-left">Début</th>
+                                            <th className="p-4 text-left">Fin</th>
+                                            <th className="p-4 text-left">Intitulé</th>
+                                            <th className="p-4 text-left">Durée</th>
+                                            <th className="p-4 text-left">Intervenants</th>
+                                            <th className="p-4 w-10"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-border">
+                                        {cult1.map((item, i) => (
+                                            <tr key={item.id} className="hover:bg-muted/30">
+                                                <td className="p-2">
+                                                    <input 
+                                                        type="time"
+                                                        value={item.start} 
+                                                        onChange={e => {
+                                                            const newArr = [...cult1];
+                                                            newArr[i].start = e.target.value;
+                                                            setCult1(newArr);
+                                                        }} 
+                                                        className="w-full bg-transparent p-2 rounded outline-none font-bold" 
+                                                    />
+                                                </td>
+                                                <td className="p-2">
+                                                    <input 
+                                                        type="time"
+                                                        value={item.end} 
+                                                        onChange={e => {
+                                                            const newArr = [...cult1];
+                                                            newArr[i].end = e.target.value;
+                                                            setCult1(newArr);
+                                                        }} 
+                                                        className="w-full bg-transparent p-2 rounded outline-none font-bold" 
+                                                    />
+                                                </td>
+                                                <td className="p-2"><input value={item.subject} onChange={e => {
+                                                    const newArr = [...cult1];
+                                                    newArr[i].subject = e.target.value;
+                                                    setCult1(newArr);
+                                                }} className="w-full bg-transparent p-2 rounded outline-none" /></td>
+                                                <td className="p-2"><input value={item.duration} onChange={e => {
+                                                    const newArr = [...cult1];
+                                                    newArr[i].duration = e.target.value;
+                                                    setCult1(newArr);
+                                                }} className="w-full bg-transparent p-2 rounded outline-none" /></td>
+                                                <td className="p-2"><input value={item.intervenants} onChange={e => {
+                                                    const newArr = [...cult1];
+                                                    newArr[i].intervenants = e.target.value;
+                                                    setCult1(newArr);
+                                                }} className="w-full bg-transparent p-2 rounded outline-none" /></td>
+                                                <td className="p-2">
+                                                    <button onClick={() => setCult1(cult1.filter(x => x.id !== item.id))} className="text-rose-500 p-2 hover:bg-rose-500/10 rounded-lg transition-colors">
+                                                        <Trash2 className="w-4 h-4" />
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <button onClick={() => setCult1([...cult1, { id: Date.now().toString(), start: '', end: '', subject: '', duration: '', intervenants: '' }])} className="bg-muted px-4 py-2 rounded-xl text-[10px] font-black uppercase text-primary hover:bg-primary/10 flex items-center gap-2 transition-all">
+                                <Plus className="w-3 h-3" /> Ajouter une séquence
+                            </button>
+                        </div>
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <div className="lg:col-span-2 space-y-8">
-                        <div className="bg-card rounded-3xl border border-border shadow-sm p-8 space-y-8">
-                            <div className="flex items-center justify-between border-b border-border pb-4">
-                                <h2 className="text-xl font-black uppercase tracking-tight flex items-center gap-3 text-foreground">
-                                    <FileText className="w-5 h-5 text-primary" />
-                                    Configuration du Déroulé
-                                </h2>
-                            </div>
-
-                            <div className="space-y-6">
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase tracking-widest text-primary ml-1">Sélectionner un évènement planifié</label>
-                                    <select 
-                                        value={selectedEventId} 
-                                        onChange={(e) => handleEventSelect(e.target.value)}
-                                        className="w-full bg-muted border-transparent rounded-xl px-4 py-4 text-sm font-bold text-foreground focus:ring-2 focus:ring-primary/20 transition-all appearance-none"
-                                    >
-                                        <option value="">-- Choisir un évènement --</option>
-                                        {events.map(e => (
-                                            <option key={e.id} value={e.id}>{new Date(e.date).toLocaleDateString()} - {e.title}</option>
-                                        ))}
-                                    </select>
-                                </div>
-
-                                <div className="grid grid-cols-2 gap-6">
-                                    <div className="space-y-2">
-                                        <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Date d'impression</label>
-                                        <input value={date} onChange={e => setDate(e.target.value)} placeholder="ex: 28 AVRIL 2024" className="w-full bg-muted border-transparent rounded-xl px-4 py-3 text-sm font-bold text-foreground" />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Titre du Déroulé</label>
-                                        <input value={title} onChange={e => setTitle(e.target.value)} placeholder="ex: CULTE DE CÉLÉBRATION" className="w-full bg-muted border-transparent rounded-xl px-4 py-3 text-sm font-bold text-foreground" />
-                                    </div>
-                                </div>
-
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Informations Complémentaires / Description</label>
-                                    <textarea 
-                                        value={description} 
-                                        onChange={e => setDescription(e.target.value)} 
-                                        placeholder="ex: Vendredi soir de prière - Thème spécifique..."
-                                        className="w-full bg-muted border-transparent rounded-xl px-4 py-3 text-sm font-bold text-foreground h-24 outline-none focus:ring-2 focus:ring-primary/20 transition-all"
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="space-y-4 pt-6 border-t border-border">
-                                <h3 className="text-sm font-black text-primary uppercase tracking-widest">Chronogramme du Service</h3>
-                                <div className="overflow-x-auto rounded-2xl border border-border">
-                                    <table className="w-full text-xs font-bold text-foreground">
-                                        <thead className="bg-muted text-[10px] text-muted-foreground uppercase">
-                                            <tr>
-                                                <th className="p-4 text-left">Début</th>
-                                                <th className="p-4 text-left">Fin</th>
-                                                <th className="p-4 text-left">Intitulé</th>
-                                                <th className="p-4 text-left">Durée</th>
-                                                <th className="p-4 text-left">Intervenants</th>
-                                                <th className="p-4 w-10"></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className="divide-y divide-border">
-                                            {cult1.map((item, i) => (
-                                                <tr key={item.id} className="hover:bg-muted/30">
-                                                    <td className="p-2"><input value={item.start} onChange={e => {
-                                                        const newArr = [...cult1];
-                                                        newArr[i].start = e.target.value;
-                                                        setCult1(newArr);
-                                                    }} className="w-full bg-transparent p-2 rounded outline-none" /></td>
-                                                    <td className="p-2"><input value={item.end} onChange={e => {
-                                                        const newArr = [...cult1];
-                                                        newArr[i].end = e.target.value;
-                                                        setCult1(newArr);
-                                                    }} className="w-full bg-transparent p-2 rounded outline-none" /></td>
-                                                    <td className="p-2"><input value={item.subject} onChange={e => {
-                                                        const newArr = [...cult1];
-                                                        newArr[i].subject = e.target.value;
-                                                        setCult1(newArr);
-                                                    }} className="w-full bg-transparent p-2 rounded outline-none" /></td>
-                                                    <td className="p-2"><input value={item.duration} onChange={e => {
-                                                        const newArr = [...cult1];
-                                                        newArr[i].duration = e.target.value;
-                                                        setCult1(newArr);
-                                                    }} className="w-full bg-transparent p-2 rounded outline-none" /></td>
-                                                    <td className="p-2"><input value={item.intervenants} onChange={e => {
-                                                        const newArr = [...cult1];
-                                                        newArr[i].intervenants = e.target.value;
-                                                        setCult1(newArr);
-                                                    }} className="w-full bg-transparent p-2 rounded outline-none" /></td>
-                                                    <td className="p-2">
-                                                        <button onClick={() => setCult1(cult1.filter(x => x.id !== item.id))} className="text-rose-500 p-2 hover:bg-rose-500/10 rounded-lg transition-colors">
-                                                            <Trash2 className="w-4 h-4" />
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <button onClick={() => setCult1([...cult1, { id: Date.now().toString(), start: '', end: '', subject: '', duration: '', intervenants: '' }])} className="bg-muted px-4 py-2 rounded-xl text-[10px] font-black uppercase text-primary hover:bg-primary/10 flex items-center gap-2 transition-all">
-                                    <Plus className="w-3 h-3" /> Ajouter une séquence
-                                </button>
-                            </div>
+                <div className="space-y-6">
+                    <div className="bg-card p-8 rounded-3xl border border-border shadow-sm">
+                        <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center mb-6">
+                            <Info className="w-6 h-6 text-primary" />
                         </div>
-                    </div>
-
-                    <div className="space-y-6">
-                        <div className="bg-card p-8 rounded-3xl border border-border shadow-sm">
-                            <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center mb-6">
-                                <Info className="w-6 h-6 text-primary" />
-                            </div>
-                            <h3 className="font-black uppercase tracking-tight text-foreground mb-4">Aide & Instructions</h3>
-                            <p className="text-xs text-muted-foreground leading-relaxed">
-                                Le titre et la date seront automatiquement mis à jour si vous sélectionnez un évènement dans la liste.
-                                <br /><br />
-                                La description apparaîtra juste en dessous du titre dans le document final.
-                                <br /><br />
-                                Utilisez le bouton **Preview & Save** pour voir le résultat final avant d'exporter.
-                            </p>
-                        </div>
+                        <h3 className="font-black uppercase tracking-tight text-foreground mb-4">Aide & Instructions</h3>
+                        <p className="text-xs text-muted-foreground leading-relaxed">
+                            Le titre et la date seront automatiquement mis à jour si vous sélectionnez un évènement dans la liste.
+                            <br /><br />
+                            La description apparaîtra juste en dessous du titre dans le document final.
+                            <br /><br />
+                            Utilisez le bouton **Preview & Save** pour voir le résultat final avant d'exporter.
+                        </p>
                     </div>
                 </div>
             </div>
+
+            {/* MANUAL ENTRY MODAL */}
+            <AnimatePresence>
+                {showManualModal && (
+                    <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+                        <motion.div 
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            className="bg-card w-full max-w-md rounded-3xl p-8 border border-border shadow-2xl"
+                        >
+                            <div className="flex items-center justify-between mb-6">
+                                <h3 className="text-lg font-black uppercase tracking-tight text-foreground">Ajouter un Évènement</h3>
+                                <button onClick={() => setShowManualModal(false)} className="text-muted-foreground hover:text-foreground">
+                                    <X className="w-5 h-5" />
+                                </button>
+                            </div>
+                            <form onSubmit={handleManualSubmit} className="space-y-4">
+                                <div className="space-y-1">
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Titre de l'évènement</label>
+                                    <input 
+                                        required
+                                        value={manualForm.title} 
+                                        onChange={e => setManualForm({...manualForm, title: e.target.value})}
+                                        className="w-full bg-muted border-transparent rounded-xl px-4 py-3 text-sm font-bold text-foreground"
+                                        placeholder="ex: Vendredi de Prière"
+                                    />
+                                </div>
+                                <div className="space-y-1">
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Date</label>
+                                    <input 
+                                        required
+                                        type="text"
+                                        value={manualForm.date} 
+                                        onChange={e => setManualForm({...manualForm, date: e.target.value})}
+                                        className="w-full bg-muted border-transparent rounded-xl px-4 py-3 text-sm font-bold text-foreground"
+                                        placeholder="ex: 30 AVRIL 2024"
+                                    />
+                                </div>
+                                <div className="space-y-1">
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Description / Sous-titre</label>
+                                    <textarea 
+                                        value={manualForm.description} 
+                                        onChange={e => setManualForm({...manualForm, description: e.target.value})}
+                                        className="w-full bg-muted border-transparent rounded-xl px-4 py-3 text-sm font-bold text-foreground h-20"
+                                        placeholder="ex: Célébration spéciale avec..."
+                                    />
+                                </div>
+                                <button type="submit" className="w-full bg-primary text-white py-4 rounded-xl font-black uppercase tracking-widest text-xs shadow-lg shadow-primary/20 hover:opacity-90 transition-all">
+                                    Appliquer au Déroulé
+                                </button>
+                            </form>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
 
             {/* CONFIRMATION MODAL */}
             <AnimatePresence>
@@ -410,12 +495,6 @@ export default function ServiceOrderPage() {
                     <p>Secrétariat Local</p>
                 </div>
             </div>
-        </DashboardLayout>
-    );
-}
-
-
-
-        </DashboardLayout>
+        </div>
     );
 }
