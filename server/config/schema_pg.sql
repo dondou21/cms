@@ -119,3 +119,17 @@ CREATE TABLE IF NOT EXISTS report_visitors (
     is_convert         BOOLEAN DEFAULT FALSE,
     created_at         TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Service Orders (Déroulés) Persistence
+CREATE TABLE IF NOT EXISTS service_orders (
+    id               SERIAL PRIMARY KEY,
+    event_id         INTEGER REFERENCES events(id) ON DELETE SET NULL,
+    title            VARCHAR(255),
+    date             VARCHAR(255),
+    description      TEXT,
+    location         VARCHAR(255),
+    theme            VARCHAR(255),
+    sequences        JSONB, -- Array of ServiceItem
+    announcements    JSONB, -- Array of Announcement
+    created_at       TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

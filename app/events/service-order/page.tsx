@@ -23,6 +23,15 @@ interface ServiceItem {
     intervenants: string;
 }
 
+interface AnnouncementItem {
+    id: string;
+    title: string;
+    date: string;
+    start: string;
+    end: string;
+    description: string;
+}
+
 export default function ServiceOrderPage() {
     const { t } = useLanguage();
     const router = useRouter();
@@ -40,22 +49,55 @@ export default function ServiceOrderPage() {
         { id: '2', start: '08:00', end: '08:30', subject: 'Louanges et Adorations', duration: '30\'', intervenants: 'M.U.A' },
     ]);
 
-    const [annonces, setAnnonces] = useState([
-        { title: 'ACTIONS DE GRÂCES', content: 'La Famille de Dieu de l\'église ICC Kigali se réjouit...' },
-        { title: 'DIME & OFFRANDES', content: 'Notre culte est aussi un moment de notre culte...' },
+    const [annonces, setAnnonces] = useState<AnnouncementItem[]>([
+        { 
+            id: '1', 
+            title: 'DIME & OFFRANDES', 
+            date: '', 
+            start: '', 
+            end: '', 
+            description: "Notre culte est aussi un moment de notre culte où nous apportons dans la maison de Dieu nos Dîmes et nos Offrandes. C'est un acte d'adoration, une reconnaissance à l'Eternel de la fidélité que Dieu nous témoigne chaque jour.\n\n📖 Malachie 3:10-11: Apportez à la maison du trésor toutes les dîmes, afin qu'il y ait de la nourriture dans ma maison; mettez-moi de la sorte à l'épreuve... et vous verrez si je n'ouvre pas pour vous les écluses des cieux...\n\n📖 2 Corinthiens 9:7: Que chacun donne comme il l'a résolu en son coeur, sans tristesse ni contrainte; car Dieu aime celui qui donne avec joie."
+        },
     ]);
 
+    const [newAnnonce, setNewAnnonce] = useState({ title: '', date: '', start: '', end: '', description: '' });
+
+    const [savedOrders, setSavedOrders] = useState<any[]>([]);
+
+    const fetchInitialData = async () => {
+        try {
+            const [eventsRes, ordersRes] = await Promise.all([
+                api.get('/events'),
+                api.get('/service-orders')
+            ]);
+            setEvents(eventsRes.data);
+            setSavedOrders(ordersRes.data);
+        } catch (err) {
+            console.error('Failed to fetch data', err);
+        }
+    };
+
     useEffect(() => {
-        const fetchEvents = async () => {
-            try {
-                const response = await api.get('/events');
-                setEvents(response.data);
-            } catch (err) {
-                console.error('Failed to fetch events', err);
-            }
-        };
-        fetchEvents();
+        fetchInitialData();
     }, []);
+
+    const handleSave = async () => {
+        try {
+            await api.post('/service-orders', {
+                event_id: selectedEventId || null,
+                title,
+                date,
+                description,
+                location,
+                theme,
+                sequences: cult1,
+                announcements: annonces
+            });
+            fetchInitialData(); // Refresh history
+        } catch (err) {
+            console.error('Failed to save service order', err);
+        }
+    };
 
     const handleEventSelect = (eventId: string) => {
         setSelectedEventId(eventId);
@@ -67,6 +109,7 @@ export default function ServiceOrderPage() {
     };
 
     const handlePrint = () => {
+        handleSave();
         window.print();
     };
 
@@ -129,10 +172,32 @@ export default function ServiceOrderPage() {
                         width: { size: 100, type: WidthType.PERCENTAGE },
                         rows: [tableHeader, ...tableRows],
                     }),
+                    new Paragraph({
+                        children: [new TextRun({ text: "ANNONCES", bold: true, size: 28, color: "0000FF", underline: {} })],
+                        alignment: AlignmentType.CENTER,
+                        spacing: { before: 800, after: 400 },
+                    }),
+                    ...annonces.flatMap(a => [
+                        new Paragraph({
+                            children: [new TextRun({ text: a.title, bold: true, size: 24, underline: {} })],
+                            spacing: { before: 200 },
+                        }),
+                        ...(a.date || a.start || a.end ? [
+                            new Paragraph({
+                                children: [new TextRun({ text: `${a.date} ${a.start ? `de ${a.start}` : ''} ${a.end ? `à ${a.end}` : ''}`, size: 18, italic: true })],
+                            })
+                        ] : []),
+                        ...a.description.split('\n').map(line => 
+                            new Paragraph({
+                                children: [new TextRun({ text: line, size: 18 })],
+                            })
+                        ),
+                    ]),
                 ],
             }],
         });
 
+        handleSave();
         const blob = await Packer.toBlob(doc);
         saveAs(blob, `Service_Order_${date.replace(/\s/g, '_')}.docx`);
     };
@@ -190,6 +255,30 @@ export default function ServiceOrderPage() {
                                     <option value="">-- Choisir un évènement --</option>
                                     {events.map(e => (
                                         <option key={e.id} value={e.id}>{new Date(e.date).toLocaleDateString()} - {e.title}</option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-black uppercase tracking-widest text-primary ml-1">Charger un Déroulé sauvegardé</label>
+                                <select 
+                                    onChange={(e) => {
+                                        const order = savedOrders.find(o => o.id.toString() === e.target.value);
+                                        if (order) {
+                                            setDate(order.date);
+                                            setTitle(order.title);
+                                            setDescription(order.description);
+                                            setLocation(order.location);
+                                            setTheme(order.theme);
+                                            setCult1(order.sequences);
+                                            setAnnonces(order.announcements);
+                                        }
+                                    }}
+                                    className="w-full bg-muted border-transparent rounded-xl px-4 py-4 text-sm font-bold text-foreground focus:ring-2 focus:ring-primary/20 transition-all appearance-none"
+                                >
+                                    <option value="">-- Charger un historique --</option>
+                                    {savedOrders.map(o => (
+                                        <option key={o.id} value={o.id}>{o.date} - {o.title}</option>
                                     ))}
                                 </select>
                             </div>
@@ -290,18 +379,94 @@ export default function ServiceOrderPage() {
                 </div>
 
                 <div className="space-y-6">
-                    <div className="bg-card p-8 rounded-3xl border border-border shadow-sm">
-                        <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center mb-6">
-                            <Info className="w-6 h-6 text-primary" />
+                    <div className="bg-card p-8 rounded-3xl border border-border shadow-sm space-y-6">
+                        <div className="flex items-center gap-3 border-b border-border pb-4">
+                            <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center">
+                                <MessageSquare className="w-5 h-5 text-primary" />
+                            </div>
+                            <h3 className="font-black uppercase tracking-tight text-foreground">Ajouter une Annonce</h3>
                         </div>
-                        <h3 className="font-black uppercase tracking-tight text-foreground mb-4">Aide & Instructions</h3>
-                        <p className="text-xs text-muted-foreground leading-relaxed">
-                            Le titre et la date seront automatiquement mis à jour si vous sélectionnez un évènement dans la liste.
-                            <br /><br />
-                            La description apparaîtra juste en dessous du titre dans le document final.
-                            <br /><br />
-                            Utilisez le bouton **Preview & Save** pour voir le résultat final avant d'exporter.
-                        </p>
+                        
+                        <div className="space-y-4">
+                            <div className="space-y-1">
+                                <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Titre de l'annonce</label>
+                                <input 
+                                    value={newAnnonce.title} 
+                                    onChange={e => setNewAnnonce({...newAnnonce, title: e.target.value})}
+                                    className="w-full bg-muted border-transparent rounded-xl px-4 py-3 text-sm font-bold text-foreground"
+                                    placeholder="ex: ACTIONS DE GRÂCES"
+                                />
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-1">
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Date</label>
+                                    <input 
+                                        value={newAnnonce.date} 
+                                        onChange={e => setNewAnnonce({...newAnnonce, date: e.target.value})}
+                                        className="w-full bg-muted border-transparent rounded-xl px-4 py-2 text-xs font-bold text-foreground"
+                                        placeholder="ex: Dimanche 28"
+                                    />
+                                </div>
+                                <div className="grid grid-cols-2 gap-2">
+                                    <div className="space-y-1">
+                                        <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Début</label>
+                                        <input 
+                                            type="time"
+                                            value={newAnnonce.start} 
+                                            onChange={e => setNewAnnonce({...newAnnonce, start: e.target.value})}
+                                            className="w-full bg-muted border-transparent rounded-xl px-2 py-2 text-xs font-bold text-foreground"
+                                        />
+                                    </div>
+                                    <div className="space-y-1">
+                                        <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Fin</label>
+                                        <input 
+                                            type="time"
+                                            value={newAnnonce.end} 
+                                            onChange={e => setNewAnnonce({...newAnnonce, end: e.target.value})}
+                                            className="w-full bg-muted border-transparent rounded-xl px-2 py-2 text-xs font-bold text-foreground"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Description</label>
+                                <textarea 
+                                    value={newAnnonce.description} 
+                                    onChange={e => setNewAnnonce({...newAnnonce, description: e.target.value})}
+                                    className="w-full bg-muted border-transparent rounded-xl px-4 py-3 text-xs font-bold text-foreground h-32"
+                                    placeholder="Détails de l'annonce..."
+                                />
+                            </div>
+                            <button 
+                                onClick={() => {
+                                    if(newAnnonce.title && newAnnonce.description) {
+                                        setAnnonces([...annonces, { ...newAnnonce, id: Date.now().toString() }]);
+                                        setNewAnnonce({ title: '', date: '', start: '', end: '', description: '' });
+                                    }
+                                }}
+                                className="w-full bg-primary text-white py-3 rounded-xl font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2"
+                            >
+                                <Plus className="w-4 h-4" /> Ajouter au document
+                            </button>
+                        </div>
+
+                        <div className="pt-6 border-t border-border space-y-4">
+                            <h4 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Annonces Actuelles</h4>
+                            <div className="space-y-2 max-h-[300px] overflow-y-auto pr-2">
+                                {annonces.map(a => (
+                                    <div key={a.id} className="bg-muted/50 p-4 rounded-xl border border-border group relative">
+                                        <button 
+                                            onClick={() => setAnnonces(annonces.filter(item => item.id !== a.id))}
+                                            className="absolute top-2 right-2 text-rose-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                                        >
+                                            <Trash2 className="w-3 h-3" />
+                                        </button>
+                                        <p className="text-[10px] font-black text-primary uppercase">{a.title}</p>
+                                        <p className="text-[9px] text-muted-foreground mt-1 line-clamp-2 italic">{a.description}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -428,6 +593,21 @@ export default function ServiceOrderPage() {
                                         <p>Document généré par CMS Impact Centre Kigali</p>
                                         <p>Secrétariat Local</p>
                                     </div>
+
+                                    <div className="mt-16 space-y-12 no-print-break">
+                                        <h3 className="text-2xl font-black text-primary border-b-2 border-primary pb-2 uppercase tracking-widest text-center">Annonces</h3>
+                                        {annonces.map(a => (
+                                            <div key={a.id} className="space-y-4">
+                                                <h4 className="text-lg font-black uppercase underline decoration-primary decoration-2 underline-offset-4">{a.title}</h4>
+                                                {(a.date || a.start || a.end) && (
+                                                    <p className="text-sm font-bold text-gray-500 italic">
+                                                        📅 {a.date} {a.start && `| 🕒 ${a.start}`} {a.end && ` - ${a.end}`}
+                                                    </p>
+                                                )}
+                                                <p className="text-sm leading-relaxed whitespace-pre-wrap text-gray-700">{a.description}</p>
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
 
@@ -493,6 +673,17 @@ export default function ServiceOrderPage() {
                 <div className="mt-20 flex justify-between items-end border-t border-gray-100 pt-8 italic text-[8pt] text-gray-400">
                     <p>Document généré par CMS Impact Centre Kigali</p>
                     <p>Secrétariat Local</p>
+                </div>
+
+                <div className="mt-16 page-break-before space-y-10">
+                    <h3 className="text-xl font-black text-center uppercase border-b-2 border-primary pb-2 tracking-widest">Annonces</h3>
+                    {annonces.map(a => (
+                        <div key={a.id} className="space-y-2">
+                            <h4 className="text-md font-bold uppercase underline">{a.title}</h4>
+                            <p className="text-xs italic text-gray-600">{a.date} {a.start && `| ${a.start}`} {a.end && ` - ${a.end}`}</p>
+                            <p className="text-sm whitespace-pre-wrap">{a.description}</p>
+                        </div>
+                    ))}
                 </div>
             </div>
         </div>

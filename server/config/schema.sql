@@ -69,3 +69,18 @@ CREATE TABLE IF NOT EXISTS attendance (
     FOREIGN KEY (member_id) REFERENCES members(id) ON DELETE CASCADE,
     UNIQUE (event_id, member_id)
 );
+
+-- Service Orders (Déroulés) Persistence
+CREATE TABLE IF NOT EXISTS service_orders (
+    id               INTEGER PRIMARY KEY AUTOINCREMENT,
+    event_id         INTEGER,
+    title            TEXT,
+    date             TEXT,
+    description      TEXT,
+    location         TEXT,
+    theme            TEXT,
+    sequences        TEXT, -- JSON Array
+    announcements    TEXT, -- JSON Array
+    created_at       TEXT DEFAULT (datetime('now')),
+    FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE SET NULL
+);

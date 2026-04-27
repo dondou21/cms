@@ -70,7 +70,8 @@ export default function Sidebar() {
 
             <nav className="flex-1 space-y-1.5 px-4">
                 {menuItems.map((item) => {
-                    const isActive = pathname === item.href || (pathname.startsWith(item.href) && item.href !== '/dashboard');
+                    const isActive = pathname === item.href || 
+                        (item.href !== '/dashboard' && pathname.startsWith(item.href));
                     return (
                         <Link key={item.href} href={item.href}>
                             <div className={cn(
