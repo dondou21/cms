@@ -19,9 +19,19 @@ exports.getIntegrationStats = async (req, res) => {
 
 exports.getDashboardSummary = async (req, res) => {
     try {
+        const { month, year } = req.query;
+        const currentMonth = month || new Date().getMonth() + 1;
+        const currentYear = year || new Date().getFullYear();
+
         const [[{ total_members }]] = await db.execute('SELECT COUNT(*) as total_members FROM members');
         const [[{ active_members }]] = await db.execute("SELECT COUNT(*) as active_members FROM members WHERE status = 'active'");
-        const [[{ monthly_giving }]] = await db.execute("SELECT SUM(amount) as monthly_giving FROM givings WHERE EXTRACT(MONTH FROM date) = EXTRACT(MONTH FROM CURRENT_DATE) AND EXTRACT(YEAR FROM date) = EXTRACT(YEAR FROM CURRENT_DATE)");
+        
+        // Monthly giving filtered by month/year
+        const [[{ monthly_giving }]] = await db.execute(
+            "SELECT SUM(amount) as monthly_giving FROM givings WHERE EXTRACT(MONTH FROM date) = $1 AND EXTRACT(YEAR FROM date) = $2",
+            [currentMonth, currentYear]
+        );
+
         const [attendance_summary] = await db.execute("SELECT status, COUNT(*) as count FROM attendance JOIN events ON attendance.event_id = events.id WHERE events.date = (SELECT MAX(date) FROM events) GROUP BY status");
         
         const [upcoming_events] = await db.execute("SELECT * FROM events WHERE date >= CURRENT_DATE ORDER BY date ASC LIMIT 2");

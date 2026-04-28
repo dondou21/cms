@@ -44,17 +44,17 @@ export default function DashboardLayout({
                             <input
                                 type="text"
                                 placeholder="Search members, events, or transactions..."
-                                className="w-full bg-muted/50 border border-border rounded-lg pl-9 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-foreground placeholder:text-muted-foreground/50"
+                                className="w-full bg-muted/50 border border-border rounded-none pl-9 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-foreground placeholder:text-muted-foreground/50"
                             />
                         </div>
                     </div>
                     <div className="flex items-center gap-6 text-muted-foreground">
                         {/* Language Switcher */}
-                        <div className="flex bg-muted p-1 rounded-xl">
+                        <div className="flex bg-muted p-1 rounded-none">
                             <button
                                 onClick={() => setLanguage('fr')}
                                 className={cn(
-                                    "px-3 py-1 text-[10px] font-bold rounded-lg transition-all",
+                                    "px-3 py-1 text-[10px] font-bold rounded-none transition-all",
                                     language === 'fr' 
                                         ? "bg-white dark:bg-gray-700 text-primary shadow-sm" 
                                         : "text-muted-foreground hover:text-foreground"
@@ -63,7 +63,7 @@ export default function DashboardLayout({
                             <button
                                 onClick={() => setLanguage('en')}
                                 className={cn(
-                                    "px-3 py-1 text-[10px] font-bold rounded-lg transition-all",
+                                    "px-3 py-1 text-[10px] font-bold rounded-none transition-all",
                                     language === 'en' 
                                         ? "bg-white dark:bg-gray-700 text-primary shadow-sm" 
                                         : "text-muted-foreground hover:text-foreground"
@@ -74,14 +74,14 @@ export default function DashboardLayout({
                         {/* Theme Toggle */}
                         <button 
                             onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-                            className="p-2 hover:bg-muted rounded-xl transition-colors"
+                            className="p-2 hover:bg-muted rounded-none transition-colors"
                         >
                             {theme === 'dark' ? <Sun className="w-5 h-5 text-yellow-400" /> : <Moon className="w-5 h-5" />}
                         </button>
 
-                        <button className="p-2 hover:bg-muted rounded-full transition-colors relative">
+                        <button className="p-2 hover:bg-muted rounded-none transition-colors relative">
                             <Bell className="w-5 h-5" />
-                            <span className="absolute top-2 right-2 w-1.5 h-1.5 bg-red-500 rounded-full" />
+                            <span className="absolute top-2 right-2 w-1.5 h-1.5 bg-red-500 rounded-none" />
                         </button>
                     </div>
                 </header>

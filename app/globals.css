@@ -2,47 +2,47 @@
 
 :root {
   --background: 0 0% 100%;
-  --foreground: 222.2 47.4% 11.2%;
+  --foreground: 215 25% 10%;
   --card: 0 0% 100%;
-  --card-foreground: 222.2 47.4% 11.2%;
+  --card-foreground: 215 25% 10%;
   --popover: 0 0% 100%;
-  --popover-foreground: 222.2 47.4% 11.2%;
-  --primary: 262.1 58.3% 51.4%; /* #6b46c1 */
-  --primary-foreground: 210 40% 98%;
-  --secondary: 210 40% 96.1%;
-  --secondary-foreground: 222.2 47.4% 11.2%;
-  --muted: 210 40% 96.1%;
-  --muted-foreground: 215.4 16.3% 46.9%;
-  --accent: 210 40% 96.1%;
-  --accent-foreground: 222.2 47.4% 11.2%;
-  --destructive: 0 84.2% 60.2%;
-  --destructive-foreground: 210 40% 98%;
-  --border: 214.3 31.8% 91.4%;
-  --input: 214.3 31.8% 91.4%;
-  --ring: 262.1 58.3% 51.4%;
-  --radius: 0.75rem;
+  --popover-foreground: 215 25% 10%;
+  --primary: 215 90% 35%; /* #0a4d92 - Professional Blue */
+  --primary-foreground: 0 0% 100%;
+  --secondary: 25 95% 50%; /* #f58220 - Vibrant Orange */
+  --secondary-foreground: 0 0% 100%;
+  --muted: 210 20% 96%;
+  --muted-foreground: 215 15% 45%;
+  --accent: 215 90% 35%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 215 15% 90%;
+  --input: 215 15% 90%;
+  --ring: 25 95% 50%;
+  --radius: 0px; /* Sharp corners */
 }
 
 .dark {
-  --background: 0 0% 10% ; /* #1A1A1A */
-  --foreground: 0 0% 94% ; /* #F0F0F0 */
-  --card: 0 0% 10% ;
-  --card-foreground: 0 0% 94% ;
-  --popover: 0 0% 10% ;
-  --popover-foreground: 0 0% 94% ;
-  --primary: 192 100% 19% ; /* #004D61 - Dark Teal */
-  --primary-foreground: 0 0% 94% ;
-  --secondary: 128 16% 29% ; /* #3E5641 - Forest Green */
-  --secondary-foreground: 0 0% 94% ;
-  --muted: 0 0% 15% ;
-  --muted-foreground: 0 0% 63.9% ;
-  --accent: 327 55% 33% ; /* #822659 - Deep Ruby */
-  --accent-foreground: 0 0% 94% ;
-  --destructive: 0 62.8% 30.6% ;
+  --background: 215 25% 6% ; /* Very dark navy gray */
+  --foreground: 210 20% 98% ; 
+  --card: 215 25% 8% ;
+  --card-foreground: 210 20% 98% ;
+  --popover: 215 25% 8% ;
+  --popover-foreground: 210 20% 98% ;
+  --primary: 210 100% 50% ; /* Brighter Blue for dark mode */
+  --primary-foreground: 0 0% 100% ;
+  --secondary: 25 95% 50% ; /* #f58220 */
+  --secondary-foreground: 0 0% 100% ;
+  --muted: 215 20% 15% ;
+  --muted-foreground: 215 10% 65% ;
+  --accent: 210 100% 50% ;
+  --accent-foreground: 0 0% 100% ;
+  --destructive: 0 62% 30% ;
   --destructive-foreground: 0 0% 94% ;
-  --border: 0 0% 20% ;
-  --input: 0 0% 20% ;
-  --ring: 192 100% 19% ;
+  --border: 215 20% 20% ;
+  --input: 215 20% 20% ;
+  --ring: 25 95% 50% ;
 }
 
 @theme {

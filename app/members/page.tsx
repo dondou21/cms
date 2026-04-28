@@ -139,14 +139,14 @@ export default function MembersPage() {
                 <div className="flex gap-3">
                     <button
                         onClick={handleExportCSV}
-                        className="bg-card border border-border text-foreground px-4 py-2.5 rounded-xl font-bold text-[10px] uppercase tracking-widest flex items-center gap-2 hover:bg-muted transition-colors whitespace-nowrap"
+                        className="bg-card border border-border text-foreground px-4 py-2.5 rounded-none font-bold text-[10px] uppercase tracking-widest flex items-center gap-2 hover:bg-muted transition-colors whitespace-nowrap"
                     >
                         <Download className="w-4 h-4" />
                         Export CSV
                     </button>
                     <button
                         onClick={() => setShowModal(true)}
-                        className="bg-primary text-white px-6 py-2.5 rounded-xl font-bold text-[10px] uppercase tracking-widest flex items-center gap-2 hover:opacity-90 transition-opacity whitespace-nowrap shadow-xl shadow-primary/20"
+                        className="bg-primary text-white px-6 py-2.5 rounded-none font-bold text-[10px] uppercase tracking-widest flex items-center gap-2 hover:opacity-90 transition-opacity whitespace-nowrap shadow-xl shadow-primary/20"
                     >
                         <Plus className="w-4 h-4" />
                         {t('members.add_member')}
@@ -154,7 +154,7 @@ export default function MembersPage() {
                 </div>
             </div>
 
-            <div className="flex items-center gap-4 bg-card border border-border p-2 rounded-2xl w-full max-w-md shadow-sm">
+            <div className="flex items-center gap-4 bg-card border border-border p-2 rounded-none w-full max-w-md shadow-sm">
                 <div className="pl-3">
                     <Search className="w-5 h-5 text-muted-foreground" />
                 </div>
@@ -167,7 +167,7 @@ export default function MembersPage() {
                 />
             </div>
 
-            <div className="bg-card rounded-2xl overflow-hidden border border-border shadow-sm">
+            <div className="bg-card rounded-none overflow-hidden border border-border shadow-sm">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left">
                         <thead>
@@ -186,7 +186,7 @@ export default function MembersPage() {
                                         <td className="px-6 py-4"><div className="h-10 w-40 bg-muted rounded" /></td>
                                         <td className="px-6 py-4"><div className="h-10 w-32 bg-muted rounded" /></td>
                                         <td className="px-6 py-4"><div className="h-10 w-24 bg-muted rounded" /></td>
-                                        <td className="px-6 py-4"><div className="h-6 w-16 bg-muted rounded-full" /></td>
+                                        <td className="px-6 py-4"><div className="h-6 w-16 bg-muted rounded-none" /></td>
                                         <td className="px-6 py-4"><div className="h-8 w-8 bg-muted rounded" /></td>
                                     </tr>
                                 ))
@@ -200,7 +200,7 @@ export default function MembersPage() {
                                     >
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-black text-[10px] border border-primary/20">
+                                                <div className="w-10 h-10 rounded-none bg-primary/10 flex items-center justify-center text-primary font-black text-[10px] border border-primary/20">
                                                     {member.civilite}
                                                 </div>
                                                 <div>
@@ -226,7 +226,7 @@ export default function MembersPage() {
                                         </td>
                                         <td className="px-6 py-4">
                                             <span className={cn(
-                                                "px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-widest",
+                                                "px-2.5 py-1 rounded-none text-[10px] font-black uppercase tracking-widest",
                                                 member.status === 'active' ? "bg-emerald-500/10 text-emerald-600" : "bg-destructive/10 text-destructive"
                                             )}>
                                                 {member.status}
@@ -266,13 +266,13 @@ export default function MembersPage() {
                             initial={{ opacity: 0, scale: 0.95, y: 20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                            className="w-full max-w-2xl bg-card rounded-3xl p-8 relative z-10 shadow-2xl border border-border"
+                            className="w-full max-w-2xl bg-card rounded-none p-8 relative z-10 shadow-2xl border border-border"
                         >
                             <div className="flex items-center justify-between mb-6 border-b border-border pb-4">
                                 <h2 className="text-2xl font-black text-foreground uppercase tracking-tight">{t('members.add_member')}</h2>
                                 <button
                                     onClick={() => setShowModal(false)}
-                                    className="p-2 hover:bg-muted rounded-full transition-colors text-foreground"
+                                    className="p-2 hover:bg-muted rounded-none transition-colors text-foreground"
                                 >
                                     <X className="w-6 h-6" />
                                 </button>
@@ -285,7 +285,7 @@ export default function MembersPage() {
                                         <select
                                             value={formData.civilite}
                                             onChange={(e) => setFormData({ ...formData, civilite: e.target.value })}
-                                            className="w-full bg-muted border-transparent rounded-xl px-4 py-3 text-sm font-bold text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all appearance-none"
+                                            className="w-full bg-muted border-transparent rounded-none px-4 py-3 text-sm font-bold text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all appearance-none"
                                         >
                                             <option value="Mr" className="bg-card">Mr</option>
                                             <option value="Mme" className="bg-card">Mme</option>
@@ -299,7 +299,7 @@ export default function MembersPage() {
                                             required
                                             value={formData.first_name}
                                             onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
-                                            className="w-full bg-muted border-transparent rounded-xl px-4 py-3 text-sm font-bold text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+                                            className="w-full bg-muted border-transparent rounded-none px-4 py-3 text-sm font-bold text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
                                         />
                                     </div>
                                     <div className="space-y-1">
@@ -309,7 +309,7 @@ export default function MembersPage() {
                                             required
                                             value={formData.last_name}
                                             onChange={(e) => setFormData({ ...formData, last_name: e.target.value })}
-                                            className="w-full bg-muted border-transparent rounded-xl px-4 py-3 text-sm font-bold text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+                                            className="w-full bg-muted border-transparent rounded-none px-4 py-3 text-sm font-bold text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
                                         />
                                     </div>
                                 </div>
@@ -321,7 +321,7 @@ export default function MembersPage() {
                                             type="email"
                                             value={formData.email}
                                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                            className="w-full bg-muted border-transparent rounded-xl px-4 py-3 text-sm font-bold text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+                                            className="w-full bg-muted border-transparent rounded-none px-4 py-3 text-sm font-bold text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
                                         />
                                     </div>
                                     <div className="space-y-1">
@@ -330,7 +330,7 @@ export default function MembersPage() {
                                             type="text"
                                             value={formData.phone}
                                             onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                                            className="w-full bg-muted border-transparent rounded-xl px-4 py-3 text-sm font-bold text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+                                            className="w-full bg-muted border-transparent rounded-none px-4 py-3 text-sm font-bold text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
                                         />
                                     </div>
                                 </div>
@@ -341,7 +341,7 @@ export default function MembersPage() {
                                         rows={1}
                                         value={formData.address}
                                         onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                                        className="w-full bg-muted border-transparent rounded-xl px-4 py-3 text-sm font-bold text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all resize-none"
+                                        className="w-full bg-muted border-transparent rounded-none px-4 py-3 text-sm font-bold text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all resize-none"
                                     />
                                 </div>
 
@@ -351,7 +351,7 @@ export default function MembersPage() {
                                         <select
                                             value={formData.age_range}
                                             onChange={(e) => setFormData({ ...formData, age_range: e.target.value })}
-                                            className="w-full bg-muted border-transparent rounded-xl px-4 py-3 text-sm font-bold text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all appearance-none"
+                                            className="w-full bg-muted border-transparent rounded-none px-4 py-3 text-sm font-bold text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all appearance-none"
                                         >
                                             <option value="" className="bg-card">Select Range</option>
                                             <option value="Moins de 18 ans" className="bg-card">Moins de 18 ans</option>
@@ -369,7 +369,7 @@ export default function MembersPage() {
                                         <select
                                             value={formData.marital_status}
                                             onChange={(e) => setFormData({ ...formData, marital_status: e.target.value })}
-                                            className="w-full bg-muted border-transparent rounded-xl px-4 py-3 text-sm font-bold text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all appearance-none"
+                                            className="w-full bg-muted border-transparent rounded-none px-4 py-3 text-sm font-bold text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all appearance-none"
                                         >
                                             <option value="" className="bg-card">Select Status</option>
                                             <option value="Célibataire" className="bg-card">Célibataire</option>
@@ -385,7 +385,7 @@ export default function MembersPage() {
                                         <select
                                             value={formData.invited_by}
                                             onChange={(e) => setFormData({ ...formData, invited_by: e.target.value })}
-                                            className="w-full bg-muted border-transparent rounded-xl px-4 py-3 text-sm font-bold text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all appearance-none"
+                                            className="w-full bg-muted border-transparent rounded-none px-4 py-3 text-sm font-bold text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all appearance-none"
                                         >
                                             <option value="" className="bg-card">Select Option</option>
                                             <option value="Connaissance" className="bg-card">Une connaissance</option>
@@ -398,7 +398,7 @@ export default function MembersPage() {
                                 </div>
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                                    <div className="flex items-center gap-3 bg-muted p-4 rounded-xl border border-border">
+                                    <div className="flex items-center gap-3 bg-muted p-4 rounded-none border border-border">
                                         <input
                                             type="checkbox"
                                             id="accepted_christ"
@@ -408,7 +408,7 @@ export default function MembersPage() {
                                         />
                                         <label htmlFor="accepted_christ" className="text-[10px] font-black uppercase tracking-widest text-foreground">{t('members.accepted_christ')}</label>
                                     </div>
-                                    <div className="flex items-center gap-3 bg-muted p-4 rounded-xl border border-border">
+                                    <div className="flex items-center gap-3 bg-muted p-4 rounded-none border border-border">
                                         <input
                                             type="checkbox"
                                             id="want_to_join_icc"
@@ -426,7 +426,7 @@ export default function MembersPage() {
                                         rows={2}
                                         value={formData.comments}
                                         onChange={(e) => setFormData({ ...formData, comments: e.target.value })}
-                                        className="w-full bg-muted border-transparent rounded-xl px-4 py-3 text-sm font-bold text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all resize-none"
+                                        className="w-full bg-muted border-transparent rounded-none px-4 py-3 text-sm font-bold text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all resize-none"
                                     />
                                 </div>
 
@@ -434,13 +434,13 @@ export default function MembersPage() {
                                     <button
                                         type="button"
                                         onClick={() => setShowModal(false)}
-                                        className="px-6 py-3 rounded-xl font-black uppercase tracking-widest text-[10px] border border-border hover:bg-muted transition-colors text-foreground"
+                                        className="px-6 py-3 rounded-none font-black uppercase tracking-widest text-[10px] border border-border hover:bg-muted transition-colors text-foreground"
                                     >
                                         {t('members.cancel')}
                                     </button>
                                     <button
                                         type="submit"
-                                        className="bg-primary text-white px-8 py-3 rounded-xl font-black uppercase tracking-widest text-[10px] hover:opacity-90 transition-opacity shadow-xl shadow-primary/20"
+                                        className="bg-primary text-white px-8 py-3 rounded-none font-black uppercase tracking-widest text-[10px] hover:opacity-90 transition-opacity shadow-xl shadow-primary/20"
                                     >
                                         {t('members.save')}
                                     </button>

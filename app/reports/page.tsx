@@ -36,7 +36,7 @@ export default function ReportsPage() {
     if (loading) {
         return (
             <div className="h-[80vh] flex items-center justify-center">
-                <div className="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
+                <div className="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-none animate-spin" />
             </div>
         );
     }
@@ -48,7 +48,7 @@ export default function ReportsPage() {
                     <h1 className="text-3xl font-bold gradient-text">Leadership Reports</h1>
                     <p className="text-muted-foreground mt-1">Comprehensive overview of church growth and financial health.</p>
                 </div>
-                <button className="bg-white/5 border border-white/10 px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 hover:bg-white/10 transition-colors">
+                <button className="bg-white/5 border border-white/10 px-4 py-2 rounded-none text-sm font-semibold flex items-center gap-2 hover:bg-white/10 transition-colors">
                     <Download className="w-4 h-4" />
                     Export PDF
                 </button>
@@ -66,10 +66,10 @@ export default function ReportsPage() {
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: i * 0.1 }}
-                        className="glass-card p-6 rounded-2xl border border-white/5"
+                        className="glass-card p-6 rounded-none border border-white/5"
                     >
                         <div className="flex items-center justify-between mb-4">
-                            <div className="p-2 bg-white/5 rounded-lg">
+                            <div className="p-2 bg-white/5 rounded-none">
                                 <stat.icon className={cn("w-5 h-5", stat.color)} />
                             </div>
                             <span className="text-xs font-bold text-emerald-400 flex items-center gap-1">
@@ -83,7 +83,7 @@ export default function ReportsPage() {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div className="lg:col-span-2 glass-card p-8 rounded-2xl">
+                <div className="lg:col-span-2 glass-card p-8 rounded-none">
                     <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
                         <BarChart3 className="w-5 h-5 text-primary" />
                         Financial Trends
@@ -108,7 +108,7 @@ export default function ReportsPage() {
                     </div>
                 </div>
 
-                <div className="glass-card p-8 rounded-2xl">
+                <div className="glass-card p-8 rounded-none">
                     <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
                         <Calendar className="w-5 h-5 text-primary" />
                         Attendance Summary
@@ -120,12 +120,12 @@ export default function ReportsPage() {
                                     <span className="font-medium text-muted-foreground">{row.status}</span>
                                     <span className="font-bold">{row.count}</span>
                                 </div>
-                                <div className="h-2 bg-white/5 rounded-full overflow-hidden">
+                                <div className="h-2 bg-white/5 rounded-none overflow-hidden">
                                     <motion.div
                                         initial={{ width: 0 }}
                                         animate={{ width: `${(row.count / summary.total_members) * 100}%` }}
                                         className={cn(
-                                            "h-full rounded-full",
+                                            "h-full rounded-none",
                                             row.status === 'Present' ? "bg-emerald-500" : row.status === 'Absent' ? "bg-destructive" : "bg-amber-500"
                                         )}
                                     />

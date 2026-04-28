@@ -113,14 +113,14 @@ export default function GivingPage() {
                 <div className="flex gap-3">
                     <button
                         onClick={handleExportCSV}
-                        className="bg-card border border-border text-foreground px-4 py-2.5 rounded-xl font-bold text-xs uppercase tracking-widest flex items-center gap-2 hover:bg-muted transition-colors whitespace-nowrap"
+                        className="bg-card border border-border text-foreground px-4 py-2.5 rounded-none font-bold text-xs uppercase tracking-widest flex items-center gap-2 hover:bg-muted transition-colors whitespace-nowrap"
                     >
                         <Download className="w-4 h-4" />
                         Export CSV
                     </button>
                     <button
                         onClick={() => setShowModal(true)}
-                        className="bg-primary text-white px-6 py-2.5 rounded-xl font-bold text-xs uppercase tracking-widest flex items-center gap-2 hover:opacity-90 transition-opacity whitespace-nowrap shadow-xl shadow-primary/20"
+                        className="bg-primary text-white px-6 py-2.5 rounded-none font-bold text-xs uppercase tracking-widest flex items-center gap-2 hover:opacity-90 transition-opacity whitespace-nowrap shadow-xl shadow-primary/20"
                     >
                         <Plus className="w-4 h-4" />
                         Record Contribution
@@ -129,10 +129,10 @@ export default function GivingPage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-card border border-border p-6 rounded-2xl relative overflow-hidden shadow-sm">
+                <div className="bg-card border border-border p-6 rounded-none relative overflow-hidden shadow-sm">
                     <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-amber-500/10 rounded-xl flex items-center justify-center">
-                            <TrendingUp className="w-6 h-6 text-amber-500" />
+                        <div className="w-12 h-12 bg-secondary/10 rounded-none flex items-center justify-center">
+                            <TrendingUp className="w-6 h-6 text-secondary" />
                         </div>
                         <div>
                             <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Total Collections</p>
@@ -142,7 +142,7 @@ export default function GivingPage() {
                 </div>
             </div>
 
-            <div className="bg-card rounded-2xl overflow-hidden border border-border shadow-sm">
+            <div className="bg-card rounded-none overflow-hidden border border-border shadow-sm">
                 <div className="p-6 border-b border-border flex items-center justify-between">
                     <h3 className="text-lg font-black text-foreground uppercase tracking-tight">Contribution History</h3>
                 </div>
@@ -186,7 +186,7 @@ export default function GivingPage() {
                                             ${parseFloat(g.amount).toFixed(2)}
                                         </td>
                                         <td className="px-6 py-4">
-                                            <span className="px-2.5 py-1 rounded-lg bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest">
+                                            <span className="px-2.5 py-1 rounded-none bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest">
                                                 {g.type}
                                             </span>
                                         </td>
@@ -221,13 +221,13 @@ export default function GivingPage() {
                             initial={{ opacity: 0, scale: 0.95, y: 20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                            className="w-full max-w-lg bg-card border border-border rounded-3xl p-8 relative z-10 shadow-2xl"
+                            className="w-full max-w-lg bg-card border border-border rounded-none p-8 relative z-10 shadow-2xl"
                         >
                             <div className="flex items-center justify-between mb-8">
                                 <h2 className="text-2xl font-black text-foreground uppercase tracking-tight">Record Contribution</h2>
                                 <button
                                     onClick={() => setShowModal(false)}
-                                    className="p-2 hover:bg-muted rounded-full transition-colors text-foreground"
+                                    className="p-2 hover:bg-muted rounded-none transition-colors text-foreground"
                                 >
                                     <X className="w-6 h-6" />
                                 </button>
@@ -241,7 +241,7 @@ export default function GivingPage() {
                                         <select
                                             value={formData.event_id}
                                             onChange={(e) => setFormData({ ...formData, event_id: e.target.value })}
-                                            className="w-full bg-muted border-transparent rounded-xl pl-10 pr-4 py-3 text-sm font-bold text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all appearance-none"
+                                            className="w-full bg-muted border-transparent rounded-none pl-10 pr-4 py-3 text-sm font-bold text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all appearance-none"
                                         >
                                             <option value="" className="bg-card text-foreground">General / No Event</option>
                                             {events.map(e => (
@@ -260,7 +260,7 @@ export default function GivingPage() {
                                             placeholder="Enter donor name if known"
                                             value={formData.donor_name}
                                             onChange={(e) => setFormData({ ...formData, donor_name: e.target.value })}
-                                            className="w-full bg-muted border-transparent rounded-xl pl-10 pr-4 py-3 text-sm font-bold text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+                                            className="w-full bg-muted border-transparent rounded-none pl-10 pr-4 py-3 text-sm font-bold text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
                                         />
                                     </div>
                                 </div>
@@ -276,7 +276,7 @@ export default function GivingPage() {
                                                 required
                                                 value={formData.amount}
                                                 onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
-                                                className="w-full bg-muted border-transparent rounded-xl pl-10 pr-4 py-3 text-sm font-black text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+                                                className="w-full bg-muted border-transparent rounded-none pl-10 pr-4 py-3 text-sm font-black text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
                                             />
                                         </div>
                                     </div>
@@ -289,7 +289,7 @@ export default function GivingPage() {
                                                 required
                                                 value={formData.date}
                                                 onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                                                className="w-full bg-muted border-transparent rounded-xl pl-10 pr-4 py-3 text-sm font-bold text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+                                                className="w-full bg-muted border-transparent rounded-none pl-10 pr-4 py-3 text-sm font-bold text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
                                             />
                                         </div>
                                     </div>
@@ -304,7 +304,7 @@ export default function GivingPage() {
                                                 type="button"
                                                 onClick={() => setFormData({ ...formData, type })}
                                                 className={cn(
-                                                    "py-2 rounded-lg text-[10px] font-black transition-all border uppercase tracking-widest",
+                                                    "py-2 rounded-none text-[10px] font-black transition-all border uppercase tracking-widest",
                                                     formData.type === type
                                                         ? "bg-primary text-white border-primary shadow-lg shadow-primary/20"
                                                         : "bg-muted text-muted-foreground border-transparent hover:bg-muted/80"
@@ -320,13 +320,13 @@ export default function GivingPage() {
                                     <button
                                         type="button"
                                         onClick={() => setShowModal(false)}
-                                        className="px-6 py-2.5 rounded-xl font-black uppercase tracking-widest text-[10px] border border-border hover:bg-muted transition-colors text-foreground"
+                                        className="px-6 py-2.5 rounded-none font-black uppercase tracking-widest text-[10px] border border-border hover:bg-muted transition-colors text-foreground"
                                     >
                                         Cancel
                                     </button>
                                     <button
                                         type="submit"
-                                        className="bg-primary text-white px-8 py-2.5 rounded-xl font-black uppercase tracking-widest text-[10px] hover:opacity-90 transition-opacity shadow-xl shadow-primary/20"
+                                        className="bg-primary text-white px-8 py-2.5 rounded-none font-black uppercase tracking-widest text-[10px] hover:opacity-90 transition-opacity shadow-xl shadow-primary/20"
                                     >
                                         Record Contribution
                                     </button>

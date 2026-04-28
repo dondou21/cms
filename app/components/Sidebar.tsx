@@ -57,14 +57,14 @@ export default function Sidebar() {
     };
 
     return (
-        <div className="h-screen w-64 bg-[#0f172a] border-r border-slate-800 flex flex-col py-6 sticky top-0 transition-colors shadow-2xl">
+        <div className="h-screen w-64 bg-card border-r border-border flex flex-col py-6 sticky top-0 transition-colors shadow-2xl">
             <div className="flex items-center gap-3 mb-10 px-6">
-                <div className="w-10 h-10 bg-primary/20 rounded-lg flex items-center justify-center border border-primary/30">
+                <div className="w-10 h-10 bg-primary/20 rounded-none flex items-center justify-center border border-primary/30">
                     <Church className="w-6 h-6 text-primary" />
                 </div>
                 <div className="flex flex-col">
-                    <span className="text-sm font-black text-white leading-tight tracking-tight uppercase">Impact Center</span>
-                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{userRole}</span>
+                    <span className="text-sm font-black text-foreground leading-tight tracking-tight uppercase">House Of God</span>
+                    <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">{userRole}</span>
                 </div>
             </div>
 
@@ -75,12 +75,12 @@ export default function Sidebar() {
                     return (
                         <Link key={item.href} href={item.href}>
                             <div className={cn(
-                                "flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-bold text-xs uppercase tracking-widest",
-                                isActive
-                                    ? "bg-primary text-white shadow-lg shadow-primary/30"
-                                    : "text-slate-400 hover:bg-slate-800 hover:text-white"
+                                "flex items-center gap-3 px-4 py-3 rounded-none transition-all font-bold text-xs uppercase tracking-widest",
+                                    isActive
+                                        ? "bg-primary text-white shadow-lg shadow-primary/30"
+                                        : "text-muted-foreground hover:bg-muted hover:text-foreground"
                             )}>
-                                <item.icon className={cn("w-4 h-4", isActive ? "text-white" : "text-slate-400")} />
+                                <item.icon className={cn("w-4 h-4", isActive ? "text-white" : "text-muted-foreground")} />
                                 <span>{item.label}</span>
                             </div>
                         </Link>
@@ -88,10 +88,10 @@ export default function Sidebar() {
                 })}
             </nav>
 
-            <div className="pt-6 border-t border-slate-800 mt-auto px-4">
+            <div className="pt-6 border-t border-border mt-auto px-4">
                 <button
                     onClick={handleLogout}
-                    className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-rose-500/10 hover:text-rose-400 transition-all font-bold text-xs uppercase tracking-widest"
+                    className="w-full flex items-center gap-3 px-4 py-3 rounded-none text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-all font-bold text-xs uppercase tracking-widest"
                 >
                     <LogOut className="w-4 h-4" />
                     <span>{t('nav.logout')}</span>

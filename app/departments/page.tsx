@@ -59,7 +59,7 @@ export default function DepartmentsPage() {
                 </div>
                 <button
                     onClick={() => setShowModal(true)}
-                    className="bg-primary text-white px-6 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest flex items-center gap-2 hover:opacity-90 transition-opacity whitespace-nowrap shadow-xl shadow-primary/20"
+                    className="bg-primary text-white px-6 py-2.5 rounded-none font-black text-[10px] uppercase tracking-widest flex items-center gap-2 hover:opacity-90 transition-opacity whitespace-nowrap shadow-xl shadow-primary/20"
                 >
                     <Plus className="w-4 h-4" />
                     Create Department
@@ -69,7 +69,7 @@ export default function DepartmentsPage() {
             {loading ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {Array(6).fill(0).map((_, i) => (
-                        <div key={i} className="h-48 bg-card rounded-2xl animate-pulse border border-border" />
+                        <div key={i} className="h-48 bg-card rounded-none animate-pulse border border-border" />
                     ))}
                 </div>
             ) : (
@@ -79,16 +79,16 @@ export default function DepartmentsPage() {
                             key={dept.id}
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="bg-card p-6 rounded-2xl group hover:border-primary transition-all cursor-pointer relative overflow-hidden border border-border shadow-sm"
+                            className="bg-card p-6 rounded-none group hover:border-primary transition-all cursor-pointer relative overflow-hidden border border-border shadow-sm"
                         >
-                            <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-primary/5 rounded-full group-hover:scale-150 transition-transform duration-700" />
+                            <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-primary/5 rounded-none group-hover:scale-150 transition-transform duration-700" />
 
                             <div className="flex items-start justify-between mb-4">
-                                <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center border border-primary/20">
+                                <div className="w-12 h-12 bg-primary/10 rounded-none flex items-center justify-center border border-primary/20">
                                     <Building2 className="w-6 h-6 text-primary" />
                                 </div>
                                 <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <button className="p-1.5 hover:bg-muted rounded-lg text-muted-foreground">
+                                    <button className="p-1.5 hover:bg-muted rounded-none text-muted-foreground">
                                         <Edit3 className="w-4 h-4" />
                                     </button>
                                 </div>
@@ -126,13 +126,13 @@ export default function DepartmentsPage() {
                             initial={{ opacity: 0, scale: 0.95, y: 20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                            className="w-full max-w-lg bg-card rounded-3xl p-8 relative z-10 shadow-2xl border border-border"
+                            className="w-full max-w-lg bg-card rounded-none p-8 relative z-10 shadow-2xl border border-border"
                         >
                             <div className="flex items-center justify-between mb-8">
                                 <h2 className="text-2xl font-black text-foreground uppercase tracking-tight">New Department</h2>
                                 <button
                                     onClick={() => setShowModal(false)}
-                                    className="p-2 hover:bg-muted rounded-full transition-colors text-foreground"
+                                    className="p-2 hover:bg-muted rounded-none transition-colors text-foreground"
                                 >
                                     <X className="w-6 h-6" />
                                 </button>
@@ -147,7 +147,7 @@ export default function DepartmentsPage() {
                                         value={formData.name}
                                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                         placeholder="e.g. Worship Team, Ushering"
-                                        className="w-full bg-muted border-transparent rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all font-bold text-foreground"
+                                        className="w-full bg-muted border-transparent rounded-none px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all font-bold text-foreground"
                                     />
                                 </div>
                                 <div className="space-y-1">
@@ -157,7 +157,7 @@ export default function DepartmentsPage() {
                                         value={formData.description}
                                         onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                                         placeholder="Describe the purpose of this ministry..."
-                                        className="w-full bg-muted border-transparent rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all resize-none font-bold text-foreground text-sm"
+                                        className="w-full bg-muted border-transparent rounded-none px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all resize-none font-bold text-foreground text-sm"
                                     />
                                 </div>
 
@@ -165,13 +165,13 @@ export default function DepartmentsPage() {
                                     <button
                                         type="button"
                                         onClick={() => setShowModal(false)}
-                                        className="px-6 py-2.5 rounded-xl font-black uppercase tracking-widest text-[10px] border border-border hover:bg-muted transition-colors text-foreground"
+                                        className="px-6 py-2.5 rounded-none font-black uppercase tracking-widest text-[10px] border border-border hover:bg-muted transition-colors text-foreground"
                                     >
                                         Cancel
                                     </button>
                                     <button
                                         type="submit"
-                                        className="bg-primary text-white px-8 py-2.5 rounded-xl font-black uppercase tracking-widest text-[10px] hover:opacity-90 transition-opacity shadow-xl shadow-primary/20"
+                                        className="bg-primary text-white px-8 py-2.5 rounded-none font-black uppercase tracking-widest text-[10px] hover:opacity-90 transition-opacity shadow-xl shadow-primary/20"
                                     >
                                         Save Department
                                     </button>

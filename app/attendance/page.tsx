@@ -112,7 +112,7 @@ export default function AttendancePage() {
     if (loading) {
         return (
             <div className="h-[60vh] flex items-center justify-center">
-                <div className="w-10 h-10 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
+                <div className="w-10 h-10 border-4 border-primary/20 border-t-primary rounded-none animate-spin" />
             </div>
         );
     }
@@ -124,11 +124,11 @@ export default function AttendancePage() {
                     <h1 className="text-3xl font-extrabold text-foreground tracking-tight">{t('nav.attendance')}</h1>
                     <p className="text-muted-foreground mt-1">Manage service attendance and detailed ministry reports.</p>
                 </div>
-                <div className="flex bg-card p-1 rounded-xl border border-border shadow-sm self-start">
+                <div className="flex bg-card p-1 rounded-none border border-border shadow-sm self-start">
                     <button
                         onClick={() => setActiveTab('individual')}
                         className={cn(
-                            "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all",
+                            "flex items-center gap-2 px-4 py-2 rounded-none text-sm font-bold transition-all",
                             activeTab === 'individual' ? "bg-primary text-white shadow-md shadow-primary/20" : "text-muted-foreground hover:bg-muted"
                         )}
                     >
@@ -138,7 +138,7 @@ export default function AttendancePage() {
                     <button
                         onClick={() => setActiveTab('report')}
                         className={cn(
-                            "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all",
+                            "flex items-center gap-2 px-4 py-2 rounded-none text-sm font-bold transition-all",
                             activeTab === 'report' ? "bg-primary text-white shadow-md shadow-primary/20" : "text-muted-foreground hover:bg-muted"
                         )}
                     >
@@ -151,7 +151,7 @@ export default function AttendancePage() {
             {activeTab === 'individual' ? (
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <div className="lg:col-span-1 space-y-6">
-                        <div className="bg-card p-6 rounded-2xl border border-border shadow-sm">
+                        <div className="bg-card p-6 rounded-none border border-border shadow-sm">
                             <h3 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
                                 <CalendarDays className="w-5 h-5 text-primary" />
                                 Select Event
@@ -160,7 +160,7 @@ export default function AttendancePage() {
                                 <div>
                                     <label className="block text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2">Event</label>
                                     <select
-                                        className="w-full bg-muted border-transparent rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 text-foreground font-bold"
+                                        className="w-full bg-muted border-transparent rounded-none p-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 text-foreground font-bold"
                                         value={selectedEventId}
                                         onChange={(e) => {
                                             const id = e.target.value;
@@ -180,7 +180,7 @@ export default function AttendancePage() {
                                         <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                                         <input
                                             type="number"
-                                            className="w-full bg-muted border-transparent rounded-lg p-3 pl-10 text-xl font-black focus:outline-none focus:ring-2 focus:ring-primary/50 text-foreground"
+                                            className="w-full bg-muted border-transparent rounded-none p-3 pl-10 text-xl font-black focus:outline-none focus:ring-2 focus:ring-primary/50 text-foreground"
                                             value={attendanceCount}
                                             onChange={(e) => setAttendanceCount(e.target.value)}
                                         />
@@ -189,7 +189,7 @@ export default function AttendancePage() {
                                 <button
                                     onClick={handleSaveIndividual}
                                     disabled={saving || !selectedEventId}
-                                    className="w-full bg-primary text-white font-black uppercase tracking-widest text-xs py-4 rounded-xl shadow-xl shadow-primary/20 hover:opacity-90 transition-all flex items-center justify-center gap-2 mt-4 disabled:opacity-50"
+                                    className="w-full bg-primary text-white font-black uppercase tracking-widest text-xs py-4 rounded-none shadow-xl shadow-primary/20 hover:opacity-90 transition-all flex items-center justify-center gap-2 mt-4 disabled:opacity-50"
                                 >
                                     <Save className="w-4 h-4" />
                                     {saving ? 'Saving...' : 'Save Attendance'}
@@ -198,7 +198,7 @@ export default function AttendancePage() {
                         </div>
                     </div>
                     <div className="lg:col-span-2">
-                        <div className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden">
+                        <div className="bg-card rounded-none border border-border shadow-sm overflow-hidden">
                             <div className="p-6 border-b border-border flex items-center justify-between">
                                 <h3 className="text-lg font-bold text-foreground">Attendance History</h3>
                                 <div className="relative w-64">
@@ -206,7 +206,7 @@ export default function AttendancePage() {
                                     <input
                                         type="text"
                                         placeholder="Search events..."
-                                        className="w-full bg-muted border-transparent rounded-lg pl-9 pr-3 py-1.5 text-xs text-foreground"
+                                        className="w-full bg-muted border-transparent rounded-none pl-9 pr-3 py-1.5 text-xs text-foreground"
                                         value={searchTerm}
                                         onChange={(e) => setSearchTerm(e.target.value)}
                                     />
@@ -228,7 +228,7 @@ export default function AttendancePage() {
                                                 <td className="px-6 py-4 font-bold text-foreground">{new Date(evt.date).toLocaleDateString()}</td>
                                                 <td className="px-6 py-4 text-foreground">{evt.title}</td>
                                                 <td className="px-6 py-4 text-center">
-                                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-black bg-primary/10 text-primary uppercase tracking-widest">
+                                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-none text-[10px] font-black bg-primary/10 text-primary uppercase tracking-widest">
                                                         {evt.attendance_count || 0}
                                                     </span>
                                                 </td>
@@ -246,7 +246,7 @@ export default function AttendancePage() {
             ) : (
                 <form onSubmit={handleSaveReport} className="max-w-5xl mx-auto space-y-8">
                     {/* Header Details */}
-                    <div className="bg-card p-8 rounded-3xl border border-border shadow-sm space-y-6">
+                    <div className="bg-card p-8 rounded-none border border-border shadow-sm space-y-6">
                         <div className="flex items-center gap-3 border-b border-border pb-4">
                             <ClipboardList className="w-6 h-6 text-primary" />
                             <h2 className="text-xl font-black uppercase tracking-tight text-foreground">{t('reports.service_report')}</h2>
@@ -258,7 +258,7 @@ export default function AttendancePage() {
                                     type="text"
                                     value={reportData.departement}
                                     readOnly
-                                    className="w-full bg-muted border-transparent rounded-xl px-4 py-3 text-sm font-bold text-muted-foreground focus:outline-none"
+                                    className="w-full bg-muted border-transparent rounded-none px-4 py-3 text-sm font-bold text-muted-foreground focus:outline-none"
                                 />
                             </div>
                             <div className="space-y-1">
@@ -268,7 +268,7 @@ export default function AttendancePage() {
                                     required
                                     value={reportData.date}
                                     onChange={(e) => setReportData({ ...reportData, date: e.target.value })}
-                                    className="w-full bg-muted border-transparent rounded-xl px-4 py-3 text-sm font-bold text-foreground focus:ring-2 focus:ring-primary/20 transition-all"
+                                    className="w-full bg-muted border-transparent rounded-none px-4 py-3 text-sm font-bold text-foreground focus:ring-2 focus:ring-primary/20 transition-all"
                                 />
                             </div>
                             <div className="space-y-1">
@@ -278,7 +278,7 @@ export default function AttendancePage() {
                                     placeholder="ex: Culte de célébration"
                                     value={reportData.programme}
                                     onChange={(e) => setReportData({ ...reportData, programme: e.target.value })}
-                                    className="w-full bg-muted border-transparent rounded-xl px-4 py-3 text-sm font-bold text-foreground focus:ring-2 focus:ring-primary/20 transition-all"
+                                    className="w-full bg-muted border-transparent rounded-none px-4 py-3 text-sm font-bold text-foreground focus:ring-2 focus:ring-primary/20 transition-all"
                                 />
                             </div>
                             <div className="space-y-1">
@@ -287,7 +287,7 @@ export default function AttendancePage() {
                                     type="text"
                                     value={reportData.organisateur}
                                     onChange={(e) => setReportData({ ...reportData, organisateur: e.target.value })}
-                                    className="w-full bg-muted border-transparent rounded-xl px-4 py-3 text-sm font-bold text-foreground focus:ring-2 focus:ring-primary/20 transition-all"
+                                    className="w-full bg-muted border-transparent rounded-none px-4 py-3 text-sm font-bold text-foreground focus:ring-2 focus:ring-primary/20 transition-all"
                                 />
                             </div>
                         </div>
@@ -296,7 +296,7 @@ export default function AttendancePage() {
                     {/* Stats Tables */}
                     <div className="grid grid-cols-1 gap-8">
                         {/* Frequentation */}
-                        <div className="bg-card rounded-3xl border border-border shadow-sm overflow-hidden">
+                        <div className="bg-card rounded-none border border-border shadow-sm overflow-hidden">
                             <div className="bg-primary p-4 text-white font-black uppercase tracking-widest text-sm flex justify-between items-center">
                                 <span>{t('reports.attendance_stats')}</span>
                                 <TrendingUp className="w-4 h-4" />
@@ -320,14 +320,14 @@ export default function AttendancePage() {
                                         <tr>
                                             <td className="px-6 py-4 text-muted-foreground">1</td>
                                             <td className="px-6 py-4">{t('reports.men')}</td>
-                                            <td className="px-6 py-4 text-center"><input type="number" value={reportData.adults_men} onChange={(e) => setReportData({...reportData, adults_men: Number(e.target.value)})} className="w-20 mx-auto text-center bg-muted border-transparent rounded-lg py-1 font-bold" /></td>
+                                            <td className="px-6 py-4 text-center"><input type="number" value={reportData.adults_men} onChange={(e) => setReportData({...reportData, adults_men: Number(e.target.value)})} className="w-20 mx-auto text-center bg-muted border-transparent rounded-none py-1 font-bold" /></td>
                                             <td className="px-6 py-4 text-center">{getProgression(reportData.adults_men, prevReport?.adults_men)?.val ?? '-'}</td>
                                             <td className="px-6 py-4 text-center">-</td>
                                         </tr>
                                         <tr>
                                             <td className="px-6 py-4 text-muted-foreground">2</td>
                                             <td className="px-6 py-4">{t('reports.women')}</td>
-                                            <td className="px-6 py-4 text-center"><input type="number" value={reportData.adults_women} onChange={(e) => setReportData({...reportData, adults_women: Number(e.target.value)})} className="w-20 mx-auto text-center bg-muted border-transparent rounded-lg py-1 font-bold" /></td>
+                                            <td className="px-6 py-4 text-center"><input type="number" value={reportData.adults_women} onChange={(e) => setReportData({...reportData, adults_women: Number(e.target.value)})} className="w-20 mx-auto text-center bg-muted border-transparent rounded-none py-1 font-bold" /></td>
                                             <td className="px-6 py-4 text-center">{getProgression(reportData.adults_women, prevReport?.adults_women)?.val ?? '-'}</td>
                                             <td className="px-6 py-4 text-center">-</td>
                                         </tr>
@@ -345,14 +345,14 @@ export default function AttendancePage() {
                                         <tr>
                                             <td className="px-6 py-4 text-muted-foreground">3</td>
                                             <td className="px-6 py-4">{t('reports.girls')}</td>
-                                            <td className="px-6 py-4 text-center"><input type="number" value={reportData.juniors_girls} onChange={(e) => setReportData({...reportData, juniors_girls: Number(e.target.value)})} className="w-20 mx-auto text-center bg-muted border-transparent rounded-lg py-1 font-bold" /></td>
+                                            <td className="px-6 py-4 text-center"><input type="number" value={reportData.juniors_girls} onChange={(e) => setReportData({...reportData, juniors_girls: Number(e.target.value)})} className="w-20 mx-auto text-center bg-muted border-transparent rounded-none py-1 font-bold" /></td>
                                             <td className="px-6 py-4 text-center">{getProgression(reportData.juniors_girls, prevReport?.juniors_girls)?.val ?? '-'}</td>
                                             <td className="px-6 py-4 text-center">-</td>
                                         </tr>
                                         <tr>
                                             <td className="px-6 py-4 text-muted-foreground">4</td>
                                             <td className="px-6 py-4">{t('reports.boys')}</td>
-                                            <td className="px-6 py-4 text-center"><input type="number" value={reportData.juniors_boys} onChange={(e) => setReportData({...reportData, juniors_boys: Number(e.target.value)})} className="w-20 mx-auto text-center bg-muted border-transparent rounded-lg py-1 font-bold" /></td>
+                                            <td className="px-6 py-4 text-center"><input type="number" value={reportData.juniors_boys} onChange={(e) => setReportData({...reportData, juniors_boys: Number(e.target.value)})} className="w-20 mx-auto text-center bg-muted border-transparent rounded-none py-1 font-bold" /></td>
                                             <td className="px-6 py-4 text-center">{getProgression(reportData.juniors_boys, prevReport?.juniors_boys)?.val ?? '-'}</td>
                                             <td className="px-6 py-4 text-center">-</td>
                                         </tr>
@@ -377,7 +377,7 @@ export default function AttendancePage() {
                         </div>
 
                         {/* Integration */}
-                        <div className="bg-card rounded-3xl border border-border shadow-sm overflow-hidden">
+                        <div className="bg-card rounded-none border border-border shadow-sm overflow-hidden">
                             <div className="bg-primary p-4 text-white font-black uppercase tracking-widest text-sm flex justify-between items-center">
                                 <span>{t('reports.integration')}</span>
                                 <History className="w-4 h-4" />
@@ -396,7 +396,7 @@ export default function AttendancePage() {
                                         <tr>
                                             <td className="px-6 py-4 text-muted-foreground">1</td>
                                             <td className="px-6 py-4 uppercase text-xs">{t('reports.visitors_total')}</td>
-                                            <td className="px-6 py-4 text-center"><input type="number" value={reportData.visitors_total} onChange={(e) => setReportData({...reportData, visitors_total: Number(e.target.value)})} className="w-20 mx-auto text-center bg-muted border-transparent rounded-lg py-1 font-bold" /></td>
+                                            <td className="px-6 py-4 text-center"><input type="number" value={reportData.visitors_total} onChange={(e) => setReportData({...reportData, visitors_total: Number(e.target.value)})} className="w-20 mx-auto text-center bg-muted border-transparent rounded-none py-1 font-bold" /></td>
                                             <td className="px-6 py-4 text-center">{getProgression(reportData.visitors_total, prevReport?.visitors_total)?.val ?? '-'}</td>
                                         </tr>
                                     </tbody>
@@ -406,7 +406,7 @@ export default function AttendancePage() {
                     </div>
 
                     {/* Remarks Section */}
-                    <div className="bg-card p-8 rounded-3xl border border-border shadow-sm space-y-6">
+                    <div className="bg-card p-8 rounded-none border border-border shadow-sm space-y-6">
                         <div className="space-y-4">
                             <div>
                                 <label className="text-[10px] font-black uppercase tracking-widest text-primary mb-2 block">{t('reports.problems')}</label>
@@ -414,7 +414,7 @@ export default function AttendancePage() {
                                     rows={3}
                                     value={reportData.problems}
                                     onChange={(e) => setReportData({ ...reportData, problems: e.target.value })}
-                                    className="w-full bg-muted border-transparent rounded-2xl p-4 text-sm font-bold focus:ring-2 focus:ring-primary/20 transition-all outline-none text-foreground"
+                                    className="w-full bg-muted border-transparent rounded-none p-4 text-sm font-bold focus:ring-2 focus:ring-primary/20 transition-all outline-none text-foreground"
                                     placeholder="Décrivez les problèmes techniques ou logistiques..."
                                 />
                             </div>
@@ -424,7 +424,7 @@ export default function AttendancePage() {
                                     rows={3}
                                     value={reportData.general_remarks}
                                     onChange={(e) => setReportData({ ...reportData, general_remarks: e.target.value })}
-                                    className="w-full bg-muted border-transparent rounded-2xl p-4 text-sm font-bold focus:ring-2 focus:ring-primary/20 transition-all outline-none text-foreground"
+                                    className="w-full bg-muted border-transparent rounded-none p-4 text-sm font-bold focus:ring-2 focus:ring-primary/20 transition-all outline-none text-foreground"
                                     placeholder="Notes spirituelles, climat du culte, témoignages..."
                                 />
                             </div>
@@ -436,14 +436,14 @@ export default function AttendancePage() {
                         <button
                             type="button"
                             onClick={() => setActiveTab('individual')}
-                            className="px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] text-muted-foreground hover:bg-muted transition-colors"
+                            className="px-8 py-4 rounded-none font-black uppercase tracking-widest text-[10px] text-muted-foreground hover:bg-muted transition-colors"
                         >
                             {t('members.cancel')}
                         </button>
                         <button
                             type="submit"
                             disabled={saving}
-                            className="bg-primary text-white px-10 py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] shadow-xl shadow-primary/20 hover:opacity-90 transition-all disabled:opacity-50"
+                            className="bg-primary text-white px-10 py-4 rounded-none font-black uppercase tracking-widest text-[10px] shadow-xl shadow-primary/20 hover:opacity-90 transition-all disabled:opacity-50"
                         >
                             {saving ? 'Saving...' : 'Enregistrer le Rapport'}
                         </button>

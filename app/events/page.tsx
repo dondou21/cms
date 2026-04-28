@@ -67,7 +67,7 @@ export default function EventsPage() {
                 </div>
                 <button
                     onClick={() => setShowModal(true)}
-                    className="bg-primary text-white px-6 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest flex items-center gap-2 hover:opacity-90 transition-opacity whitespace-nowrap shadow-xl shadow-primary/20"
+                    className="bg-primary text-white px-6 py-2.5 rounded-none font-black text-[10px] uppercase tracking-widest flex items-center gap-2 hover:opacity-90 transition-opacity whitespace-nowrap shadow-xl shadow-primary/20"
                 >
                     <Plus className="w-4 h-4" />
                     Schedule Event
@@ -77,7 +77,7 @@ export default function EventsPage() {
             {loading ? (
                 <div className="space-y-4">
                     {Array(3).fill(0).map((_, i) => (
-                        <div key={i} className="h-24 bg-card rounded-2xl animate-pulse border border-border" />
+                        <div key={i} className="h-24 bg-card rounded-none animate-pulse border border-border" />
                     ))}
                 </div>
             ) : (
@@ -87,10 +87,10 @@ export default function EventsPage() {
                             key={event.id}
                             initial={{ opacity: 0, x: -10 }}
                             animate={{ opacity: 1, x: 0 }}
-                            className="bg-card p-6 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-6 hover:border-primary/50 transition-all border border-border shadow-sm"
+                            className="bg-card p-6 rounded-none flex flex-col md:flex-row md:items-center justify-between gap-6 hover:border-primary/50 transition-all border border-border shadow-sm"
                         >
                             <div className="flex items-center gap-6">
-                                <div className="w-16 h-16 bg-primary/10 rounded-2xl flex flex-col items-center justify-center text-primary border border-primary/20">
+                                <div className="w-16 h-16 bg-primary/10 rounded-none flex flex-col items-center justify-center text-primary border border-primary/20">
                                     <span className="text-[10px] font-black uppercase tracking-widest">{new Date(event.date).toLocaleString('default', { month: 'short' })}</span>
                                     <span className="text-2xl font-black leading-none">{new Date(event.date).getDate()}</span>
                                 </div>
@@ -110,15 +110,15 @@ export default function EventsPage() {
                             </div>
 
                             <div className="flex items-center gap-3">
-                                <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-muted text-[10px] font-black uppercase tracking-widest hover:bg-muted/80 transition-colors text-foreground border border-border">
+                                <button className="flex items-center gap-2 px-4 py-2 rounded-none bg-muted text-[10px] font-black uppercase tracking-widest hover:bg-muted/80 transition-colors text-foreground border border-border">
                                     <Users className="w-3.5 h-3.5" />
                                     Register
                                 </button>
                                 <div className="w-px h-8 bg-border mx-2" />
-                                <button className="p-2 hover:bg-muted rounded-lg text-muted-foreground transition-colors">
+                                <button className="p-2 hover:bg-muted rounded-none text-muted-foreground transition-colors">
                                     <Edit className="w-4 h-4" />
                                 </button>
-                                <button className="p-2 hover:bg-destructive/10 rounded-lg text-destructive transition-colors">
+                                <button className="p-2 hover:bg-destructive/10 rounded-none text-destructive transition-colors">
                                     <Trash2 className="w-4 h-4" />
                                 </button>
                             </div>
@@ -142,13 +142,13 @@ export default function EventsPage() {
                             initial={{ opacity: 0, scale: 0.95, y: 20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                            className="w-full max-w-lg bg-card rounded-3xl p-8 relative z-10 shadow-2xl border border-border"
+                            className="w-full max-w-lg bg-card rounded-none p-8 relative z-10 shadow-2xl border border-border"
                         >
                             <div className="flex items-center justify-between mb-8">
                                 <h2 className="text-2xl font-black text-foreground uppercase tracking-tight">Schedule New Event</h2>
                                 <button
                                     onClick={() => setShowModal(false)}
-                                    className="p-2 hover:bg-muted rounded-full transition-colors text-foreground"
+                                    className="p-2 hover:bg-muted rounded-none transition-colors text-foreground"
                                 >
                                     <X className="w-6 h-6" />
                                 </button>
@@ -163,7 +163,7 @@ export default function EventsPage() {
                                         value={formData.title}
                                         onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                                         placeholder="e.g. Sunday Morning Service"
-                                        className="w-full bg-muted border-transparent rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all font-bold text-foreground"
+                                        className="w-full bg-muted border-transparent rounded-none px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all font-bold text-foreground"
                                     />
                                 </div>
 
@@ -177,7 +177,7 @@ export default function EventsPage() {
                                                 required
                                                 value={formData.date}
                                                 onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                                                className="w-full bg-muted border-transparent rounded-xl pl-10 pr-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-sm font-bold text-foreground"
+                                                className="w-full bg-muted border-transparent rounded-none pl-10 pr-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-sm font-bold text-foreground"
                                             />
                                         </div>
                                     </div>
@@ -189,7 +189,7 @@ export default function EventsPage() {
                                                 type="time"
                                                 value={formData.time}
                                                 onChange={(e) => setFormData({ ...formData, time: e.target.value })}
-                                                className="w-full bg-muted border-transparent rounded-xl pl-10 pr-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-sm font-bold text-foreground"
+                                                className="w-full bg-muted border-transparent rounded-none pl-10 pr-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-sm font-bold text-foreground"
                                             />
                                         </div>
                                     </div>
@@ -204,7 +204,7 @@ export default function EventsPage() {
                                             value={formData.location}
                                             onChange={(e) => setFormData({ ...formData, location: e.target.value })}
                                             placeholder="e.g. Main Auditorium"
-                                            className="w-full bg-muted border-transparent rounded-xl pl-10 pr-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-sm font-bold text-foreground"
+                                            className="w-full bg-muted border-transparent rounded-none pl-10 pr-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-sm font-bold text-foreground"
                                         />
                                     </div>
                                 </div>
@@ -216,7 +216,7 @@ export default function EventsPage() {
                                         value={formData.description}
                                         onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                                         placeholder="Short summary of the event..."
-                                        className="w-full bg-muted border-transparent rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all resize-none text-sm font-bold text-foreground"
+                                        className="w-full bg-muted border-transparent rounded-none px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all resize-none text-sm font-bold text-foreground"
                                     />
                                 </div>
 
@@ -224,13 +224,13 @@ export default function EventsPage() {
                                     <button
                                         type="button"
                                         onClick={() => setShowModal(false)}
-                                        className="px-6 py-2.5 rounded-xl font-black uppercase tracking-widest text-[10px] border border-border hover:bg-muted transition-colors text-foreground"
+                                        className="px-6 py-2.5 rounded-none font-black uppercase tracking-widest text-[10px] border border-border hover:bg-muted transition-colors text-foreground"
                                     >
                                         Cancel
                                     </button>
                                     <button
                                         type="submit"
-                                        className="bg-primary text-white px-8 py-2.5 rounded-xl font-black uppercase tracking-widest text-[10px] hover:opacity-90 transition-opacity shadow-xl shadow-primary/20"
+                                        className="bg-primary text-white px-8 py-2.5 rounded-none font-black uppercase tracking-widest text-[10px] hover:opacity-90 transition-opacity shadow-xl shadow-primary/20"
                                     >
                                         Create Event
                                     </button>

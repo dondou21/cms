@@ -1,4 +1,5 @@
 const db = require('../config/db');
+const ServiceReport = require('../models/serviceReport');
 
 exports.createReport = async (req, res) => {
     try {

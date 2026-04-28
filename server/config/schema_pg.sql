@@ -30,7 +30,8 @@ CREATE TABLE IF NOT EXISTS members (
     email              VARCHAR(255),
     phone              VARCHAR(50),
     address            TEXT,
-    invited_by         VARCHAR(255), -- Social media, friend, etc.
+    invited_by         VARCHAR(255), -- Friend, social media, etc.
+    referral_source    VARCHAR(255), -- More specific details
     age_range          VARCHAR(50),  -- Moins de 18, 18-24, etc.
     marital_status     VARCHAR(50),  -- Single, Married, etc.
     accepted_christ    BOOLEAN DEFAULT FALSE,
