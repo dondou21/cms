@@ -127,8 +127,13 @@ app.whenReady().then(async () => {
         }
     }
 
-    startExpressServer();
-    startNextServer();
+    // Only start background servers if NOT in development or if explicitly asked
+    const shouldSpawn = !isDev || process.argv.includes('--spawn-servers');
+
+    if (shouldSpawn) {
+        startExpressServer();
+        startNextServer();
+    }
 
     try {
         console.log('Waiting for servers to start...');

@@ -8,7 +8,7 @@ const Member = {
             want_accompaniment, usual_church, want_to_join_icc, 
             desires_contact_leader, desires_impact_group, desires_house_church, 
             desires_formation_001, info_request_mui, info_request_events,
-            join_gs, comments, department_id, status 
+            join_gs, remarks, is_star, status 
         } = memberData;
         const [rows] = await db.execute(
             `INSERT INTO members (
@@ -17,7 +17,7 @@ const Member = {
                 want_accompaniment, usual_church, want_to_join_icc, 
                 desires_contact_leader, desires_impact_group, desires_house_church, 
                 desires_formation_001, info_request_mui, info_request_events,
-                join_gs, comments, department_id, status
+                join_gs, remarks, is_star, status
             ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24) RETURNING id`,
             [
                 civilite, first_name, last_name, email, phone, address, 
@@ -25,18 +25,36 @@ const Member = {
                 want_accompaniment || false, usual_church || false, want_to_join_icc || false, 
                 desires_contact_leader || false, desires_impact_group || false, desires_house_church || false,
                 desires_formation_001 || false, info_request_mui || false, info_request_events || false,
-                join_gs || false, comments, department_id || null, status || 'Active'
+                join_gs || false, remarks, is_star || false, status || 'active'
             ]
         );
         return rows[0].id;
     },
 
-    findAll: async () => {
-        const [rows] = await db.execute(`
-      SELECT m.*, d.name as department_name 
-      FROM members m 
-      LEFT JOIN departments d ON m.department_id = d.id
-    `);
+    findAll: async (filters = {}) => {
+        let query = 'SELECT * FROM members';
+        const params = [];
+        const conditions = [];
+
+        if (filters.status) {
+            params.push(filters.status);
+            conditions.push(`status = $${params.length}`);
+        }
+        if (filters.is_star !== undefined) {
+            params.push(filters.is_star);
+            conditions.push(`is_star = $${params.length}`);
+        }
+        if (filters.search) {
+            params.push(`%${filters.search}%`);
+            conditions.push(`(first_name ILIKE $${params.length} OR last_name ILIKE $${params.length} OR email ILIKE $${params.length})`);
+        }
+
+        if (conditions.length > 0) {
+            query += ' WHERE ' + conditions.join(' AND ');
+        }
+
+        query += ' ORDER BY created_at DESC';
+        const [rows] = await db.execute(query, params);
         return rows;
     },
 
@@ -57,7 +75,7 @@ const Member = {
             want_accompaniment, usual_church, want_to_join_icc, 
             desires_contact_leader, desires_impact_group, desires_house_church, 
             desires_formation_001, info_request_mui, info_request_events,
-            join_gs, comments, status, department_id 
+            join_gs, remarks, is_star, status 
         } = memberData;
         await db.execute(
             `UPDATE members SET 
@@ -66,7 +84,7 @@ const Member = {
                 accepted_christ = $11, want_accompaniment = $12, usual_church = $13, 
                 want_to_join_icc = $14, desires_contact_leader = $15, desires_impact_group = $16, 
                 desires_house_church = $17, desires_formation_001 = $18, info_request_mui = $19, 
-                info_request_events = $20, join_gs = $21, comments = $22, status = $23, department_id = $24 
+                info_request_events = $20, join_gs = $21, remarks = $22, is_star = $23, status = $24 
             WHERE id = $25`,
             [
                 civilite, first_name, last_name, email, phone, address, 
@@ -74,7 +92,7 @@ const Member = {
                 want_accompaniment, usual_church, want_to_join_icc, 
                 desires_contact_leader, desires_impact_group, desires_house_church, 
                 desires_formation_001, info_request_mui, info_request_events,
-                join_gs, comments, status, department_id, id
+                join_gs, remarks, is_star, status, id
             ]
         );
     },

@@ -25,6 +25,7 @@ export default function MembersPage() {
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
     const [showModal, setShowModal] = useState(false);
+    const [filters, setFilters] = useState({ status: '', is_star: '' });
     const [formData, setFormData] = useState({
         civilite: 'Mr',
         first_name: '',
@@ -39,16 +40,21 @@ export default function MembersPage() {
         want_accompaniment: false,
         usual_church: false,
         want_to_join_icc: false,
-        interests: '',
-        info_on: '',
         join_gs: false,
-        comments: '',
-        department_id: ''
+        remarks: '',
+        is_star: false,
+        status: 'active'
     });
 
     const fetchMembers = async () => {
         try {
-            const response = await api.get('/members');
+            setLoading(true);
+            const queryParams = new URLSearchParams();
+            if (filters.status) queryParams.append('status', filters.status);
+            if (filters.is_star) queryParams.append('is_star', filters.is_star);
+            if (search) queryParams.append('search', search);
+            
+            const response = await api.get(`/members?${queryParams.toString()}`);
             setMembers(response.data);
         } catch (err) {
             console.error('Failed to fetch members', err);
@@ -58,8 +64,11 @@ export default function MembersPage() {
     };
 
     useEffect(() => {
-        fetchMembers();
-    }, []);
+        const timer = setTimeout(() => {
+            fetchMembers();
+        }, 300);
+        return () => clearTimeout(timer);
+    }, [filters, search]);
 
     const handleAddMember = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -124,10 +133,7 @@ export default function MembersPage() {
         document.body.removeChild(link);
     };
 
-    const filteredMembers = members.filter(m =>
-        `${m.first_name} ${m.last_name}`.toLowerCase().includes(search.toLowerCase()) ||
-        m.email?.toLowerCase().includes(search.toLowerCase())
-    );
+    const filteredMembers = members; // Server-side filtering now
 
     return (
         <div className="space-y-8">
@@ -154,17 +160,40 @@ export default function MembersPage() {
                 </div>
             </div>
 
-            <div className="flex items-center gap-4 bg-card border border-border p-2 rounded-none w-full max-w-md shadow-sm">
-                <div className="pl-3">
-                    <Search className="w-5 h-5 text-muted-foreground" />
+            <div className="flex flex-wrap items-center gap-4">
+                <div className="flex items-center gap-4 bg-card border border-border p-2 rounded-none w-full max-w-md shadow-sm">
+                    <div className="pl-3">
+                        <Search className="w-5 h-5 text-muted-foreground" />
+                    </div>
+                    <input
+                        type="text"
+                        placeholder={t('members.search')}
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        className="bg-transparent border-none focus:ring-0 text-sm w-full py-2 placeholder:text-muted-foreground text-foreground font-medium"
+                    />
                 </div>
-                <input
-                    type="text"
-                    placeholder={t('members.search')}
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    className="bg-transparent border-none focus:ring-0 text-sm w-full py-2 placeholder:text-muted-foreground text-foreground font-medium"
-                />
+                
+                <select 
+                    value={filters.status}
+                    onChange={(e) => setFilters({ ...filters, status: e.target.value })}
+                    className="bg-card border border-border px-4 py-3 text-[10px] font-black uppercase tracking-widest text-foreground focus:ring-0 outline-none"
+                >
+                    <option value="">Tous les statuts</option>
+                    <option value="active">Actif</option>
+                    <option value="visitor">Visiteur</option>
+                    <option value="inactive">Inactif</option>
+                </select>
+
+                <select 
+                    value={filters.is_star}
+                    onChange={(e) => setFilters({ ...filters, is_star: e.target.value })}
+                    className="bg-card border border-border px-4 py-3 text-[10px] font-black uppercase tracking-widest text-foreground focus:ring-0 outline-none"
+                >
+                    <option value="">Tous les groupes</option>
+                    <option value="true">STAR Members</option>
+                    <option value="false">Non-STAR</option>
+                </select>
             </div>
 
             <div className="bg-card rounded-none overflow-hidden border border-border shadow-sm">
@@ -204,7 +233,12 @@ export default function MembersPage() {
                                                     {member.civilite}
                                                 </div>
                                                 <div>
-                                                    <div className="font-black text-sm uppercase tracking-tight">{member.first_name} {member.last_name}</div>
+                                                    <div className="flex items-center gap-2">
+                                                        <div className="font-black text-sm uppercase tracking-tight">{member.first_name} {member.last_name}</div>
+                                                        {member.is_star && (
+                                                            <span className="bg-primary text-white text-[7px] font-black px-1 py-0.5 rounded-none tracking-tighter">STAR</span>
+                                                        )}
+                                                    </div>
                                                     <div className="text-[10px] text-muted-foreground font-black uppercase tracking-widest">{member.marital_status || 'N/A'}</div>
                                                 </div>
                                             </div>
@@ -227,7 +261,9 @@ export default function MembersPage() {
                                         <td className="px-6 py-4">
                                             <span className={cn(
                                                 "px-2.5 py-1 rounded-none text-[10px] font-black uppercase tracking-widest",
-                                                member.status === 'active' ? "bg-emerald-500/10 text-emerald-600" : "bg-destructive/10 text-destructive"
+                                                member.status === 'active' ? "bg-emerald-500/10 text-emerald-600" : 
+                                                member.status === 'visitor' ? "bg-amber-500/10 text-amber-600" :
+                                                "bg-destructive/10 text-destructive"
                                             )}>
                                                 {member.status}
                                             </span>
@@ -397,7 +433,7 @@ export default function MembersPage() {
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                                     <div className="flex items-center gap-3 bg-muted p-4 rounded-none border border-border">
                                         <input
                                             type="checkbox"
@@ -418,14 +454,24 @@ export default function MembersPage() {
                                         />
                                         <label htmlFor="want_to_join_icc" className="text-[10px] font-black uppercase tracking-widest text-foreground">{t('members.want_to_join')}</label>
                                     </div>
+                                    <div className="flex items-center gap-3 bg-primary/10 p-4 rounded-none border border-primary/20">
+                                        <input
+                                            type="checkbox"
+                                            id="is_star"
+                                            checked={formData.is_star}
+                                            onChange={(e) => setFormData({ ...formData, is_star: e.target.checked })}
+                                            className="w-4 h-4 rounded border-primary bg-card text-primary focus:ring-primary"
+                                        />
+                                        <label htmlFor="is_star" className="text-[10px] font-black uppercase tracking-widest text-primary">STAR MEMBER</label>
+                                    </div>
                                 </div>
 
                                 <div className="space-y-1 mb-6">
-                                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">{t('members.comments')}</label>
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">REMARQUES / OBSERVATIONS</label>
                                     <textarea
                                         rows={2}
-                                        value={formData.comments}
-                                        onChange={(e) => setFormData({ ...formData, comments: e.target.value })}
+                                        value={formData.remarks}
+                                        onChange={(e) => setFormData({ ...formData, remarks: e.target.value })}
                                         className="w-full bg-muted border-transparent rounded-none px-4 py-3 text-sm font-bold text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all resize-none"
                                     />
                                 </div>

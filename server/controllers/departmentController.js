@@ -46,11 +46,50 @@ exports.deleteDepartment = async (req, res) => {
     }
 };
 
-exports.getDepartmentMembers = async (req, res) => {
+exports.getDepartmentDetails = async (req, res) => {
     try {
-        const members = await Department.getMembers(req.params.id);
-        res.json(members);
+        const roles = await Department.getRoles(req.params.id);
+        const programs = await Department.getPrograms(req.params.id);
+        res.json({ roles, programs });
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching department members', error: error.message });
+        res.status(500).json({ message: 'Error fetching department details', error: error.message });
+    }
+};
+
+exports.addDepartmentRole = async (req, res) => {
+    try {
+        const { member_id, role_name } = req.body;
+        await Department.addRole(req.params.id, member_id, role_name);
+        res.json({ message: 'Role added successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error adding role', error: error.message });
+    }
+};
+
+exports.deleteDepartmentRole = async (req, res) => {
+    try {
+        await Department.deleteRole(req.params.roleId);
+        res.json({ message: 'Role deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error deleting role', error: error.message });
+    }
+};
+
+exports.addDepartmentProgram = async (req, res) => {
+    try {
+        const { day_of_week, time, activity } = req.body;
+        await Department.addProgram(req.params.id, day_of_week, time, activity);
+        res.json({ message: 'Program added successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error adding program', error: error.message });
+    }
+};
+
+exports.deleteDepartmentProgram = async (req, res) => {
+    try {
+        await Department.deleteProgram(req.params.programId);
+        res.json({ message: 'Program deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error deleting program', error: error.message });
     }
 };

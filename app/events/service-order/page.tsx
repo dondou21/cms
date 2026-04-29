@@ -62,6 +62,7 @@ export default function ServiceOrderPage() {
         }
     ]);
 
+    const [eventsList, setEventsList] = useState<any[]>([]); // New Events Section
     const [annoncesPool, setAnnoncesPool] = useState<AnnouncementItem[]>([
         { 
             id: 'ann-1', 
@@ -112,7 +113,8 @@ export default function ServiceOrderPage() {
                 description,
                 location,
                 theme,
-                sequences: services, // Nested services now
+                sequences: services,
+                events_list: eventsList,
                 announcements: annoncesPool
             });
             fetchInitialData();
@@ -377,6 +379,7 @@ export default function ServiceOrderPage() {
                                             } else {
                                                 setServices([{ id: '1', title: 'CULTE', sequences: order.sequences }]);
                                             }
+                                            setEventsList(order.events_list || []);
                                             setAnnoncesPool(order.announcements);
                                         }
                                     }}
@@ -532,6 +535,56 @@ export default function ServiceOrderPage() {
                                 <Plus className="w-6 h-6 group-hover:scale-110 transition-transform" />
                                 <span className="text-[10px] font-black uppercase tracking-widest">Ajouter un nouveau culte / transition</span>
                             </button>
+
+                            {/* New Events Section */}
+                            <div className="pt-12 border-t-2 border-primary/20 space-y-6">
+                                <div className="flex items-center justify-between">
+                                    <h3 className="text-sm font-black text-primary uppercase tracking-[0.2em]">Événements à venir</h3>
+                                    <div className="flex gap-2">
+                                        <select 
+                                            onChange={(e) => {
+                                                const ev = events.find(x => x.id.toString() === e.target.value);
+                                                if (ev && !eventsList.find(x => x.id === ev.id)) {
+                                                    setEventsList([...eventsList, ev]);
+                                                }
+                                            }}
+                                            className="bg-muted border-none text-[10px] font-bold uppercase px-3 py-1 outline-none"
+                                        >
+                                            <option value="">Sélectionner un événement</option>
+                                            {events.map(ev => (
+                                                <option key={ev.id} value={ev.id}>{ev.title}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div className="space-y-3">
+                                    {eventsList.map(ev => (
+                                        <div key={ev.id} className="flex items-center justify-between bg-muted/30 p-4 border border-border group">
+                                            <div className="flex gap-4 items-center">
+                                                <div className="w-12 h-12 bg-primary/10 text-primary flex flex-col items-center justify-center font-black">
+                                                    <span className="text-[10px]">{new Date(ev.date).toLocaleDateString('fr-FR', { day: '2-digit' })}</span>
+                                                    <span className="text-[8px] uppercase">{new Date(ev.date).toLocaleDateString('fr-FR', { month: 'short' })}</span>
+                                                </div>
+                                                <div>
+                                                    <p className="text-[10px] font-black uppercase text-primary">{ev.title}</p>
+                                                    <p className="text-[9px] text-muted-foreground">{ev.location} | {ev.time}</p>
+                                                </div>
+                                            </div>
+                                            <button 
+                                                onClick={() => setEventsList(eventsList.filter(x => x.id !== ev.id))}
+                                                className="text-rose-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                                            >
+                                                <Trash2 className="w-4 h-4" />
+                                            </button>
+                                        </div>
+                                    ))}
+                                    {eventsList.length === 0 && (
+                                        <div className="text-center py-8 border border-dashed border-border text-muted-foreground text-[10px] font-bold uppercase">
+                                            Aucun événement ajouté au déroulé
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -617,6 +670,16 @@ export default function ServiceOrderPage() {
                                 {annoncesPool.map(a => (
                                     <div key={a.id} className="bg-muted/50 p-4 rounded-none border border-border group relative transition-all hover:border-primary/50">
                                         <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <button 
+                                                onClick={() => {
+                                                    setNewAnnonce(a);
+                                                    setAnnoncesPool(annoncesPool.filter(item => item.id !== a.id));
+                                                }}
+                                                className="text-blue-500 hover:scale-110"
+                                                title="Modifier l'annonce"
+                                            >
+                                                <FileText className="w-4 h-4" />
+                                            </button>
                                             <button 
                                                 onClick={() => injectAnnouncement(a)}
                                                 className="text-primary hover:scale-110"
@@ -779,6 +842,26 @@ export default function ServiceOrderPage() {
                                             </div>
                                         ))}
                                     </div>
+
+                                    {eventsList.length > 0 && (
+                                        <div className="mt-16 space-y-8 no-print-break">
+                                            <h3 className="text-xl font-black text-primary border-b-2 border-primary pb-2 uppercase tracking-[0.2em]">Événements à venir</h3>
+                                            <div className="grid grid-cols-1 gap-6">
+                                                {eventsList.map(ev => (
+                                                    <div key={ev.id} className="flex gap-6 items-center">
+                                                        <div className="w-16 h-16 border-2 border-primary flex flex-col items-center justify-center font-black">
+                                                            <span className="text-sm">{new Date(ev.date).toLocaleDateString('fr-FR', { day: '2-digit' })}</span>
+                                                            <span className="text-[10px] uppercase text-primary">{new Date(ev.date).toLocaleDateString('fr-FR', { month: 'short' })}</span>
+                                                        </div>
+                                                        <div>
+                                                            <p className="text-sm font-black uppercase text-gray-900">{ev.title}</p>
+                                                            <p className="text-xs font-bold text-gray-500">{ev.location} | {ev.time}</p>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
 
                                     <div className="mt-20 flex justify-between items-end border-t border-gray-100 pt-8 italic text-[8pt] text-gray-400">
                                         <p>Document généré par CMS House Of God</p>

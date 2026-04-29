@@ -45,11 +45,10 @@ CREATE TABLE IF NOT EXISTS members (
     info_request_mui       BOOLEAN DEFAULT FALSE,
     info_request_events    BOOLEAN DEFAULT FALSE,
     join_gs                BOOLEAN DEFAULT FALSE, -- Follow-up Group
-    comments               TEXT,
+    is_star            BOOLEAN DEFAULT FALSE,
+    remarks            TEXT,
     status             VARCHAR(50) DEFAULT 'active',
-    department_id      INTEGER,
-    created_at         TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT fk_department FOREIGN KEY (department_id) REFERENCES departments(id) ON DELETE SET NULL
+    created_at         TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Events Table
@@ -131,6 +130,26 @@ CREATE TABLE IF NOT EXISTS service_orders (
     location         VARCHAR(255),
     theme            VARCHAR(255),
     sequences        JSONB, -- Array of ServiceItem
+    events_list      JSONB, -- Array of Events to display after chronogram
     announcements    JSONB, -- Array of Announcement
     created_at       TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Department Roles (Independent from member direct link)
+CREATE TABLE IF NOT EXISTS department_roles (
+    id             SERIAL PRIMARY KEY,
+    department_id  INTEGER REFERENCES departments(id) ON DELETE CASCADE,
+    member_id      INTEGER REFERENCES members(id) ON DELETE CASCADE,
+    role_name      VARCHAR(100), -- Leader, Vice Leader, etc.
+    created_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Department Weekly Programs
+CREATE TABLE IF NOT EXISTS department_programs (
+    id             SERIAL PRIMARY KEY,
+    department_id  INTEGER REFERENCES departments(id) ON DELETE CASCADE,
+    day_of_week    VARCHAR(20), -- Monday, Tuesday...
+    time           VARCHAR(50),
+    activity       TEXT,
+    created_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

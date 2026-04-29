@@ -1,35 +1,51 @@
 const { Pool } = require('pg');
+const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 require('dotenv').config();
 
-let pool;
+let pgPool;
+const localDb = new sqlite3.Database(path.join(__dirname, '../../server/database.sqlite'));
 
 if (process.env.DATABASE_URL) {
-    // Hosted PostgreSQL (Supabase/Neon)
-    pool = new Pool({
+    pgPool = new Pool({
         connectionString: process.env.DATABASE_URL,
-        ssl: {
-            rejectUnauthorized: false // Required for Supabase/Render
-        }
+        ssl: { rejectUnauthorized: false }
     });
-    console.log('Using PostgreSQL Database');
-} else {
-    // Fallback or warning
-    console.warn('WARNING: DATABASE_URL is not set. Please set it in your .env file for PostgreSQL access.');
-    // We could keep SQLite as a local fallback for development, but for the web app we need PG.
-    // For now, let's keep the SQLite logic as a backup so the app doesn't immediately crash.
+    console.log('Using PostgreSQL Database (Online Mode)');
 }
 
 module.exports = {
     execute: async (sql, params = []) => {
-        if (pool) {
-            // PostgreSQL logic
-            // pg uses $1, $2 which is what we have in most models
-            const result = await pool.query(sql, params);
-            // PostgreSQL returns result.rows
-            return [result.rows, result];
-        } else {
-            throw new Error('Database connection not established. Please provide a DATABASE_URL.');
+        // Try PostgreSQL first if available
+        if (pgPool) {
+            try {
+                const result = await pgPool.query(sql, params);
+                return [result.rows, result];
+            } catch (err) {
+                console.error('🌐 PostgreSQL Error (Connectivity):', err.message);
+                console.log('🔄 Falling back to Local SQLite...');
+            }
         }
+
+        // Fallback to SQLite
+        return new Promise((resolve, reject) => {
+            // Convert PG $1, $2 syntax to SQLite ? syntax
+            const sqliteSql = sql.replace(/\$\d+/g, '?');
+            
+            const isQuery = sqliteSql.trim().toUpperCase().startsWith('SELECT');
+            
+            if (isQuery) {
+                localDb.all(sqliteSql, params, (err, rows) => {
+                    if (err) return reject(err);
+                    resolve([rows, { rows }]);
+                });
+            } else {
+                localDb.run(sqliteSql, params, function(err) {
+                    if (err) return reject(err);
+                    // Return rows compatible format
+                    resolve([[{ id: this.lastID }], { rows: [{ id: this.lastID }], lastID: this.lastID }]);
+                });
+            }
+        });
     }
 };

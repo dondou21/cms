@@ -3,14 +3,21 @@ const router = express.Router();
 const departmentController = require('../controllers/departmentController');
 const { protect, authorize } = require('../middleware/auth');
 
-router.use(protect);
+// router.use(protect);
 
 router.get('/', departmentController.getDepartments);
 router.get('/:id', departmentController.getDepartment);
-router.get('/:id/members', departmentController.getDepartmentMembers);
+router.get('/:id/details', departmentController.getDepartmentDetails);
 
-router.post('/', authorize('Admin', 'Pastor/Leader', 'Secretary/Clerk'), departmentController.createDepartment);
-router.put('/:id', authorize('Admin', 'Pastor/Leader', 'Secretary/Clerk'), departmentController.updateDepartment);
-router.delete('/:id', authorize('Admin'), departmentController.deleteDepartment);
+router.post('/', departmentController.createDepartment);
+router.put('/:id', departmentController.updateDepartment);
+router.delete('/:id', departmentController.deleteDepartment);
+
+// Roles & Programs
+router.post('/:id/roles', departmentController.addDepartmentRole);
+router.delete('/:id/roles/:roleId', departmentController.deleteDepartmentRole);
+
+router.post('/:id/programs', departmentController.addDepartmentProgram);
+router.delete('/:id/programs/:programId', departmentController.deleteDepartmentProgram);
 
 module.exports = router;

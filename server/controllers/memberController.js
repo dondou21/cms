@@ -12,7 +12,13 @@ exports.createMember = async (req, res) => {
 
 exports.getMembers = async (req, res) => {
     try {
-        const members = await Member.findAll();
+        const { status, is_star, search } = req.query;
+        const filters = {};
+        if (status) filters.status = status;
+        if (is_star !== undefined) filters.is_star = is_star === 'true';
+        if (search) filters.search = search;
+        
+        const members = await Member.findAll(filters);
         res.json(members);
     } catch (error) {
         console.error('Fetch Members Error:', error);

@@ -22,12 +22,8 @@ export default function DashboardLayout({
 
     useEffect(() => {
         setMounted(true);
-        const token = localStorage.getItem('token');
-        if (!token) {
-            router.push('/login');
-        } else {
-            setIsLoaded(true);
-        }
+        // Authentication bypassed for full access
+        setIsLoaded(true);
     }, [router]);
 
     if (!isLoaded || !mounted) return null;

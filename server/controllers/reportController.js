@@ -2,9 +2,10 @@ const db = require('../config/db');
 
 exports.getIntegrationStats = async (req, res) => {
     try {
-        const [visitors] = await db.execute('SELECT COUNT(*) as count FROM report_visitors WHERE created_at >= NOW() - INTERVAL \'30 days\'');
-        const [wantToJoin] = await db.execute('SELECT COUNT(*) as count FROM members WHERE status = \'Prospect\' AND want_to_join_icc = true');
-        const [converts] = await db.execute('SELECT COUNT(*) as count FROM report_visitors WHERE is_convert = true');
+        // SQLite compatible interval: date('now', '-30 days')
+        const [visitors] = await db.execute("SELECT COUNT(*) as count FROM report_visitors WHERE created_at >= date('now', '-30 days')");
+        const [wantToJoin] = await db.execute("SELECT COUNT(*) as count FROM members WHERE status = 'Prospect' AND want_to_join_icc = true");
+        const [converts] = await db.execute("SELECT COUNT(*) as count FROM report_visitors WHERE is_convert = true");
         
         res.json({
             new_visitors: parseInt(visitors[0].count),
@@ -20,31 +21,64 @@ exports.getIntegrationStats = async (req, res) => {
 exports.getDashboardSummary = async (req, res) => {
     try {
         const { month, year } = req.query;
-        const currentMonth = month || new Date().getMonth() + 1;
-        const currentYear = year || new Date().getFullYear();
-
-        const [[{ total_members }]] = await db.execute('SELECT COUNT(*) as total_members FROM members');
-        const [[{ active_members }]] = await db.execute("SELECT COUNT(*) as active_members FROM members WHERE status = 'active'");
+        const currentMonth = parseInt(month) || new Date().getMonth() + 1;
+        const currentYear = parseInt(year) || new Date().getFullYear();
         
-        // Monthly giving filtered by month/year
-        const [[{ monthly_giving }]] = await db.execute(
-            "SELECT SUM(amount) as monthly_giving FROM givings WHERE EXTRACT(MONTH FROM date) = $1 AND EXTRACT(YEAR FROM date) = $2",
-            [currentMonth, currentYear]
+        const prevMonth = currentMonth === 1 ? 12 : currentMonth - 1;
+        const prevYear = currentMonth === 1 ? currentYear - 1 : currentYear;
+
+        // Members Count & Trend
+        const [[{ total_members }]] = await db.execute('SELECT COUNT(*) as total_members FROM members');
+        const [[{ prev_members }]] = await db.execute(
+            "SELECT COUNT(*) as prev_members FROM members WHERE created_at < $1", 
+            [new Date(currentYear, currentMonth - 1, 1)]
         );
+        const member_trend = prev_members > 0 ? ((total_members - prev_members) / prev_members) * 100 : 0;
+
+        // Giving & Trend
+        // Using strftime('%m', date) for SQLite compatibility
+        const [[{ monthly_giving }]] = await db.execute(
+            "SELECT SUM(amount) as monthly_giving FROM givings WHERE strftime('%m', date) = $1 AND strftime('%Y', date) = $2",
+            [currentMonth.toString().padStart(2, '0'), currentYear.toString()]
+        );
+        const [[{ prev_giving }]] = await db.execute(
+            "SELECT SUM(amount) as prev_giving FROM givings WHERE strftime('%m', date) = $1 AND strftime('%Y', date) = $2",
+            [prevMonth.toString().padStart(2, '0'), prevYear.toString()]
+        );
+        const giving_trend = prev_giving > 0 ? ((monthly_giving - prev_giving) / prev_giving) * 100 : 0;
+
+        // Visitors (Integration) & Trend
+        const [[{ monthly_visitors }]] = await db.execute(
+            "SELECT COUNT(*) as count FROM report_visitors WHERE strftime('%m', created_at) = $1 AND strftime('%Y', created_at) = $2",
+            [currentMonth.toString().padStart(2, '0'), currentYear.toString()]
+        );
+        const [[{ prev_visitors }]] = await db.execute(
+            "SELECT COUNT(*) as count FROM report_visitors WHERE strftime('%m', created_at) = $1 AND strftime('%Y', created_at) = $2",
+            [prevMonth.toString().padStart(2, '0'), prevYear.toString()]
+        );
+        const visitor_trend = prev_visitors > 0 ? ((monthly_visitors - prev_visitors) / prev_visitors) * 100 : 0;
 
         const [attendance_summary] = await db.execute("SELECT status, COUNT(*) as count FROM attendance JOIN events ON attendance.event_id = events.id WHERE events.date = (SELECT MAX(date) FROM events) GROUP BY status");
-        
-        const [upcoming_events] = await db.execute("SELECT * FROM events WHERE date >= CURRENT_DATE ORDER BY date ASC LIMIT 2");
-        const [recent_members] = await db.execute("SELECT first_name, last_name, created_at as time, 'joined' as type FROM members ORDER BY created_at DESC LIMIT 3");
-        const [recent_givings] = await db.execute("SELECT m.first_name, m.last_name, g.amount, g.date as time, 'donated' as type FROM givings g JOIN members m ON g.member_id = m.id ORDER BY g.date DESC LIMIT 3");
+        const [upcoming_events] = await db.execute("SELECT * FROM events WHERE date >= date('now') ORDER BY date ASC LIMIT 2");
+        const [recent_activity] = await db.execute(`
+            SELECT * FROM (
+                SELECT first_name, last_name, created_at as time, 'joined' as type, 0 as amount FROM members
+                UNION ALL
+                SELECT m.first_name, m.last_name, g.date as time, 'donated' as type, g.amount FROM givings g JOIN members m ON g.member_id = m.id
+            ) AS combined
+            ORDER BY time DESC LIMIT 5
+        `);
 
         res.json({
-            total_members: total_members || 0,
-            active_members: active_members || 0,
-            monthly_giving: monthly_giving || 0,
+            total_members: parseInt(total_members) || 0,
+            member_trend: parseFloat(member_trend.toFixed(1)),
+            monthly_giving: parseFloat(monthly_giving) || 0,
+            giving_trend: parseFloat(giving_trend.toFixed(1)),
+            monthly_visitors: parseInt(monthly_visitors) || 0,
+            visitor_trend: parseFloat(visitor_trend.toFixed(1)),
             recent_attendance: attendance_summary,
             upcoming_events,
-            recent_activity: [...recent_members, ...recent_givings].sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime())
+            recent_activity
         });
     } catch (error) {
         console.error('Dashboard Summary Error:', error);

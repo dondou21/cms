@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Users, UserCheck, CalendarDays, ExternalLink, MessageCircle, FileText, UserPlus, HandCoins, CalendarCheck } from 'lucide-react';
+import { Users, UserCheck, CalendarDays, ExternalLink, MessageCircle, FileText, UserPlus, HandCoins, CalendarCheck, ArrowUpRight, ArrowDownRight, UserRoundPlus } from 'lucide-react';
 import api from '../services/api';
 
 const container = {
@@ -20,6 +20,7 @@ const item = {
     show: { y: 0, opacity: 1 }
 };
 
+import { cn } from '../lib/utils';
 import { useLanguage } from '../lib/i18n';
 
 export default function DashboardPage() {
@@ -64,9 +65,33 @@ export default function DashboardPage() {
     }
 
     const stats = [
-        { label: t('dashboard.total_members'), value: summary?.total_members?.toLocaleString() || '0', icon: Users, color: 'text-primary', bg: 'bg-primary/10', change: '', changeColor: 'text-emerald-500', changeBg: 'bg-emerald-50' },
-        { label: t('dashboard.active_members'), value: summary?.active_members?.toLocaleString() || '0', icon: UserCheck, color: 'text-emerald-500', bg: 'bg-emerald-50', change: '', changeColor: 'text-emerald-500', changeBg: 'bg-emerald-50' },
-        { label: t('dashboard.monthly_giving'), value: `$${parseFloat(summary?.monthly_giving || 0).toLocaleString()}`, icon: CalendarDays, color: 'text-secondary', bg: 'bg-secondary/10', change: '', changeColor: 'text-rose-500', changeBg: 'bg-rose-50' },
+        { 
+            label: t('dashboard.total_members'), 
+            value: summary?.total_members?.toLocaleString() || '0', 
+            icon: Users, 
+            color: 'text-primary', 
+            bg: 'bg-primary/10', 
+            trend: summary?.member_trend,
+            trendLabel: 'vs last month'
+        },
+        { 
+            label: 'Nouveaux Visiteurs', 
+            value: summary?.monthly_visitors?.toLocaleString() || '0', 
+            icon: UserRoundPlus, 
+            color: 'text-amber-500', 
+            bg: 'bg-amber-50', 
+            trend: summary?.visitor_trend,
+            trendLabel: 'vs last month'
+        },
+        { 
+            label: t('dashboard.monthly_giving'), 
+            value: `$${parseFloat(summary?.monthly_giving || 0).toLocaleString()}`, 
+            icon: HandCoins, 
+            color: 'text-emerald-500', 
+            bg: 'bg-emerald-50', 
+            trend: summary?.giving_trend,
+            trendLabel: 'vs last month'
+        },
     ];
 
     return (
@@ -111,10 +136,17 @@ export default function DashboardPage() {
                             <div className={`w-10 h-10 ${stat.bg} dark:bg-gray-800 rounded-none flex items-center justify-center`}>
                                 <stat.icon className={`w-5 h-5 ${stat.color}`} />
                             </div>
-                            {stat.change && (
-                                <span className={`px-2.5 py-1 rounded-none text-xs font-bold ${stat.changeBg} ${stat.changeColor}`}>
-                                    {stat.change}
-                                </span>
+                            {stat.trend !== undefined && (
+                                <div className="flex flex-col items-end">
+                                    <div className={cn(
+                                        "flex items-center gap-0.5 text-[10px] font-black uppercase tracking-tighter",
+                                        stat.trend >= 0 ? "text-emerald-600" : "text-rose-600"
+                                    )}>
+                                        {stat.trend >= 0 ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
+                                        {Math.abs(stat.trend)}%
+                                    </div>
+                                    <span className="text-[7px] font-black text-muted-foreground uppercase tracking-widest">{stat.trendLabel}</span>
+                                </div>
                             )}
                         </div>
                         <div>
