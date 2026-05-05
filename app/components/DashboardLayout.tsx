@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Sidebar from '../components/Sidebar';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Bell, HelpCircle, Moon, Sun } from 'lucide-react';
+import { Search, Bell, HelpCircle, Moon, Sun, Menu } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useLanguage } from '../lib/i18n';
 import { cn } from '../lib/utils';
@@ -19,6 +19,7 @@ export default function DashboardLayout({
     const { theme, setTheme } = useTheme();
     const { language, setLanguage } = useLanguage();
     const [mounted, setMounted] = useState(false);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     useEffect(() => {
         setMounted(true);
@@ -29,24 +30,35 @@ export default function DashboardLayout({
     if (!isLoaded || !mounted) return null;
 
     return (
-        <div className="flex bg-background min-h-screen text-foreground font-sans transition-colors duration-300">
-            <Sidebar />
+        <div className="flex bg-background min-h-screen text-foreground font-sans transition-colors duration-300 overflow-x-hidden">
+            <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+            
             <div className="flex-1 flex flex-col h-screen overflow-hidden">
                 {/* Top Header */}
-                <header className="h-16 border-b border-border bg-card flex items-center justify-between px-8 flex-shrink-0 transition-colors">
-                    <div className="flex-1 max-w-xl">
-                        <div className="relative">
-                            <Search className="w-4 h-4 text-muted-foreground absolute left-3 top-1/2 -translate-y-1/2" />
-                            <input
-                                type="text"
-                                placeholder="Search members, events, or transactions..."
-                                className="w-full bg-muted/50 border border-border rounded-none pl-9 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-foreground placeholder:text-muted-foreground/50"
-                            />
+                <header className="h-16 border-b border-border bg-card flex items-center justify-between px-4 lg:px-8 flex-shrink-0 transition-colors z-30">
+                    <div className="flex items-center gap-4 flex-1">
+                        <button 
+                            onClick={() => setIsSidebarOpen(true)}
+                            className="lg:hidden p-2 -ml-2 text-muted-foreground hover:text-foreground hover:bg-muted"
+                        >
+                            <Menu className="w-6 h-6" />
+                        </button>
+
+                        <div className="flex-1 max-w-xl hidden md:block">
+                            <div className="relative">
+                                <Search className="w-4 h-4 text-muted-foreground absolute left-3 top-1/2 -translate-y-1/2" />
+                                <input
+                                    type="text"
+                                    placeholder="Search members, events, or transactions..."
+                                    className="w-full bg-muted/50 border border-border rounded-none pl-9 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-foreground placeholder:text-muted-foreground/50"
+                                />
+                            </div>
                         </div>
                     </div>
-                    <div className="flex items-center gap-6 text-muted-foreground">
+
+                    <div className="flex items-center gap-3 lg:gap-6 text-muted-foreground">
                         {/* Language Switcher */}
-                        <div className="flex bg-muted p-1 rounded-none">
+                        <div className="flex bg-muted p-1 rounded-none scale-90 lg:scale-100">
                             <button
                                 onClick={() => setLanguage('fr')}
                                 className={cn(
