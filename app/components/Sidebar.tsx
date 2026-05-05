@@ -36,6 +36,7 @@ export default function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose:
         { icon: Users, label: t('nav.members'), href: '/members' },
         { icon: Building2, label: t('nav.departments'), href: '/departments' },
         { icon: HandCoins, label: t('nav.giving'), href: '/giving' },
+        { icon: FileText, label: 'Finance Reports', href: '/finance' },
         { icon: CalendarCheck, label: t('nav.attendance'), href: '/attendance' },
         { icon: CalendarDays, label: t('nav.events'), href: '/events' },
         { icon: FileText, label: t('nav.service_order'), href: '/events/service-order' },
