@@ -1,107 +1,109 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import Sidebar from '../components/Sidebar';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Bell, HelpCircle, Moon, Sun, Menu } from 'lucide-react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { Search, Bell, Moon, Sun, Menu } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useLanguage } from '../lib/i18n';
 import { cn } from '../lib/utils';
+import Sidebar from './Sidebar';
 
-export default function DashboardLayout({
-    children,
-}: {
-    children: React.ReactNode;
-}) {
-    const router = useRouter();
-    const [isLoaded, setIsLoaded] = useState(false);
-    const { theme, setTheme } = useTheme();
-    const { language, setLanguage } = useLanguage();
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
     const [mounted, setMounted] = useState(false);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const { theme, setTheme } = useTheme();
+    const { language, setLanguage } = useLanguage();
 
     useEffect(() => {
         setMounted(true);
-        // Authentication bypassed for full access
-        setIsLoaded(true);
-    }, [router]);
+    }, []);
 
-    if (!isLoaded || !mounted) return null;
+    // Prevent hydration mismatch — render nothing until client is ready
+    if (!mounted) return null;
 
     return (
-        <div className="flex bg-background min-h-screen text-foreground font-sans transition-colors duration-300 overflow-x-hidden">
+        <div className="flex h-screen w-screen overflow-hidden bg-background text-foreground font-sans">
+            {/* Sidebar (desktop: static, mobile: drawer via AnimatePresence) */}
             <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
-            
-            <div className="flex-1 flex flex-col h-screen overflow-hidden">
-                {/* Top Header */}
-                <header className="h-16 border-b border-border bg-card flex items-center justify-between px-4 lg:px-8 flex-shrink-0 transition-colors z-30">
-                    <div className="flex items-center gap-4 flex-1">
-                        <button 
+
+            {/* Main content column */}
+            <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
+
+                {/* ── Top Header ── */}
+                <header className="h-16 shrink-0 border-b border-border bg-card flex items-center justify-between px-4 lg:px-6 z-30">
+
+                    {/* Left: hamburger + search */}
+                    <div className="flex items-center gap-3 flex-1 min-w-0">
+                        {/* Hamburger — only on mobile */}
+                        <button
                             onClick={() => setIsSidebarOpen(true)}
-                            className="lg:hidden p-2 -ml-2 text-muted-foreground hover:text-foreground hover:bg-muted"
+                            className="lg:hidden p-2 -ml-1 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors shrink-0"
+                            aria-label="Open menu"
                         >
-                            <Menu className="w-6 h-6" />
+                            <Menu className="w-5 h-5" />
                         </button>
 
-                        <div className="flex-1 max-w-xl hidden md:block">
+                        {/* Search bar — hidden on small screens */}
+                        <div className="hidden md:block flex-1 max-w-md">
                             <div className="relative">
                                 <Search className="w-4 h-4 text-muted-foreground absolute left-3 top-1/2 -translate-y-1/2" />
                                 <input
                                     type="text"
-                                    placeholder="Search members, events, or transactions..."
-                                    className="w-full bg-muted/50 border border-border rounded-none pl-9 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-foreground placeholder:text-muted-foreground/50"
+                                    placeholder="Search members, events, transactions…"
+                                    className="w-full bg-muted/50 border border-border pl-9 pr-4 py-2 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
                                 />
                             </div>
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-3 lg:gap-6 text-muted-foreground">
-                        {/* Language Switcher */}
-                        <div className="flex bg-muted p-1 rounded-none scale-90 lg:scale-100">
-                            <button
-                                onClick={() => setLanguage('fr')}
-                                className={cn(
-                                    "px-3 py-1 text-[10px] font-bold rounded-none transition-all",
-                                    language === 'fr' 
-                                        ? "bg-white dark:bg-gray-700 text-primary shadow-sm" 
-                                        : "text-muted-foreground hover:text-foreground"
-                                )}
-                            >FR</button>
-                            <button
-                                onClick={() => setLanguage('en')}
-                                className={cn(
-                                    "px-3 py-1 text-[10px] font-bold rounded-none transition-all",
-                                    language === 'en' 
-                                        ? "bg-white dark:bg-gray-700 text-primary shadow-sm" 
-                                        : "text-muted-foreground hover:text-foreground"
-                                )}
-                            >EN</button>
+                    {/* Right: controls */}
+                    <div className="flex items-center gap-2 lg:gap-4 shrink-0">
+                        {/* Language switcher */}
+                        <div className="flex bg-muted p-1">
+                            {(['fr', 'en'] as const).map((lang) => (
+                                <button
+                                    key={lang}
+                                    onClick={() => setLanguage(lang)}
+                                    className={cn(
+                                        'px-3 py-1 text-[10px] font-bold transition-all uppercase',
+                                        language === lang
+                                            ? 'bg-white dark:bg-gray-700 text-primary shadow-sm'
+                                            : 'text-muted-foreground hover:text-foreground'
+                                    )}
+                                >
+                                    {lang}
+                                </button>
+                            ))}
                         </div>
 
-                        {/* Theme Toggle */}
-                        <button 
+                        {/* Theme toggle */}
+                        <button
                             onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-                            className="p-2 hover:bg-muted rounded-none transition-colors"
+                            className="p-2 hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
+                            aria-label="Toggle theme"
                         >
-                            {theme === 'dark' ? <Sun className="w-5 h-5 text-yellow-400" /> : <Moon className="w-5 h-5" />}
+                            {theme === 'dark'
+                                ? <Sun className="w-5 h-5 text-yellow-400" />
+                                : <Moon className="w-5 h-5" />}
                         </button>
 
-                        <button className="p-2 hover:bg-muted rounded-none transition-colors relative">
+                        {/* Notifications */}
+                        <button className="relative p-2 hover:bg-muted transition-colors text-muted-foreground hover:text-foreground">
                             <Bell className="w-5 h-5" />
-                            <span className="absolute top-2 right-2 w-1.5 h-1.5 bg-red-500 rounded-none" />
+                            <span className="absolute top-2 right-2 w-1.5 h-1.5 bg-red-500 rounded-full" />
                         </button>
                     </div>
                 </header>
 
-                <main className="flex-1 p-8 overflow-y-auto w-full max-w-7xl mx-auto">
+                {/* ── Page content ── */}
+                <main className="flex-1 overflow-y-auto p-6 lg:p-8">
                     <AnimatePresence mode="wait">
                         <motion.div
-                            key={isLoaded ? 'loaded' : 'loading'}
-                            initial={{ opacity: 0, y: 10 }}
+                            key="page"
+                            initial={{ opacity: 0, y: 8 }}
                             animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -10 }}
-                            transition={{ duration: 0.3 }}
+                            exit={{ opacity: 0, y: -8 }}
+                            transition={{ duration: 0.25 }}
                         >
                             {children}
                         </motion.div>
