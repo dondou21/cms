@@ -1,31 +1,19 @@
-const jwt = require('jsonwebtoken');
+/**
+ * Auth middleware — BYPASSED for full local/offline access.
+ * Both protect and authorize are passthrough no-ops.
+ * Restore real logic here when auth is needed for production.
+ */
 
 exports.protect = (req, res, next) => {
-    let token;
-    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-        token = req.headers.authorization.split(' ')[1];
-    }
-
-    if (!token) {
-        return res.status(401).json({ message: 'Not authorized, no token' });
-    }
-
-    try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = decoded;
-        next();
-    } catch (error) {
-        res.status(401).json({ message: 'Not authorized, token failed' });
-    }
+    // Bypass: attach a default user so any downstream code that
+    // reads req.user doesn't crash.
+    req.user = { id: 1, name: 'Admin', role: 'Admin' };
+    next();
 };
 
 exports.authorize = (...roles) => {
     return (req, res, next) => {
-        if (!roles.includes(req.user.role)) {
-            return res.status(403).json({
-                message: `User role ${req.user.role} is not authorized to access this route`
-            });
-        }
+        // Bypass: always allow.
         next();
     };
 };
