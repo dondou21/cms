@@ -6,15 +6,15 @@ import { AnimatePresence, motion } from 'framer-motion';
 import {
     LayoutDashboard,
     Users,
-    Building2,
-    HandCoins,
-    CalendarCheck,
-    CalendarDays,
+    Layers,
+    Wallet,
+    BarChart2,
+    ClipboardList,
+    Calendar,
+    ScrollText,
+    UserPlus,
     LogOut,
     Church,
-    Heart,
-    FileText,
-    ReceiptText,
     X,
 } from 'lucide-react';
 import { cn } from '../lib/utils';
@@ -22,15 +22,15 @@ import { useEffect, useState } from 'react';
 import { useLanguage } from '../lib/i18n';
 
 const menuItems = [
-    { icon: LayoutDashboard, labelKey: 'nav.dashboard', href: '/dashboard' },
-    { icon: Users,           labelKey: 'nav.members',   href: '/members' },
-    { icon: Building2,       labelKey: 'nav.departments', href: '/departments' },
-    { icon: HandCoins,       labelKey: 'nav.giving',    href: '/giving' },
-    { icon: ReceiptText,     labelKey: null, label: 'Finance Reports', href: '/finance' },
-    { icon: CalendarCheck,   labelKey: 'nav.attendance', href: '/attendance' },
-    { icon: CalendarDays,    labelKey: 'nav.events',    href: '/events' },
-    { icon: FileText,        labelKey: 'nav.service_order', href: '/events/service-order' },
-    { icon: Heart,           labelKey: null, label: 'Integration', href: '/integration' },
+    { icon: LayoutDashboard, labelKey: 'nav.dashboard',     href: '/dashboard' },
+    { icon: Users,           labelKey: 'nav.members',        href: '/members' },
+    { icon: Layers,          labelKey: 'nav.departments',    href: '/departments' },
+    { icon: Wallet,          labelKey: 'nav.giving',         href: '/giving' },
+    { icon: BarChart2,       labelKey: null, label: 'Finance', href: '/finance' },
+    { icon: ClipboardList,   labelKey: 'nav.attendance',     href: '/attendance' },
+    { icon: Calendar,        labelKey: 'nav.events',         href: '/events' },
+    { icon: ScrollText,      labelKey: 'nav.service_order',  href: '/events/service-order' },
+    { icon: UserPlus,        labelKey: null, label: 'Integration', href: '/integration' },
 ];
 
 interface SidebarProps {
@@ -61,34 +61,34 @@ function SidebarContent({ onClose }: { onClose: () => void }) {
     };
 
     return (
-        <div className="flex flex-col h-full py-6 bg-card border-r border-border shadow-2xl w-64">
-            {/* Logo */}
-            <div className="flex items-center justify-between mb-10 px-6">
+        <div className="flex flex-col h-full w-64 bg-card border-r border-border">
+            {/* ── Brand ── */}
+            <div className="flex items-center justify-between px-5 py-5 border-b border-border">
                 <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-primary/20 flex items-center justify-center border border-primary/30">
-                        <Church className="w-6 h-6 text-primary" />
+                    <div className="w-9 h-9 rounded-lg bg-primary/15 flex items-center justify-center">
+                        <Church className="w-5 h-5 text-primary" />
                     </div>
-                    <div className="flex flex-col">
-                        <span className="text-sm font-black text-foreground leading-tight tracking-tight uppercase">
+                    <div>
+                        <p className="text-[13px] font-extrabold text-foreground leading-none tracking-tight">
                             House Of God
-                        </span>
-                        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                        </p>
+                        <p className="text-[10px] font-semibold text-muted-foreground mt-0.5 uppercase tracking-wider">
                             {userRole}
-                        </span>
+                        </p>
                     </div>
                 </div>
-                {/* Close button — only visible on mobile */}
+                {/* Close button — mobile only */}
                 <button
                     onClick={onClose}
-                    className="lg:hidden p-2 text-muted-foreground hover:text-foreground transition-colors"
+                    className="lg:hidden p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
                     aria-label="Close menu"
                 >
-                    <X className="w-5 h-5" />
+                    <X className="w-4 h-4" />
                 </button>
             </div>
 
-            {/* Nav Links */}
-            <nav className="flex-1 space-y-1 px-4 overflow-y-auto">
+            {/* ── Nav items ── */}
+            <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-0.5">
                 {menuItems.map((item) => {
                     const label = item.labelKey ? t(item.labelKey) : item.label!;
                     const isActive =
@@ -100,35 +100,37 @@ function SidebarContent({ onClose }: { onClose: () => void }) {
                             key={item.href}
                             href={item.href}
                             onClick={onClose}
+                            className="block"
                         >
                             <div
                                 className={cn(
-                                    'flex items-center gap-3 px-4 py-3 transition-all font-bold text-xs uppercase tracking-widest',
+                                    'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition-all duration-150',
                                     isActive
-                                        ? 'bg-primary text-white shadow-lg shadow-primary/30'
+                                        ? 'bg-primary text-white shadow-md shadow-primary/20'
                                         : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                                 )}
                             >
                                 <item.icon
                                     className={cn(
-                                        'w-4 h-4 shrink-0',
+                                        'w-[18px] h-[18px] shrink-0',
                                         isActive ? 'text-white' : 'text-muted-foreground'
                                     )}
+                                    strokeWidth={isActive ? 2.5 : 2}
                                 />
-                                <span>{label}</span>
+                                <span className="truncate">{label}</span>
                             </div>
                         </Link>
                     );
                 })}
             </nav>
 
-            {/* Logout */}
-            <div className="pt-6 border-t border-border mt-auto px-4">
+            {/* ── Logout ── */}
+            <div className="px-3 py-4 border-t border-border">
                 <button
                     onClick={handleLogout}
-                    className="w-full flex items-center gap-3 px-4 py-3 text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-all font-bold text-xs uppercase tracking-widest"
+                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-all duration-150"
                 >
-                    <LogOut className="w-4 h-4" />
+                    <LogOut className="w-[18px] h-[18px] shrink-0" strokeWidth={2} />
                     <span>{t('nav.logout')}</span>
                 </button>
             </div>
@@ -139,18 +141,18 @@ function SidebarContent({ onClose }: { onClose: () => void }) {
 export default function Sidebar({ isOpen, onClose }: SidebarProps) {
     return (
         <>
-            {/* ── Desktop: always visible static sidebar ── */}
-            <div className="hidden lg:flex lg:flex-shrink-0">
+            {/* ── DESKTOP: always-visible static sidebar ── */}
+            <aside className="hidden lg:flex lg:flex-shrink-0 h-full">
                 <SidebarContent onClose={onClose} />
-            </div>
+            </aside>
 
-            {/* ── Mobile: slide-in drawer ── */}
+            {/* ── MOBILE: slide-in drawer (only on small screens) ── */}
             <AnimatePresence>
                 {isOpen && (
                     <>
                         {/* Backdrop */}
                         <motion.div
-                            key="sidebar-backdrop"
+                            key="backdrop"
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
@@ -159,16 +161,16 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                             className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm lg:hidden"
                         />
                         {/* Drawer */}
-                        <motion.div
-                            key="sidebar-drawer"
+                        <motion.aside
+                            key="drawer"
                             initial={{ x: '-100%' }}
                             animate={{ x: 0 }}
                             exit={{ x: '-100%' }}
-                            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                            className="fixed inset-y-0 left-0 z-50 lg:hidden"
+                            transition={{ type: 'spring', stiffness: 320, damping: 32 }}
+                            className="fixed inset-y-0 left-0 z-50 h-full shadow-2xl lg:hidden"
                         >
                             <SidebarContent onClose={onClose} />
-                        </motion.div>
+                        </motion.aside>
                     </>
                 )}
             </AnimatePresence>
