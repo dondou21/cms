@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Search, Bell, Moon, Sun, Menu } from 'lucide-react';
+import { Search, Bell, Moon, Sun } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useLanguage } from '../lib/i18n';
 import { cn } from '../lib/utils';
@@ -10,7 +10,6 @@ import Sidebar from './Sidebar';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
     const [mounted, setMounted] = useState(false);
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const { theme, setTheme } = useTheme();
     const { language, setLanguage } = useLanguage();
 
@@ -18,13 +17,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         setMounted(true);
     }, []);
 
-    // Prevent hydration mismatch — render nothing until client is ready
     if (!mounted) return null;
 
     return (
         <div className="flex h-screen w-screen overflow-hidden bg-background text-foreground font-sans">
-            {/* Sidebar (desktop: static, mobile: drawer via AnimatePresence) */}
-            <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+            {/* Always-visible sticky sidebar */}
+            <Sidebar />
 
             {/* Main content column */}
             <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
@@ -32,18 +30,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 {/* ── Top Header ── */}
                 <header className="h-16 shrink-0 border-b border-border bg-card flex items-center justify-between px-4 lg:px-6 z-30">
 
-                    {/* Left: hamburger + search */}
-                    <div className="flex items-center gap-3 flex-1 min-w-0">
-                        {/* Hamburger — only on mobile */}
-                        <button
-                            onClick={() => setIsSidebarOpen(true)}
-                            className="lg:hidden p-2 -ml-1 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors shrink-0"
-                            aria-label="Open menu"
-                        >
-                            <Menu className="w-5 h-5" />
-                        </button>
-
-                        {/* Search bar — hidden on small screens */}
+                    {/* Left: search bar */}
+                    <div className="flex items-center flex-1 min-w-0">
                         <div className="hidden md:block flex-1 max-w-md">
                             <div className="relative">
                                 <Search className="w-4 h-4 text-muted-foreground absolute left-3 top-1/2 -translate-y-1/2" />
@@ -96,7 +84,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 </header>
 
                 {/* ── Page content ── */}
-                <main className="flex-1 overflow-y-auto p-6 lg:p-8">
+                <main className="flex-1 overflow-y-auto p-4 lg:p-8">
                     <AnimatePresence mode="wait">
                         <motion.div
                             key="page"
