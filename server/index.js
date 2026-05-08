@@ -12,6 +12,15 @@ app.use(cors({ origin: '*' })); // Allow all origins since it's a local desktop 
 app.use(helmet());
 app.use(morgan('dev'));
 
+// ── GLOBAL AUTH BYPASS ──────────────────────────────────────────
+// Attach a default user on every request so no route ever 401s.
+// Remove this block when restoring production auth.
+app.use((req, res, next) => {
+    req.user = { id: 1, name: 'Admin', role: 'Admin' };
+    next();
+});
+// ────────────────────────────────────────────────────────────────
+
 // API Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/members', require('./routes/members'));
