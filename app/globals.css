@@ -1,87 +1,115 @@
 @import "tailwindcss";
 
 :root {
-  --background: 0 0% 100%;
-  --foreground: 215 25% 10%;
-  --card: 0 0% 100%;
-  --card-foreground: 215 25% 10%;
-  --popover: 0 0% 100%;
-  --popover-foreground: 215 25% 10%;
-  --primary: 215 90% 35%; /* #0a4d92 - Professional Blue */
+  /* Main surfaces */
+  --background:    210 20% 97%;      /* Soft light gray page */
+  --foreground:    215 30% 12%;
+  --card:          0 0% 100%;        /* White cards */
+  --card-foreground: 215 30% 12%;
+  --popover:       0 0% 100%;
+  --popover-foreground: 215 30% 12%;
+
+  /* Brand */
+  --primary:       201 96% 39%;      /* Sky Blue: #0284c7 */
   --primary-foreground: 0 0% 100%;
-  --secondary: 25 95% 50%; /* #f58220 - Vibrant Orange */
+  --secondary:     25 95% 50%;       /* Orange accent */
   --secondary-foreground: 0 0% 100%;
-  --muted: 210 20% 96%;
-  --muted-foreground: 215 15% 45%;
-  --accent: 215 90% 35%;
+
+  /* Muted */
+  --muted:         210 20% 93%;
+  --muted-foreground: 215 15% 48%;
+  --accent:        201 96% 39%;
   --accent-foreground: 0 0% 100%;
-  --destructive: 0 84% 60%;
+
+  /* Semantic */
+  --destructive:   0 84% 60%;
   --destructive-foreground: 0 0% 98%;
-  --border: 215 15% 90%;
-  --input: 215 15% 90%;
-  --ring: 25 95% 50%;
-  --radius: 0px; /* Sharp corners */
+  --border:        215 15% 88%;
+  --input:         215 15% 88%;
+  --ring:          201 96% 39%;
+  --radius:        0.5rem;
+
+  /* ── Sidebar ── dedicated token so it never blends with the page */
+  --sidebar-bg:    201 96% 30%;      /* Deeper sky blue for contrast */
+  --sidebar-fg:    0 0% 100%;
 }
 
 .dark {
-  --background: 215 25% 6% ; /* Very dark navy gray */
-  --foreground: 210 20% 98% ; 
-  --card: 215 25% 8% ;
-  --card-foreground: 210 20% 98% ;
-  --popover: 215 25% 8% ;
-  --popover-foreground: 210 20% 98% ;
-  --primary: 210 100% 50% ; /* Brighter Blue for dark mode */
-  --primary-foreground: 0 0% 100% ;
-  --secondary: 25 95% 50% ; /* #f58220 */
-  --secondary-foreground: 0 0% 100% ;
-  --muted: 215 20% 15% ;
-  --muted-foreground: 215 10% 65% ;
-  --accent: 210 100% 50% ;
-  --accent-foreground: 0 0% 100% ;
-  --destructive: 0 62% 30% ;
-  --destructive-foreground: 0 0% 94% ;
-  --border: 215 20% 20% ;
-  --input: 215 20% 20% ;
-  --ring: 25 95% 50% ;
+  /* Page & cards — warm dark slate, NOT black */
+  --background:    222 18% 16%;      /* #1e2333 warm dark slate */
+  --foreground:    210 25% 92%;
+  --card:          222 18% 20%;      /* slightly lighter than bg */
+  --card-foreground: 210 25% 92%;
+  --popover:       222 18% 20%;
+  --popover-foreground: 210 25% 92%;
+
+  /* Brand */
+  --primary:       199 100% 50%;     /* brighter sky blue in dark */
+  --primary-foreground: 0 0% 100%;
+  --secondary:     25 95% 52%;
+  --secondary-foreground: 0 0% 100%;
+
+  /* Muted */
+  --muted:         222 15% 26%;
+  --muted-foreground: 215 12% 60%;
+  --accent:        199 100% 50%;
+  --accent-foreground: 0 0% 100%;
+
+  /* Semantic */
+  --destructive:   0 62% 40%;
+  --destructive-foreground: 0 0% 94%;
+  --border:        222 15% 28%;
+  --input:         222 15% 28%;
+  --ring:          199 100% 50%;
+
+  /* ── Sidebar ── same blue so it stands out against the warm dark page */
+  --sidebar-bg:    201 96% 27%;      /* deep sky blue */
+  --sidebar-fg:    0 0% 100%;
 }
 
 @theme {
-  --color-background: hsl(var(--background));
-  --color-foreground: hsl(var(--foreground));
-  --color-card: hsl(var(--card));
-  --color-card-foreground: hsl(var(--card-foreground));
-  --color-primary: hsl(var(--primary));
+  --color-background:         hsl(var(--background));
+  --color-foreground:         hsl(var(--foreground));
+  --color-card:               hsl(var(--card));
+  --color-card-foreground:    hsl(var(--card-foreground));
+  --color-primary:            hsl(var(--primary));
   --color-primary-foreground: hsl(var(--primary-foreground));
-  --color-secondary: hsl(var(--secondary));
+  --color-secondary:          hsl(var(--secondary));
   --color-secondary-foreground: hsl(var(--secondary-foreground));
-  --color-muted: hsl(var(--muted));
-  --color-muted-foreground: hsl(var(--muted-foreground));
-  --color-accent: hsl(var(--accent));
-  --color-accent-foreground: hsl(var(--accent-foreground));
-  --color-border: hsl(var(--border));
+  --color-muted:              hsl(var(--muted));
+  --color-muted-foreground:   hsl(var(--muted-foreground));
+  --color-accent:             hsl(var(--accent));
+  --color-accent-foreground:  hsl(var(--accent-foreground));
+  --color-border:             hsl(var(--border));
+  --color-destructive:        hsl(var(--destructive));
 }
 
+/* ── Base ── */
 body {
   background-color: hsl(var(--background));
   color: hsl(var(--foreground));
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
+/* ── Sidebar utility class ── */
+.sidebar-root {
+  background-color: hsl(var(--sidebar-bg));
+  color: hsl(var(--sidebar-fg));
+}
+
+/* ── Misc utilities ── */
 .glass-card {
   background: var(--color-card);
   border: 1px solid var(--color-border);
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
-}
-
-.gradient-text {
-  color: var(--color-foreground);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
 }
 
 .premium-shadow {
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1);
 }
 
+/* ── Print ── */
 @media print {
   .no-print { display: none !important; }
   .print-only { display: block !important; }
@@ -89,5 +117,4 @@ body {
   @page { margin: 1cm; }
   .print-break-after { page-break-after: always; }
 }
-
 .print-only { display: none; }
