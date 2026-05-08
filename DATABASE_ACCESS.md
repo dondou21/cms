@@ -1,42 +1,95 @@
 # Database Access Guide
 
-To access the database and view all data for the Church Management System, follow these steps:
+## How the Database Works (Dual-Mode Architecture)
 
-## 1. Access the Supabase Dashboard
-The project uses **Supabase** as its backend and database provider.
+The app automatically uses **two different databases** depending on the environment:
 
-1.  Go to [https://supabase.com/dashboard](https://supabase.com/dashboard)
-2.  Log in with the credentials provided to you during setup.
-3.  Select your project (e.g., **ICC Kigali CMS**).
+| Mode | Database | When Active |
+|---|---|---|
+| **Online / Web** | PostgreSQL on **Supabase** (cloud) | `DATABASE_URL` is set in `.env` |
+| **Offline / Local** | SQLite (`server/database.sqlite`) | No `DATABASE_URL`, or Supabase unreachable |
 
-## 2. Viewing Data (Table Editor)
-1.  On the left sidebar, click on the **Table Editor** icon (it looks like a grid).
-2.  You will see the following tables:
-    *   `members`: All church members and visitors (including integration data).
-    *   `attendance`: Attendance records for different services.
-    *   `givings`: Financial contributions (Tithes, Offerings, etc.).
-    *   `events`: Scheduled church events.
-    *   `departments`: List of church ministries.
-3.  Click on any table to see the raw data. You can filter, sort, and export it directly to CSV or Excel.
+The switcher logic is in `server/config/db.js`. Both modes share the exact same API — the frontend never knows which one is active.
 
-## 3. Running Custom Queries (SQL Editor)
-If you want to perform more complex searches:
-1.  Click on the **SQL Editor** icon in the sidebar.
-2.  Click **New Query**.
-3.  Example query to see all members joined in the last month:
-    ```sql
-    SELECT * FROM members WHERE created_at > now() - interval '1 month';
-    ```
+---
 
-## 4. Connection Details (Technical)
-If you want to use an external tool like **DBeaver** or **TablePlus**:
-*   **Host**: `aws-0-us-east-1.pooler.supabase.com` (Check your Supabase settings for exact host)
-*   **Port**: `5432`
-*   **User**: `postgres.your_project_id`
-*   **Password**: [Your Database Password]
+## All Database Tables
 
-## 5. Updating Schema (New Integration Fields)
-If you see errors when saving new visitors, you may need to add the missing columns to the `members` table. Run this in the **SQL Editor**:
+| Table | Purpose |
+|---|---|
+| `members` | Church members & visitors (integration data) |
+| `users` | CMS login accounts |
+| `departments` | Church ministry departments |
+| `department_roles` | Member roles within each department |
+| `department_programs` | Weekly schedules per department |
+| `events` | Church events |
+| `attendance` | Event attendance records |
+| `givings` | General financial contributions |
+| `finance_reports` | Official Dîmes & Offrandes reports (Finance Dept) |
+| `service_reports` | Service summary reports (Secrétariat) |
+| `report_visitors` | Visitors listed in a service report |
+| `service_orders` | Déroulé / service order plans |
+
+---
+
+## 1. Access the Supabase Dashboard (Online Mode)
+
+1. Go to [https://supabase.com/dashboard](https://supabase.com/dashboard)
+2. Log in and select your project (**ICC Kigali CMS**).
+3. Use **Table Editor** to browse data or **SQL Editor** for custom queries.
+
+### Example — All finance reports this month:
+```sql
+SELECT * FROM finance_reports
+WHERE date >= date_trunc('month', now())
+ORDER BY date DESC;
+```
+
+### Example — All members joined in the last month:
+```sql
+SELECT * FROM members WHERE created_at > now() - interval '1 month';
+```
+
+---
+
+## 2. Access SQLite (Offline / Local Mode)
+
+The local database file is at: `server/database.sqlite`
+
+Use **DB Browser for SQLite** (free, download at [sqlitebrowser.org](https://sqlitebrowser.org)) to open and inspect the file visually.
+
+To switch to offline mode: comment out `DATABASE_URL` in `.env`.
+
+---
+
+## 3. Connection Details (External Tools — Online Mode)
+
+For **DBeaver** or **TablePlus**:
+- **Host**: Check Supabase project settings → Database → Connection string
+- **Port**: `5432`
+- **User**: `postgres.your_project_id`
+- **Password**: Your database password from Supabase
+
+---
+
+## 4. Common Maintenance Commands
+
+```bash
+# Re-initialize all tables + seed default users (safe, uses IF NOT EXISTS)
+cd server && node init_db.js
+
+# Apply missing tables to an existing local SQLite DB (safe, non-destructive)
+cd server && node migrate_missing_tables.js
+
+# Start the backend server
+cd server && npm run dev
+```
+
+---
+
+## 5. Schema Fixes (If Needed on Supabase)
+
+If you see errors saving new visitors on the web version, run this in the **SQL Editor**:
 
 ```sql
 ALTER TABLE members 
