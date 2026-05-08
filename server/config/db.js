@@ -30,7 +30,10 @@ module.exports = {
         // Fallback to SQLite
         return new Promise((resolve, reject) => {
             // Convert PG $1, $2 syntax to SQLite ? syntax
-            const sqliteSql = sql.replace(/\$\d+/g, '?');
+            // Also strip RETURNING clause — not supported by sqlite3 npm package
+            const sqliteSql = sql
+                .replace(/\$\d+/g, '?')
+                .replace(/\s+RETURNING\s+[\w,\s*]+$/i, '');
             
             const isQuery = sqliteSql.trim().toUpperCase().startsWith('SELECT');
             
