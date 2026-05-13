@@ -216,7 +216,7 @@ export default function ServiceOrderPage() {
             ],
         });
 
-        const tableRows = cult1.map(item => new TableRow({
+        const tableRows = services.flatMap(service => service.sequences).map(item => new TableRow({
             children: [
                 new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: item.start, size: 18 })], alignment: AlignmentType.CENTER })] }),
                 new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: item.end, size: 18 })], alignment: AlignmentType.CENTER })] }),
@@ -256,7 +256,7 @@ export default function ServiceOrderPage() {
                     }),
                     new Paragraph({
                         children: [
-                            new TextRun({ text: description, size: 18, italic: true }),
+                            new TextRun({ text: description, size: 18, italics: true }),
                         ],
                         spacing: { after: 400 },
                     }),
@@ -269,14 +269,14 @@ export default function ServiceOrderPage() {
                         alignment: AlignmentType.CENTER,
                         spacing: { before: 800, after: 400 },
                     }),
-                    ...annonces.flatMap(a => [
+                    ...annoncesPool.flatMap(a => [
                         new Paragraph({
                             children: [new TextRun({ text: a.title, bold: true, size: 24, underline: {} })],
                             spacing: { before: 200 },
                         }),
                         ...(a.date || a.start || a.end ? [
                             new Paragraph({
-                                children: [new TextRun({ text: `${a.date} ${a.start ? `de ${a.start}` : ''} ${a.end ? `à ${a.end}` : ''}`, size: 18, italic: true })],
+                                children: [new TextRun({ text: `${a.date} ${a.start ? `de ${a.start}` : ''} ${a.end ? `à ${a.end}` : ''}`, size: 18, italics: true })],
                             })
                         ] : []),
                         ...a.description.split('\n').map(line => 
