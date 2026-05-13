@@ -38,7 +38,7 @@ export default function FinanceReportDetail() {
     const categories = ['DIMES', 'OFFRANDES', 'ACTIONS DE GRACE'];
 
     const calculateCashTotal = (currency: string) => {
-        const values = report.cash_breakdown[currency];
+        const values = report.cash_breakdown[currency] as Record<string, string | number>;
         return Object.entries(values).reduce((total, [denom, count]) => {
             if (denom === 'Autres') return total + (Number(count) || 0);
             return total + (Number(denom) * (Number(count) || 0));
@@ -46,7 +46,7 @@ export default function FinanceReportDetail() {
     };
 
     const calculateBreakdownTotal = (currency: string, channel: string) => {
-        const cats = report.category_breakdown[currency][channel];
+        const cats = report.category_breakdown[currency][channel] as Record<string, string | number>;
         return Object.values(cats).reduce((sum: number, val: any) => sum + (Number(val) || 0), 0);
     };
 
@@ -91,7 +91,7 @@ export default function FinanceReportDetail() {
 
                 {/* Bible Verse */}
                 <div className="text-center italic text-[11px] font-medium text-gray-600 mb-8 max-w-2xl mx-auto">
-                    "2 Corinthiens 9 ... << Sachez-le, celui qui sème peu moissonnera peu, et celui qui sème abondamment moissonnera abondamment. Que chacun donne comme il l'a résolu en son cœur, sans tristesse ni contrainte ; car Dieu aime celui qui donne avec joie. >>"
+                    "2 Corinthiens 9 ... {'<<'} Sachez-le, celui qui sème peu moissonnera peu, et celui qui sème abondamment moissonnera abondamment. Que chacun donne comme il l'a résolu en son cœur, sans tristesse ni contrainte ; car Dieu aime celui qui donne avec joie. {'>>'}"
                 </div>
 
                 {/* Report Title */}
@@ -126,10 +126,10 @@ export default function FinanceReportDetail() {
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-gray-200">
-                                        {Object.entries(report.cash_breakdown[curr]).map(([denom, count]) => (
+                                        {Object.entries(report.cash_breakdown[curr] as Record<string, string | number>).map(([denom, count]) => (
                                             <tr key={denom}>
                                                 <td className="px-2 py-1 text-gray-500">{denom}</td>
-                                                <td className="px-2 py-1 text-center">{(count as number) > 0 ? count : '-'}</td>
+                                                <td className="px-2 py-1 text-center">{(Number(count) || 0) > 0 ? count : '-'}</td>
                                                 <td className="px-2 py-1 text-right">
                                                     {denom === 'Autres' 
                                                         ? (Number(count) || 0).toLocaleString() 
