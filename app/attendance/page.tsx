@@ -66,10 +66,13 @@ export default function AttendancePage() {
     };
 
     const handleSaveIndividual = async () => {
-        if (!selectedEventId || !attendanceCount) return;
+        if (!selectedEventId || attendanceCount === '') return;
         setSaving(true);
         try {
-            await api.put(`/events/${selectedEventId}/attendance`, { count: parseInt(attendanceCount, 10) });
+            await api.post('/attendance', {
+                event_id: selectedEventId,
+                count: parseInt(attendanceCount, 10)
+            });
             setEvents(prev => prev.map(ev => ev.id.toString() === selectedEventId ? { ...ev, attendance_count: parseInt(attendanceCount, 10) } : ev));
             alert('Attendance saved successfully');
         } catch (err) {

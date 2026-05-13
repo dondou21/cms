@@ -13,13 +13,22 @@ const User = {
     },
 
     findByEmail: async (email) => {
-        const [rows] = await db.execute('SELECT * FROM users WHERE email = $1', [email]);
+        const [rows] = await db.execute('SELECT * FROM users WHERE LOWER(email) = LOWER($1)', [email]);
         return rows[0];
     },
 
     findById: async (id) => {
         const [rows] = await db.execute('SELECT id, name, email, role FROM users WHERE id = $1', [id]);
         return rows[0];
+    },
+
+    findAll: async () => {
+        const [rows] = await db.execute('SELECT id, name, email, role FROM users');
+        return rows;
+    },
+
+    updateRole: async (id, role) => {
+        await db.execute('UPDATE users SET role = $1 WHERE id = $2', [role, id]);
     }
 };
 

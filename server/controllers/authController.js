@@ -22,7 +22,7 @@ exports.register = async (req, res) => {
             return res.status(400).json({ message: 'User already exists' });
         }
 
-        await User.create({ name, email, password, role });
+        await User.create({ name, email, password, role: 'Viewer' });
         res.status(201).json({ message: 'User registered successfully' });
     } catch (error) {
         res.status(500).json({ message: 'Error registering user', error: error.message });

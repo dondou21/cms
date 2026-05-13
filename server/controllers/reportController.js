@@ -2,16 +2,34 @@ const db = require('../config/db');
 
 exports.getIntegrationStats = async (req, res) => {
     try {
-        // SQLite compatible interval: date('now', '-30 days')
-        const [visitors] = await db.execute("SELECT COUNT(*) as count FROM report_visitors WHERE created_at >= date('now', '-30 days')");
-        const [wantToJoin] = await db.execute("SELECT COUNT(*) as count FROM members WHERE status = 'Prospect' AND want_to_join_icc = true");
-        const [converts] = await db.execute("SELECT COUNT(*) as count FROM report_visitors WHERE is_convert = true");
-        
+        const period = req.query.period === 'year' ? 'year' : 'month';
+        const currentYear = new Date().getFullYear();
+        const currentMonth = (`0${new Date().getMonth() + 1}`).slice(-2);
+
+        const [monthlyVisitors] = await db.execute(
+            "SELECT COUNT(*) as count FROM members WHERE status = 'Prospect' AND strftime('%m', created_at) = $1 AND strftime('%Y', created_at) = $2",
+            [currentMonth, currentYear.toString()]
+        );
+
+        const [annualVisitors] = await db.execute(
+            "SELECT COUNT(*) as count FROM members WHERE status = 'Prospect' AND strftime('%Y', created_at) = $1",
+            [currentYear.toString()]
+        );
+
+        const [wantToJoin] = await db.execute(
+            "SELECT COUNT(*) as count FROM members WHERE status = 'Prospect' AND want_to_join_icc = true"
+        );
+        const [newMembers] = await db.execute(
+            "SELECT COUNT(*) as count FROM members WHERE status = 'Prospect' AND strftime('%m', created_at) = $1 AND strftime('%Y', created_at) = $2",
+            [currentMonth, currentYear.toString()]
+        );
+
         res.json({
-            new_visitors: parseInt(visitors[0].count),
-            want_to_join: parseInt(wantToJoin[0].count),
-            new_converts: parseInt(converts[0].count),
-            pending_followup: parseInt(wantToJoin[0].count) // Simplified
+            new_visitors: parseInt(monthlyVisitors[0].count) || 0,
+            annual_visitors: parseInt(annualVisitors[0].count) || 0,
+            want_to_join: parseInt(wantToJoin[0].count) || 0,
+            pending_followup: parseInt(wantToJoin[0].count) || 0,
+            period: period
         });
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -49,11 +67,15 @@ exports.getDashboardSummary = async (req, res) => {
 
         // Visitors (Integration) & Trend
         const [[{ monthly_visitors }]] = await db.execute(
-            "SELECT COUNT(*) as count FROM report_visitors WHERE strftime('%m', created_at) = $1 AND strftime('%Y', created_at) = $2",
+            "SELECT COUNT(*) as count FROM members WHERE status = 'Prospect' AND strftime('%m', created_at) = $1 AND strftime('%Y', created_at) = $2",
             [currentMonth.toString().padStart(2, '0'), currentYear.toString()]
         );
+        const [[{ annual_visitors }]] = await db.execute(
+            "SELECT COUNT(*) as count FROM members WHERE status = 'Prospect' AND strftime('%Y', created_at) = $1",
+            [currentYear.toString()]
+        );
         const [[{ prev_visitors }]] = await db.execute(
-            "SELECT COUNT(*) as count FROM report_visitors WHERE strftime('%m', created_at) = $1 AND strftime('%Y', created_at) = $2",
+            "SELECT COUNT(*) as count FROM members WHERE status = 'Prospect' AND strftime('%m', created_at) = $1 AND strftime('%Y', created_at) = $2",
             [prevMonth.toString().padStart(2, '0'), prevYear.toString()]
         );
         const visitor_trend = prev_visitors > 0 ? ((monthly_visitors - prev_visitors) / prev_visitors) * 100 : 0;
@@ -75,6 +97,7 @@ exports.getDashboardSummary = async (req, res) => {
             monthly_giving: parseFloat(monthly_giving) || 0,
             giving_trend: parseFloat(giving_trend.toFixed(1)),
             monthly_visitors: parseInt(monthly_visitors) || 0,
+            annual_visitors: parseInt(annual_visitors) || 0,
             visitor_trend: parseFloat(visitor_trend.toFixed(1)),
             recent_attendance: attendance_summary,
             upcoming_events,
@@ -89,14 +112,17 @@ exports.getDashboardSummary = async (req, res) => {
 exports.getAttendanceTrends = async (req, res) => {
     try {
         const [rows] = await db.execute(`
-      SELECT e.title, e.date, COUNT(a.id) as attendee_count 
+      SELECT e.date, COUNT(a.id) as attendee_count 
       FROM events e 
       LEFT JOIN attendance a ON e.id = a.event_id AND a.status = 'Present'
-      GROUP BY e.id 
-      ORDER BY e.date DESC 
-      LIMIT 10
+      WHERE e.date >= date('now', '-6 months')
+      GROUP BY e.date 
+      ORDER BY e.date ASC
     `);
-        res.json(rows);
+        res.json(rows.map(row => ({
+            date: row.date,
+            count: Number(row.attendee_count) || 0
+        })));
     } catch (error) {
         res.status(500).json({ message: 'Error fetching attendance trends', error: error.message });
     }

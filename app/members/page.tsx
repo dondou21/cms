@@ -22,10 +22,11 @@ import { cn } from '../lib/utils';
 export default function MembersPage() {
     const { t, language, setLanguage } = useLanguage();
     const [members, setMembers] = useState<any[]>([]);
+    const [departments, setDepartments] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
     const [showModal, setShowModal] = useState(false);
-    const [filters, setFilters] = useState({ status: '', is_star: '' });
+    const [filters, setFilters] = useState({ status: '', is_star: '', year: '', department_id: '' });
     const [formData, setFormData] = useState({
         civilite: 'Mr',
         first_name: '',
@@ -56,6 +57,8 @@ export default function MembersPage() {
             const queryParams = new URLSearchParams();
             if (filters.status) queryParams.append('status', filters.status);
             if (filters.is_star) queryParams.append('is_star', filters.is_star);
+            if (filters.year) queryParams.append('year', filters.year);
+            if (filters.department_id) queryParams.append('department_id', filters.department_id);
             if (search) queryParams.append('search', search);
             
             const response = await api.get(`/members?${queryParams.toString()}`);
@@ -66,6 +69,19 @@ export default function MembersPage() {
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+        const fetchDepartments = async () => {
+            try {
+                const response = await api.get('/departments');
+                setDepartments(response.data);
+            } catch (err) {
+                console.error('Failed to fetch departments', err);
+            }
+        };
+
+        fetchDepartments();
+    }, []);
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -200,6 +216,29 @@ export default function MembersPage() {
                     <option value="">Tous les groupes</option>
                     <option value="true">STAR Members</option>
                     <option value="false">Non-STAR</option>
+                </select>
+
+                <select
+                    value={filters.year}
+                    onChange={(e) => setFilters({ ...filters, year: e.target.value })}
+                    className="bg-card border border-border px-4 py-3 text-[10px] font-black uppercase tracking-widest text-foreground focus:ring-0 outline-none"
+                >
+                    <option value="">All Years</option>
+                    {Array.from({ length: 5 }).map((_, idx) => {
+                        const year = new Date().getFullYear() - idx;
+                        return <option key={year} value={year}>{year}</option>;
+                    })}
+                </select>
+
+                <select
+                    value={filters.department_id}
+                    onChange={(e) => setFilters({ ...filters, department_id: e.target.value })}
+                    className="bg-card border border-border px-4 py-3 text-[10px] font-black uppercase tracking-widest text-foreground focus:ring-0 outline-none"
+                >
+                    <option value="">All Departments</option>
+                    {departments.map((dept) => (
+                        <option key={dept.id} value={dept.id}>{dept.name}</option>
+                    ))}
                 </select>
             </div>
 

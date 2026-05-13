@@ -12,26 +12,22 @@ app.use(cors({ origin: '*' })); // Allow all origins since it's a local desktop 
 app.use(helmet());
 app.use(morgan('dev'));
 
-// ── GLOBAL AUTH BYPASS ──────────────────────────────────────────
-// Attach a default user on every request so no route ever 401s.
-// Remove this block when restoring production auth.
-app.use((req, res, next) => {
-    req.user = { id: 1, name: 'Admin', role: 'Admin' };
-    next();
-});
-// ────────────────────────────────────────────────────────────────
+const { authenticate } = require('./middleware/auth');
 
-// API Routes
+// Routes
 app.use('/api/auth', require('./routes/auth'));
-app.use('/api/members', require('./routes/members'));
-app.use('/api/departments', require('./routes/departments'));
-app.use('/api/givings', require('./routes/givings'));
-app.use('/api/attendance', require('./routes/attendance'));
-app.use('/api/events', require('./routes/events'));
-app.use('/api/reports', require('./routes/reports'));
-app.use('/api/service-reports', require('./routes/serviceReports'));
-app.use('/api/service-orders', require('./routes/serviceOrders'));
-app.use('/api/finance', require('./routes/finance'));
+app.use('/api/users', authenticate, require('./routes/users'));
+
+// Protected Routes
+app.use('/api/members', authenticate, require('./routes/members'));
+app.use('/api/departments', authenticate, require('./routes/departments'));
+app.use('/api/givings', authenticate, require('./routes/givings'));
+app.use('/api/attendance', authenticate, require('./routes/attendance'));
+app.use('/api/events', authenticate, require('./routes/events'));
+app.use('/api/reports', authenticate, require('./routes/reports'));
+app.use('/api/service-reports', authenticate, require('./routes/serviceReports'));
+app.use('/api/service-orders', authenticate, require('./routes/serviceOrders'));
+app.use('/api/finance', authenticate, require('./routes/finance'));
 
 app.get('/', (req, res) => {
     res.json({ message: 'Welcome to Church Management System API' });

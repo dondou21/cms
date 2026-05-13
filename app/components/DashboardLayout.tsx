@@ -14,6 +14,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     const { language, setLanguage } = useLanguage();
 
     useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            window.location.href = '/login';
+            return;
+        }
         setMounted(true);
     }, []);
 

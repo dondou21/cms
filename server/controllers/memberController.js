@@ -12,11 +12,15 @@ exports.createMember = async (req, res) => {
 
 exports.getMembers = async (req, res) => {
     try {
-        const { status, is_star, search } = req.query;
+        const { status, is_star, search, year, from, to, department_id } = req.query;
         const filters = {};
         if (status) filters.status = status;
         if (is_star !== undefined) filters.is_star = is_star === 'true';
         if (search) filters.search = search;
+        if (year) filters.year = parseInt(year, 10);
+        if (from) filters.from = from;
+        if (to) filters.to = to;
+        if (department_id) filters.department_id = parseInt(department_id, 10);
         
         const members = await Member.findAll(filters);
         res.json(members);

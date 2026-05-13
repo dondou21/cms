@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, UserPlus, Heart, MessageSquare, ArrowRight, CheckCircle2, Clock, X, ChevronRight, Share2, Info } from 'lucide-react';
+import { Users, UserPlus, Heart, MessageSquare, ArrowRight, CheckCircle2, Clock, X, ChevronRight, Share2, Info, TrendingUp } from 'lucide-react';
 import api from '../services/api';
 import DashboardLayout from '../components/DashboardLayout';
 import { useLanguage } from '../lib/i18n';
@@ -15,6 +15,7 @@ export default function IntegrationPage() {
     const [loading, setLoading] = useState(true);
     const [showRegisterModal, setShowRegisterModal] = useState(false);
     const [saving, setSaving] = useState(false);
+    const [visitorPeriod, setVisitorPeriod] = useState<'month' | 'year'>('month');
 
     const [visitorForm, setVisitorForm] = useState({
         civilite: '',
@@ -43,12 +44,12 @@ export default function IntegrationPage() {
 
     useEffect(() => {
         fetchData();
-    }, []);
+    }, [visitorPeriod]);
 
     const fetchData = async () => {
         try {
             const [statsRes, prosRes] = await Promise.all([
-                api.get('/reports/integration-stats'),
+                api.get(`/reports/integration-stats?period=${visitorPeriod}`),
                 api.get('/members?status=Prospect')
             ]);
             setStats(statsRes.data);
@@ -106,9 +107,9 @@ export default function IntegrationPage() {
     }
 
     const cards = [
-        { key: 'new_visitors', label: 'New Visitors (Month)', value: stats?.new_visitors || 0, icon: UserPlus, color: 'text-primary', bg: 'bg-primary/10' },
+        { key: 'new_visitors', label: visitorPeriod === 'year' ? 'Prospects This Year' : 'New Visitors (Month)', value: visitorPeriod === 'year' ? stats?.annual_visitors || 0 : stats?.new_visitors || 0, icon: UserPlus, color: 'text-primary', bg: 'bg-primary/10' },
         { key: 'want_to_join', label: 'Want to Join', value: stats?.want_to_join || 0, icon: Heart, color: 'text-secondary', bg: 'bg-secondary/10' },
-        { key: 'new_converts', label: 'New Converts', value: stats?.new_converts || 0, icon: CheckCircle2, color: 'text-emerald-500', bg: 'bg-emerald-50' },
+        { key: 'annual_visitors', label: 'Annual Prospects', value: stats?.annual_visitors || 0, icon: TrendingUp, color: 'text-emerald-500', bg: 'bg-emerald-50' },
         { key: 'pending_followup', label: 'Pending Follow-up', value: stats?.pending_followup || 0, icon: Clock, color: 'text-muted-foreground', bg: 'bg-muted' },
     ];
 
@@ -129,6 +130,33 @@ export default function IntegrationPage() {
                     </button>
                 </div>
 
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <span className="font-black uppercase tracking-widest">View:</span>
+                        <button
+                            type="button"
+                            onClick={() => setVisitorPeriod('month')}
+                            className={cn(
+                                'px-4 py-2 rounded-none text-xs font-black uppercase tracking-widest border border-border transition-all',
+                                visitorPeriod === 'month' ? 'bg-primary text-white border-primary' : 'bg-card text-foreground'
+                            )}
+                        >
+                            Monthly
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setVisitorPeriod('year')}
+                            className={cn(
+                                'px-4 py-2 rounded-none text-xs font-black uppercase tracking-widest border border-border transition-all',
+                                visitorPeriod === 'year' ? 'bg-primary text-white border-primary' : 'bg-card text-foreground'
+                            )}
+                        >
+                            Annual
+                        </button>
+                    </div>
+                    <div className="text-xs text-muted-foreground">Updated for <span className="font-bold text-foreground uppercase">{visitorPeriod}</span> prospects</div>
+                </div>
+
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     {cards.map((card, i) => (
                         <motion.div
@@ -141,7 +169,7 @@ export default function IntegrationPage() {
                             <div className={cn("w-12 h-12 rounded-none flex items-center justify-center mb-4", card.bg)}>
                                 <card.icon className={cn("w-6 h-6", card.color)} />
                             </div>
-                            <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">{t(`integration.stats.${card.key}`)}</p>
+                            <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">{card.label}</p>
                             <h3 className="text-3xl font-black mt-1 text-foreground">{card.value}</h3>
                         </motion.div>
                     ))}

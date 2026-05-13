@@ -1,8 +1,19 @@
 const Attendance = require('../models/attendance');
+const Event = require('../models/event');
 
 exports.recordAttendance = async (req, res) => {
     try {
-        const { event_id, member_id, status } = req.body;
+        const { event_id, member_id, status, count } = req.body;
+
+        if (typeof count !== 'undefined' && event_id && !member_id) {
+            await Event.updateAttendance(event_id, parseInt(count, 10));
+            return res.status(201).json({ message: 'Attendance count updated successfully' });
+        }
+
+        if (!event_id || !member_id) {
+            return res.status(400).json({ message: 'event_id and member_id are required for individual attendance records' });
+        }
+
         await Attendance.record({ event_id, member_id, status });
         res.status(201).json({ message: 'Attendance recorded successfully' });
     } catch (error) {

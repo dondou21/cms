@@ -12,6 +12,7 @@ import {
     Calendar,
     ScrollText,
     UserPlus,
+    UserCog,
     LogOut,
     Church,
 } from 'lucide-react';
@@ -29,13 +30,14 @@ const menuItems = [
     { icon: Calendar,        labelKey: 'nav.events',        href: '/events' },
     { icon: ScrollText,      labelKey: 'nav.service_order', href: '/events/service-order' },
     { icon: UserPlus,        labelKey: null, label: 'Integration', href: '/integration' },
+    { icon: UserCog,         label: 'Users',          href: '/dashboard/users' },
 ];
 
 export default function Sidebar() {
     const { t } = useLanguage();
     const pathname = usePathname();
     const router = useRouter();
-    const [userRole, setUserRole] = useState('Admin');
+    const [userRole, setUserRole] = useState('');
 
     useEffect(() => {
         try {
@@ -89,30 +91,32 @@ export default function Sidebar() {
                 <p className="text-[9px] font-bold text-white/30 uppercase tracking-widest px-3 mb-2">
                     Main Menu
                 </p>
-                {menuItems.map((item) => {
-                    const label = item.labelKey ? t(item.labelKey) : item.label!;
-                    const active = isActive(item.href);
+                {menuItems
+                    .filter(item => item.href !== '/dashboard/users' || userRole === 'Admin')
+                    .map((item) => {
+                        const label = item.labelKey ? t(item.labelKey) : item.label!;
+                        const active = isActive(item.href);
 
-                    return (
-                        <Link key={item.href} href={item.href} className="block">
-                            <div className={cn(
-                                'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150',
-                                active
-                                    ? 'bg-white/20 text-white font-semibold shadow-sm'
-                                    : 'text-white/60 hover:bg-white/10 hover:text-white'
-                            )}>
-                                <item.icon
-                                    className={cn('w-[18px] h-[18px] shrink-0', active ? 'text-white' : 'text-white/50')}
-                                    strokeWidth={active ? 2.5 : 2}
-                                />
-                                <span className="truncate">{label}</span>
-                                {active && (
-                                    <span className="ml-auto w-1.5 h-1.5 rounded-full bg-white/80 shrink-0" />
-                                )}
-                            </div>
-                        </Link>
-                    );
-                })}
+                        return (
+                            <Link key={item.href} href={item.href} className="block">
+                                <div className={cn(
+                                    'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150',
+                                    active
+                                        ? 'bg-white/20 text-white font-semibold shadow-sm'
+                                        : 'text-white/60 hover:bg-white/10 hover:text-white'
+                                )}>
+                                    <item.icon
+                                        className={cn('w-[18px] h-[18px] shrink-0', active ? 'text-white' : 'text-white/50')}
+                                        strokeWidth={active ? 2.5 : 2}
+                                    />
+                                    <span className="truncate">{label}</span>
+                                    {active && (
+                                        <span className="ml-auto w-1.5 h-1.5 rounded-full bg-white/80 shrink-0" />
+                                    )}
+                                </div>
+                            </Link>
+                        );
+                    })}
             </nav>
 
             {/* ── Logout ── */}
