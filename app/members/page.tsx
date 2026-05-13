@@ -40,10 +40,14 @@ export default function MembersPage() {
         want_accompaniment: false,
         usual_church: false,
         want_to_join_icc: false,
+        interests: '',
+        info_on: '',
         join_gs: false,
+        comments: '',
         remarks: '',
         is_star: false,
-        status: 'active'
+        status: 'active',
+        department_id: ''
     });
 
     const fetchMembers = async () => {
@@ -94,6 +98,9 @@ export default function MembersPage() {
                 info_on: '',
                 join_gs: false,
                 comments: '',
+                remarks: '',
+                is_star: false,
+                status: 'active',
                 department_id: ''
             });
         } catch (err) {
